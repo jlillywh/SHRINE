@@ -40,15 +40,22 @@ class Store(Aegis):
             the amount in the store
         capacity : float, optional
             the upper bound on quantity
+        overflow : float
+            excess outflow when quantity exceeds capacity
+        outflow : float
+            The actual amount discharged from the store
         """
 
         Aegis.__init__(self, name)
 
         self.quantity = quantity
         self.capacity = capacity
+        self.overflow = 0.0
+        self.outflow = 0.0
+        self.update(0.0, self.outflow)
 
-    def update(self, inflow, outflow):
-        """Updates the quantity given inflow and outflow being applied
+    def update(self, inflow, request):
+        """Updates the quantity given inflow and request being applied
 
         If quantity ends up out of bounds (upper or lower) then it is
         set to the bound and overflow or outflow is updated
@@ -56,7 +63,10 @@ class Store(Aegis):
         Parameters
         ----------
         inflow : float
-            The sound the animal makes (default is None)
+            Inflowing material to the store
+        request : float
+            Request to discharge from the store (if available)
+            if available, then the request becomes outflow
 
         Raises
         ------
@@ -65,12 +75,22 @@ class Store(Aegis):
         """
 
         ec.checkPositive(inflow, "inflow")
-        ec.checkPositive(outflow, "outflow")
+        ec.checkPositive(request, "request")
 
-        self.quantity += inflow - outflow
+        overflow = 0.0
+        outflow = 0.0
+        quantity = self.quantity + inflow - request
 
-        if self.quantity > self.capacity:
-            self.quantity = self.capacity
-        elif self.quantity < 0.0:
-            outflow += self.quantity
-            self.quantity = 0.0
+        if quantity > self.capacity:
+            overflow = quantity - self.capacity
+            quantity = self.capacity
+            outflow = request
+        elif quantity < 0.0:
+            outflow = request + quantity
+            quantity = 0.0
+        else:
+            outflow = request
+
+        self.overflow = overflow
+        self.outflow = outflow
+        self.quantity = quantity
