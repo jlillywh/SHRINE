@@ -23,7 +23,7 @@ class Aegis:
 
     _ids = count(0)
 
-    def __init__(self, name = "Aegis"):
+    def __init__(self):
         """
         Parameters
         ----------
@@ -33,13 +33,13 @@ class Aegis:
             what does this object represent?
         """
 
+        self.name = "Aegis"
         self.id = next(self._ids)
-        self.name = name
         self.description = "A basic object."
 
     def getInstanceCount(self):
         """
-        Get the count of objects created by this class
+        Get the bucket_count of objects created by this class
         :return:
         """
         return self._ids

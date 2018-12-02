@@ -9,7 +9,8 @@ class TestOutflowsCase(unittest.TestCase):
         self.store_name = "Reservoir01"
         init_quantity = 10.0
         self.capacity = 15.0
-        self.s1 = Store(self.store_name, init_quantity, self.capacity)
+        self.s1 = Store(init_quantity, self.capacity)
+        self.s1.name = self.store_name
 
         print("Test: " + str(self.s1.getInstanceCount()))
 
