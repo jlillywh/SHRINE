@@ -1,3 +1,4 @@
+import errorChecks as ec
 from store import Store
 
 class AWBM:
@@ -35,14 +36,13 @@ class AWBM:
             a formatted string to print out the store properties
     """
 
-    def __init__(self, catchment_area=100.0):
-        self.area = catchment_area
+    def __init__(self):
         self.partial_area_fraction = [0.134, 0.433, 0.433]
         self.depth_comp_capacity = [0.0374, 0.324, 0.147]
         self.baseflow_index = 0.658
         self.surface_recession = 0.869
-        self.baseflow_recession = 0.309
         self.surface = Store(0.0)
+        self.baseflow_recession = 0.309
         self.base = Store(0.0)
 
         self.bucket_count = 3
@@ -84,9 +84,7 @@ class AWBM:
                 subsequently removed using a recession flow that is also a
                 function of constants supplied by the user. Recession flow is
                 added together and becomes the resulting runoff rate from
-                the awbm object. The flow rate is in terms of depth so it
-                will be multiplied by the area of the catchment to determine
-                the volumetric flow rate.
+                the awbm object. The flow rate is in terms of depth.
 
                 Parameters
                 ----------
@@ -118,7 +116,15 @@ class AWBM:
         self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base.quantity)
 
         # Sum surface and baseflow
-        runoff_rate = self.surface.outflow + self.base.outflow
+        return self.surface.outflow + self.base.outflow
 
-        # Volumetric runoff
-        return runoff_rate * self.area
+    def set_partial_area_fraction(self, new_fractions):
+        """ Reset the partial area fractions used for the bucket stores
+
+            These fractions are rarely changed. They must add up to 1.0"""
+        ec.checkEqualLength(self.partial_area_fraction, new_fractions)
+        ec.checkValuesAddTo1(new_fractions)
+
+        # If these tests pass, reassign the array values now
+        self.partial_area_fraction = new_fractions
+        return "Array of fractions replaced."
