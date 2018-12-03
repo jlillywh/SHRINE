@@ -1,6 +1,39 @@
 from store import Store
 
 class AWBM:
+    """ A class used to represent a rainfall runoff object
+
+        The AWBM object represents a rainfall-runoff process that
+        carries it's hydrologic state properties, which are useful
+        for simulating rainfall runoff for one or more watersheds.
+        It is formulated to operate on a per area basis where the
+        result is in units of length per time (i.e. mm/day) so that
+        the object can be used as part of a larger model to estimate
+        volumetric runoff from a watershed. In essence, you multiply
+        the resulting runoff rate from the awbm object by the area
+        of the watershed.
+
+        Attributes
+        ----------
+        name : str
+            the name of the store
+        baseflow_index : float
+            the fraction of total bucket overflow that
+        surface_recession : float
+            Surface runoff recession constant
+        baseflow_recession : float
+            Baseflow recession constant (for selected K_step)
+        depth_comp_capacity : float
+            Storage capacity for each bucket
+
+        Methods
+        -------
+        _store_overflow : float
+            updates the state of the buckets and calculates overflow
+            from each bucket and sums the total
+        about_str : str
+            a formatted string to print out the store properties
+    """
 
     def __init__(self, catchment_area=100.0):
         self.area = catchment_area
@@ -18,6 +51,23 @@ class AWBM:
             self.buckets.append(Store(0.0, self.partial_area_fraction[i] * self.depth_comp_capacity[i]))
 
     def _store_overflow(self, inflow, outflow):
+        ''' Private method used to calculate overflow from the buckets
+
+            Calculate the overflow rate from each bucket individually
+            This represents the excess rainfall after initial losses
+            in the soil and due to ET from plant life.
+
+            Parameters
+            ----------
+            inflow, outflow : float
+                within the context of awbm, the inflow is precipitation and
+                outflow is the effective evapotranspiration
+
+            Returns
+            ----------
+            sum_overflow : float
+                the sum of overflows from all the buckets
+        '''
         sum_overflow = 0.0
         for i in range(len(self.buckets)):
             self.buckets[i].update(inflow, outflow)
@@ -27,7 +77,16 @@ class AWBM:
     def runoff(self, precip, et):
         """Calculates runoff rate given precip and effective ET
 
-                to be completed...
+                Runoff is the process of routing overflows from the buckets
+                by splitting the flow into a surface store and a baseflow
+                store. The split is a function of a constant supplied by the
+                user. The quantity accumulated in both of these stores is
+                subsequently removed using a recession flow that is also a
+                function of constants supplied by the user. Recession flow is
+                added together and becomes the resulting runoff rate from
+                the awbm object. The flow rate is in terms of depth so it
+                will be multiplied by the area of the catchment to determine
+                the volumetric flow rate.
 
                 Parameters
                 ----------

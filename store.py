@@ -26,7 +26,7 @@ class Store(Aegis):
         -------
         update : float
             update quantity after applying inflows and outflows
-        """
+    """
 
     def __init__(self, quantity=100.0, capacity=float("inf")):
         """
