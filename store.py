@@ -45,9 +45,9 @@ class Store(Aegis):
         outflow : float
             The actual amount discharged from the store
         """
-        self.name = "Store"
-
         Aegis.__init__(self)
+        self.name = "Store"
+        self.description = "An object that stores mass"
 
         self.quantity = quantity
         self.capacity = capacity

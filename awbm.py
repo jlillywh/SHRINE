@@ -1,7 +1,7 @@
 import errorChecks as ec
 from store import Store
 
-class AWBM:
+class Awbm:
     """ A class used to represent a rainfall runoff object
 
         The AWBM object represents a rainfall-runoff process that
@@ -24,16 +24,25 @@ class AWBM:
             Surface runoff recession constant
         baseflow_recession : float
             Baseflow recession constant (for selected K_step)
-        depth_comp_capacity : float
+        depth_comp_capacity : array[float]
             Storage capacity for each bucket
+            This array contains the depth capacity for each bucket.
+            represents the capacity of the surface to absorb
+            precipitation, remove losses, and overflow the
+            amount that is in excess of the capacity.
+            Typically these values range from 10 mm to 400 mm
 
         Methods
         -------
         _store_overflow : float
             updates the state of the buckets and calculates overflow
             from each bucket and sums the total
-        about_str : str
-            a formatted string to print out the store properties
+        runoff : float
+            this is the main output of AWBM. It represents the
+            runoff discharge rate from the watershed on a per
+            area basis.
+        set_bucket_capacity :
+            reset the capacity values for each bucket (mm)
     """
 
     def __init__(self):
@@ -127,4 +136,18 @@ class AWBM:
 
         # If these tests pass, reassign the array values now
         self.partial_area_fraction = new_fractions
+        return "Array of fractions replaced."
+
+    def set_bucket_capacity(self, new_capacities):
+        """ Reset the capacities used for the buckets
+
+            Parameters
+            ----------
+            new_capacities : array of floats
+
+            """
+        ec.checkEqualLength(self.buckets, new_capacities)
+
+        # If this test passes, reassign the array values now
+        self.depth_comp_capacity = new_capacities
         return "Array of fractions replaced."
