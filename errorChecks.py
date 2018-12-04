@@ -30,6 +30,11 @@ def checkValuesAddTo1(my_array):
         sumValuesError = ValueError("The values in the array do not sum to 1.0.")
         raise sumValuesError
 
+def checkInRange(value, lower_bound, upper_bound):
+    if value < lower_bound or value > upper_bound:
+        outOfRangeError = ValueError("The value is out of range. It should be between 0 and 1.")
+        raise outOfRangeError
+
 
 def checkEqualLength(array_old, array_new):
     length_old = len(array_old)

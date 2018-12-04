@@ -24,5 +24,8 @@ class TestBucketCase(unittest.TestCase):
         self.a1.set_bucket_capacity(new_buckets)
         self.assertEqual(self.a1.depth_comp_capacity, new_buckets)
 
+    #def testBucketOverflow(self):
+
+
 if __name__ == '__main__':
     unittest.main()

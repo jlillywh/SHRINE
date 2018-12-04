@@ -136,7 +136,7 @@ class Awbm:
 
         # If these tests pass, reassign the array values now
         self.partial_area_fraction = new_fractions
-        return "Array of fractions replaced."
+        return "Array of fractions successfully replaced."
 
     def set_bucket_capacity(self, new_capacities):
         """ Reset the capacities used for the buckets
@@ -150,4 +150,22 @@ class Awbm:
 
         # If this test passes, reassign the array values now
         self.depth_comp_capacity = new_capacities
-        return "Array of fractions replaced."
+        return "Array of fractions successfully replaced."
+
+    def set_baseflow_index(self, new_index):
+        ec.checkInRange(new_index, 0.0, 1.0)
+
+        self.baseflow_index = new_index
+        return "Baseflow Index successfully updated."
+
+    def set_baseflow_recession(self, new_index):
+        ec.checkInRange(new_index, 0.0, 1.0)
+
+        self.baseflow_recession = new_index
+        return "Baseflow Recession constant successfully updated."
+
+    def set_surface_recession(self, new_index):
+        ec.checkInRange(new_index, 0.0, 1.0)
+
+        self.surface_recession = new_index
+        return "Surface Recession constant successfully updated."
