@@ -12,7 +12,7 @@ class TestOutflowsCase(unittest.TestCase):
         self.s1 = Store(init_quantity, self.capacity)
         self.s1.name = self.store_name
 
-        print("Test: " + str(self.s1.getInstanceCount()))
+        #print("Test: " + str(self.s1.getInstanceCount()))
 
     def tearDown(self):
         '''

@@ -1,9 +1,9 @@
-from awbm import AWBM
+from awbm import Awbm
 area = 34.0
-catchment = AWBM(area)
+catchment = Awbm()
 
-precip = 13.54
-et = 0.89
+precip = 100.0
+et = 0.0
 runoff = 0.0
 
 for x in range(3):
