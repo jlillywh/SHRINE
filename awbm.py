@@ -1,8 +1,9 @@
 import errorChecks as ec
 from store import Store
+from store_array import StoreArray
 
 class Awbm:
-    """ A class used to represent a rainfall runoff object
+    """A class used to represent a rainfall runoff object
 
         The AWBM object represents a rainfall-runoff process that
         carries it's hydrologic state properties, which are useful
@@ -47,6 +48,7 @@ class Awbm:
 
     def __init__(self):
         self.partial_area_fraction = [0.134, 0.433, 0.433]
+
         self.depth_comp_capacity = [37.0, 324.0, 147.0]
         self.baseflow_index = 0.658
         self.surface_recession = 0.869
@@ -55,12 +57,15 @@ class Awbm:
         self.base = Store(0.0)
 
         self.bucket_count = 3
-        self.buckets = []
+        bucket_capacities = [0.0]*self.bucket_count
         for i in range(self.bucket_count):
-            self.buckets.append(Store(0.0, self.partial_area_fraction[i] * self.depth_comp_capacity[i]))
+            bucket_capacities[i] = self.partial_area_fraction[i] * self.depth_comp_capacity[i]
+
+        self.buckets = StoreArray(self.bucket_count)
+        self.buckets.set_capacity(bucket_capacities)
 
     def _bucket_overflow(self, inflow, outflow):
-        ''' Private method used to calculate overflow from the buckets
+        """Private method used to calculate overflow from the buckets
 
             Calculate the overflow rate from each bucket individually
             This represents the excess rainfall after initial losses
@@ -76,7 +81,7 @@ class Awbm:
             ----------
             sum_overflow : float
                 the sum of overflows from all the buckets
-        '''
+        """
         sum_overflow = 0.0
         for i in range(len(self.buckets)):
             self.buckets[i].update(inflow[i], outflow[i])
@@ -86,36 +91,37 @@ class Awbm:
     def runoff(self, precip, et):
         """Calculates runoff rate given precip and effective ET
 
-                Runoff is the process of routing overflows from the buckets
-                by splitting the flow into a surface store and a baseflow
-                store. The split is a function of a constant supplied by the
-                user. The quantity accumulated in both of these stores is
-                subsequently removed using a recession flow that is also a
-                function of constants supplied by the user. Recession flow is
-                added together and becomes the resulting runoff rate from
-                the awbm object. The flow rate is in terms of depth.
+            Runoff is the process of routing overflows from the buckets
+            by splitting the flow into a surface store and a baseflow
+            store. The split is a function of a constant supplied by the
+            user. The quantity accumulated in both of these stores is
+            subsequently removed using a recession flow that is also a
+            function of constants supplied by the user. Recession flow is
+            added together and becomes the resulting runoff rate from
+            the awbm object. The flow rate is in terms of depth.
 
-                Parameters
-                ----------
-                precip : float
-                    Daily precipitation [mm]
-                et : float
-                    effective evapotranspiration [mm]
+            Parameters
+            ----------
+            precip : float
+                Daily precipitation [mm]
+            et : float
+                effective evapotranspiration [mm]
 
-                Returns
-                ----------
-                runoff : float
-                    runoff from the catchment [mm] on a per unit area basis
+            Returns
+            ----------
+            runoff : float
+                runoff from the catchment [mm] on a per unit area basis
 
-                Raises
-                ------
-                NotImplementedError
-                    .....
-                """
+            Raises
+            ------
+            NotImplementedError
+                .....
+            """
         # Distribute precip and et over each bucket
         precip_a = [a * precip for a in self.partial_area_fraction]
         et_a = [a * et for a in self.partial_area_fraction]
-        overflow = self._bucket_overflow(precip_a, et_a)
+        self.buckets.update(precip_a, et_a)
+        overflow = self.buckets.total_overflow()
 
         # Split flows to surface runoff and baseflow
         to_baseflow = overflow * self.baseflow_index
@@ -131,7 +137,7 @@ class Awbm:
         return self.surface.outflow + self.base.outflow
 
     def set_partial_area_fraction(self, new_fractions):
-        """ Reset the partial area fractions used for the bucket stores
+        """Reset the partial area fractions used for the bucket stores
 
             These fractions are rarely changed. They must add up to 1.0"""
         ec.checkEqualLength(self.partial_area_fraction, new_fractions)
@@ -139,10 +145,14 @@ class Awbm:
 
         # If these tests pass, reassign the array values now
         self.partial_area_fraction = new_fractions
+        bucket_capacities = [0.0] * self.bucket_count
+        for i in range(self.bucket_count):
+           bucket_capacities[i] = new_fractions[i] * self.depth_comp_capacity
+        self.buckets.set_capacity(bucket_capacities)
         return "Array of fractions replaced."
 
-    def set_bucket_capacity(self, new_capacities):
-        """ Reset the capacities used for the buckets
+    def set_comp_capacity(self, new_capacities):
+        """Reset the capacities used for the buckets
 
             Parameters
             ----------
@@ -150,8 +160,12 @@ class Awbm:
                 Capacity for each bucket [mm]
 
             """
-        ec.checkEqualLength(self.buckets, new_capacities)
+        ec.checkEqualValues(self.bucket_count, len(new_capacities))
 
         # If this test passes, reassign the array values now
         self.depth_comp_capacity = new_capacities
+        bucket_capacities = [0.0] * self.bucket_count
+        for i in range(self.bucket_count):
+            bucket_capacities[i] = new_capacities[i] * self.partial_area_fraction[i]
+        self.buckets.set_capacity(bucket_capacities)
         return "Array of fractions replaced."

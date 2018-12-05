@@ -1,8 +1,7 @@
 from itertools import count
 
 class Aegis:
-    """
-        Base class for all Aegis objects
+    """Base class for all Aegis objects
 
         ...
 
@@ -38,8 +37,7 @@ class Aegis:
         self.description = "A basic object."
 
     def getInstanceCount(self):
-        """
-        Get the bucket_count of objects created by this class
+        """Get the bucket_count of objects created by this class
         :return:
         """
         return self._ids

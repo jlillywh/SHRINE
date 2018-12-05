@@ -2,7 +2,7 @@ from datetime import timedelta
 from datetime import datetime
 
 class Clock:
-    """ Clock objects for keeping track of time during a simulation
+    """Clock objects for keeping track of time during a simulation
         ...
 
         Attributes
@@ -20,12 +20,12 @@ class Clock:
         self.remaining_time = self.duration
 
     def advance(self):
-        """ Increment the clock by 1 time step."""
+        """Increment the clock by 1 time step."""
         self.current_date + self.time_step
         self.remaining_time -= self.time_step
 
     def set_start_date(self, new_date):
-        """ Change the start date before running a new simulation
+        """Change the start date before running a new simulation
             It is assumed that you want the end date to also change when
             you change the start date becasue the duration would be held
             constant. Therefore, the end_date is also adjusted here. The
@@ -43,7 +43,7 @@ class Clock:
         self.end_date = self.current_date + self.duration
 
     def set_duration(self, new_duration):
-        """ Change the duration and update the end_date.
+        """Change the duration and update the end_date.
             It is assumed that if the duration changes, then the end
             date will also have to change rather than the start date."""
 
