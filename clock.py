@@ -1,58 +1,51 @@
-import datetime
+from datetime import timedelta
+from datetime import datetime
 
 class Clock:
-    def __init__(self, start_date=datetime.datetime.today(), duration = 100):
+    """ Clock objects for keeping track of time during a simulation
+        ...
+
+        Attributes
+        ----------
+
+        Methods
+        -------
+        """
+    def __init__(self, start_date=datetime.date.today(), duration = datetime.timedelta(days=100), time_step=datetime.timedelta(days=1)):
         self.start_date = start_date
         self.duration = duration
-        self.end_date = start_date + duration
+        self.end_date = start_date + self.duration
+        self.current_date = self.start_date
+        self.time_step = time_step
+        self.remaining_time = self.duration
 
-"""
+    def advance(self):
+        """ Increment the clock by 1 time step."""
+        self.current_date + self.time_step
+        self.remaining_time -= self.time_step
 
-require 'date'
-class Clock
-  attr_reader :current_date, :start_date, :end_date, :duration
+    def set_start_date(self, new_date):
+        """ Change the start date before running a new simulation
+            It is assumed that you want the end date to also change when
+            you change the start date becasue the duration would be held
+            constant. Therefore, the end_date is also adjusted here. The
+            current date is also reset to the start date.
 
-  #Set up the clock initially
-  # @param start_date [Date]
-  # @param duration [int]
-  def initialize(start_date=Date.today, duration=100)
-    @start_date = start_date
-    @duration = duration
-    @current_date = @start_date
-    @end_date = @start_date + @duration
-  end
+            Parameters
+            ----------
+            new_date : datetime
 
-  #Increment the clock by 1 time step
-  def increment
-    @current_date += 1
-  end
+            Returns
+            -------
+            """
+        self.start_date = new_date
+        self.current_date = new_date
+        self.end_date = self.current_date + self.duration
 
-  # Set the start date, which resets the clock
-  # @param new_date [Date]
-  # @return [nil]
-  def set_start_date(new_date)
-    @start_date = new_date
-    @current_date = @start_date
-    @end_date = @start_date + duration
-  end
+    def set_duration(self, new_duration):
+        """ Change the duration and update the end_date.
+            It is assumed that if the duration changes, then the end
+            date will also have to change rather than the start date."""
 
-  # Set the duration, which causes the end_date to update
-  # @param duration [int]
-  # @return [nil]
-  def set_duration new_duration
-    @duration = new_duration
-    @end_date = @start_date + @duration
-  end
-
-  #Print the summary of the clock properties
-  def to_s
-    object_summary = %{Summary of the Clock: \
-    \nClock start: #{self.start_date} \
-    \nClock end: #{self.end_date}\n\n}
-    return object_summary
-  end
-end
-
-
-
-"""
+    def to_s(self):
+        object_summary = "Summary of the Clock: "

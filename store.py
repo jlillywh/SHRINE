@@ -2,8 +2,7 @@ import errorChecks as ec
 from aegis import Aegis
 
 class Store(Aegis):
-    """
-        A class used to represent a storage element
+    """ A class used to represent a storage element
 
         ...
 
