@@ -12,7 +12,7 @@ class TestBucketCase(unittest.TestCase):
         #print("Tear down " + type(self.s1).__name__)
         del self.a1
 
-    def testChangeBuckets(self):
+    def testUpdateCompCapacity(self):
         """New bucket capacity == user defined array"""
         new_buckets = [57.43, 143.33, 298.49]
         self.a1.set_comp_capacity(new_buckets)

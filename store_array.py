@@ -3,7 +3,7 @@ from store import Store
 class StoreArray:
     """Create an array of store objects"""
 
-    def __init__(self, count=3):
+    def __init__(self, count):
         """The default is 3 stores only because this was initially
         used in the AWBM implementation.
         """
@@ -35,7 +35,15 @@ class StoreArray:
             self.stores[i].update(inflow[i], outflow[i])
             i += 1
 
+    def total_quantity(self):
+        """Return the total quantity by adding all store quantities"""
+        sum_quantity = 0.0
+        for i in range(self.count):
+            sum_quantity += self.stores[i].quantity
+        return sum_quantity
+
     def total_overflow(self):
+        """Sum of overflows for all stores"""
         sum_overflow = 0.0
         i = 0
         while i < self.count:
@@ -44,6 +52,7 @@ class StoreArray:
         return sum_overflow
 
     def total_outflow(self):
+        """Sum of all outflows from the stores"""
         sum_outflow = 0.0
         i = 0
         while i < self.count:

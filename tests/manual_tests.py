@@ -14,8 +14,7 @@ runoff = catchment.runoff(0.0, 0.0)
 print(runoff)
 
 
-s = StoreArray()
-inflow = [100.0, 50.0, 25.0]
-outflow = [1.0, 10.0, 20.0]
-s.update(inflow, outflow)
-s.transfer(0,1,100.0)
+sa = StoreArray(4)
+inflow = [2.5, 7.8, 23.65]
+outflow = [11.0, 0.0, 2.2]
+sa.update(inflow, outflow)

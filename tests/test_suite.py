@@ -4,7 +4,7 @@ import unittest
 import test_store_bounds
 import test_store_outflow
 import test_awbm_buckets
-import test_surface_store
+import test_stores_array
 import test_clock
 
 # Initialize the test suite
@@ -15,7 +15,7 @@ suite = unittest.TestSuite()
 suite.addTests(loader.loadTestsFromModule(test_store_outflow))
 suite.addTests(loader.loadTestsFromModule(test_store_bounds))
 suite.addTests(loader.loadTestsFromModule(test_awbm_buckets))
-suite.addTests(loader.loadTestsFromModule(test_surface_store))
+suite.addTests(loader.loadTestsFromModule(test_stores_array))
 suite.addTests(loader.loadTestsFromModule(test_clock))
 
 # Initialize a runner, pass it the suite and run it
