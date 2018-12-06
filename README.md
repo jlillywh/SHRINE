@@ -1,5 +1,5 @@
 # Aegis
-This is a library for simulating water resources systems. Components in this library (if used by themselves) operate at a single point in time.
+This is a library for simulating water resources systems. Components in this library (if used by themselves) operate at a single point in time. Objects used in the simulator will update using the clock and produce time series results to show how the state of the system changes over time.
 ``
 The modules currently available:
 
