@@ -1,4 +1,6 @@
 from itertools import count
+from pprint import pprint
+from datetime import datetime
 
 class Aegis:
     """Base class for all Aegis objects
@@ -35,6 +37,7 @@ class Aegis:
         self.name = "Aegis"
         self.id = next(self._ids)
         self.description = "A basic object."
+        self.created_on = datetime.today()
 
     def getInstanceCount(self):
         """Get the bucket_count of objects created by this class
@@ -42,5 +45,7 @@ class Aegis:
         """
         return self._ids
 
-
+    def about(self):
+        """Print a summary of all object attributes"""
+        pprint(vars(self))
 
