@@ -3,7 +3,7 @@ This is a library for simulating water resources systems. Components in this lib
 ``
 The modules currently available:
 
-Australian Water Balance Model
+#### Australian Water Balance Model
 
 ## Getting Started
 
