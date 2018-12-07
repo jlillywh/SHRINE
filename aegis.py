@@ -22,7 +22,7 @@ class Aegis:
             return the number of objects of this class created
         """
 
-    _ids = count(0)
+    _ids = count(1)
 
     def __init__(self):
         """
@@ -34,7 +34,7 @@ class Aegis:
             what does this object represent?
         """
 
-        self.name = "Aegis"
+        self.name = self.__class__.__name__
         self.id = next(self._ids)
         self.description = "A basic object."
         self.created_on = datetime.today()
@@ -46,6 +46,9 @@ class Aegis:
         return self._ids
 
     def about(self):
+        """Print a copy of the class documentation"""
+        return self.__class__.__doc__
+
+    def attributes(self):
         """Print a summary of all object attributes"""
         pprint(vars(self))
-

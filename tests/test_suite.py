@@ -1,9 +1,8 @@
 import unittest
 
 # Import all tests here
-import test_store_bounds
-import test_store_outflow
-import test_awbm_buckets
+import test_store
+import test_awbm
 import test_stores_array
 import test_clock
 
@@ -12,9 +11,8 @@ loader = unittest.TestLoader()
 suite = unittest.TestSuite()
 
 # Add test to the test suite
-suite.addTests(loader.loadTestsFromModule(test_store_outflow))
-suite.addTests(loader.loadTestsFromModule(test_store_bounds))
-suite.addTests(loader.loadTestsFromModule(test_awbm_buckets))
+suite.addTests(loader.loadTestsFromModule(test_store))
+suite.addTests(loader.loadTestsFromModule(test_awbm))
 suite.addTests(loader.loadTestsFromModule(test_stores_array))
 suite.addTests(loader.loadTestsFromModule(test_clock))
 

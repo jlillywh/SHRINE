@@ -94,7 +94,7 @@ class Awbm:
             Runoff is the process of routing overflows from the buckets
             by splitting the flow into a surface store and a baseflow
             store. The split is a function of a constant supplied by the
-            user. The quantity accumulated in both of these stores is
+            user. The _quantity accumulated in both of these stores is
             subsequently removed using a recession flow that is also a
             function of constants supplied by the user. Recession flow is
             added together and becomes the resulting runoff rate from
@@ -128,10 +128,10 @@ class Awbm:
         to_surface = overflow * (1.0 - self.baseflow_index)
 
         # Surface runoff solved using recession outflow
-        self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface.quantity)
+        self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface._quantity)
 
         # Baseflow runoff solved using recession outflow
-        self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base.quantity)
+        self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base._quantity)
 
         # Sum surface and baseflow
         return self.surface.outflow + self.base.outflow

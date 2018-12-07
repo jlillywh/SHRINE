@@ -13,9 +13,11 @@ class Store(Aegis):
         name : str
             the name of the store
         quantity : float
-            the amount in the store
+            the amount in the store. Prefixed with underscore because
+            you should never redefine this value without using the
+            "set_quantity" method to ensure bounds are not exceeded.
         capcity : float
-            the upper bound on quantity
+            the upper bound on _quantity
         overflow : float
             amount in excess of capacity after applying inflow and outflow
         outflow : float
@@ -23,8 +25,10 @@ class Store(Aegis):
 
         Methods
         -------
-        update : float
-            update quantity after applying inflows and outflows
+        update(inflow, request)
+            update _quantity after applying inflows and outflows
+        set_quantity(amount)
+            updates _quantity while ensuring bounds respected
     """
 
     def __init__(self, quantity=100.0, capacity=float("inf")):
@@ -38,26 +42,25 @@ class Store(Aegis):
         quantity : float, optional
             the amount in the store
         capacity : float, optional
-            the upper bound on quantity
+            the upper bound on _quantity
         overflow : float
-            excess outflow when quantity exceeds capacity
+            excess outflow when _quantity exceeds capacity
         outflow : float
             The actual amount discharged from the store
         """
         Aegis.__init__(self)
-        self.name = "Store"
         self.description = "An object that stores mass"
 
-        self.quantity = quantity
+        self._quantity = quantity
         self.capacity = capacity
         self.overflow = 0.0
         self.outflow = 0.0
         self.update(0.0, self.outflow)
 
     def update(self, inflow, request):
-        """Updates the quantity given inflow and request being applied
+        """Updates the _quantity given inflow and request being applied
 
-        If quantity ends up out of bounds (upper or lower) then it is
+        If _quantity ends up out of bounds (upper or lower) then it is
         set to the bound and overflow or outflow is updated
 
         Parameters
@@ -79,18 +82,36 @@ class Store(Aegis):
 
         overflow = 0.0
         outflow = 0.0
-        quantity = self.quantity + inflow - request
+        temp_quantity = self._quantity + inflow - request
 
-        if quantity > self.capacity:
-            overflow = quantity - self.capacity
-            quantity = self.capacity
+        if temp_quantity > self.capacity:
+            overflow = temp_quantity - self.capacity
             outflow = request
-        elif quantity < 0.0:
-            outflow = request + quantity
-            quantity = 0.0
+        elif temp_quantity < 0.0:
+            outflow = request + temp_quantity
         else:
             outflow = request
 
         self.overflow = overflow
         self.outflow = outflow
-        self.quantity = quantity
+        self.set_quantity(temp_quantity)
+
+    def set_quantity(self, amount):
+        """Set the amount but limit it to the bounds immediately.
+            Parameters
+            ----------
+            amount : float
+                user defined amount to replace the existing _quantity
+
+            Returns
+            -------
+            self._quantity : float
+                The new _quantity of the store
+        """
+        if amount > self.capacity:
+            self._quantity = self.capacity
+        elif amount < 0.0:
+            self._quantity = 0.0
+        else:
+            self._quantity = amount
+        return self._quantity
