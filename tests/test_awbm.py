@@ -42,11 +42,7 @@ class TestBucketCase(unittest.TestCase):
         """change the total quantity in the buckets"""
         self.assertAlmostEqual(self.a1.base._quantity, 5.949, self.precision)
 
-"""
-catchment.buckets.total_quantity()))
-print("Bucket overflow = " + str(catchment.buckets.total_overflow()))
-print("Surface Store amount = " + str(catchment.surface._quantity))
-print("Baseflow Store amount = " + str(catchment.base._quantity))"""
+
 
 if __name__ == '__main__':
     unittest.main()
