@@ -49,24 +49,27 @@ class TestStoreBoundsCase(unittest.TestCase):
         inflow = 7.43
         outflow = 0.03
         self.s1.update(inflow, outflow)
-        self.assertEqual(self.s1._quantity, self.capacity)
+        self.assertEqual(self.s1.quantity, self.capacity)
 
     def testLower(self):
         """Store _quantity == 0.0 when outflow causes empty"""
         inflow = 0.43
         outflow = 10.438
         self.s1.update(inflow, outflow)
-        self.assertEqual(self.s1._quantity, 0.0)
+        self.assertEqual(self.s1.quantity, 0.0)
 
     def testSettingQuantity(self):
         """Make sure a new _quantity is limited to the store's bounds"""
-        test_amount1 = self.s1.set_quantity(999.99)
-        test_amount2 = self.s1.set_quantity(-100.0)
-        test_amount3 = self.s1.set_quantity(13.8685)
+        self.s1.quantity = 999.99
+        quantity1 = self.s1.quantity
+        self.s1.quantity = -100.0
+        quantity2 = self.s1.quantity
+        self.s1.quantity = 13.8685
+        quantity3 = self.s1.quantity
 
-        self.assertEqual(test_amount1, self.s1.capacity)
-        self.assertEqual(test_amount2, 0.0)
-        self.assertEqual(test_amount3, 13.8685)
+        self.assertEqual(quantity1, self.s1.capacity)
+        self.assertEqual(quantity2, 0.0)
+        self.assertEqual(quantity3, 13.8685)
 
 
 if __name__ == '__main__':

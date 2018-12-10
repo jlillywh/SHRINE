@@ -8,8 +8,8 @@ class TestBucketCase(unittest.TestCase):
         self.a1 = Awbm()
         self.init_quantity_buckets = [4.2, 140.4, 42.9]
         self.a1.buckets.set_quantities(self.init_quantity_buckets)
-        self.a1.base.set_quantity(10.0)
-        self.a1.surface.set_quantity(10.0)
+        self.a1.base.quantity = 10.0
+        self.a1.surface.quantity = 10.0
         self.a1.runoff(10.0, 1.0)
         self.precision = 4
 
@@ -36,11 +36,11 @@ class TestBucketCase(unittest.TestCase):
 
     def testSurfaceQuantity(self):
         """change the total quantity in the buckets"""
-        self.assertAlmostEqual(self.a1.surface._quantity, 10.176, self.precision)
+        self.assertAlmostEqual(self.a1.surface.quantity, 10.176, self.precision)
 
     def testBucketsQuantity(self):
         """change the total quantity in the buckets"""
-        self.assertAlmostEqual(self.a1.base._quantity, 5.949, self.precision)
+        self.assertAlmostEqual(self.a1.base.quantity, 5.949, self.precision)
 
 
 
