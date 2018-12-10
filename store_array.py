@@ -34,7 +34,7 @@ class StoreArray:
             quantity_array : Array[float]
         """
         for i in range(self.count):
-            self.stores[i].set_quantity(quantity_array[i])
+            self.stores[i].quantity = quantity_array[i]
 
     def update(self, inflow, outflow):
         """Update the state of the store array by accumulating inflow
@@ -53,7 +53,7 @@ class StoreArray:
         """Return the total _quantity by adding all store quantities"""
         sum_quantity = 0.0
         for i in range(self.count):
-            sum_quantity += self.stores[i]._quantity
+            sum_quantity += self.stores[i].quantity
         return sum_quantity
 
     def total_overflow(self):

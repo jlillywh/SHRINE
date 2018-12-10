@@ -128,10 +128,10 @@ class Awbm:
         to_surface = overflow * (1.0 - self.baseflow_index)
 
         # Surface runoff solved using recession outflow
-        self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface._quantity)
+        self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface.quantity)
 
         # Baseflow runoff solved using recession outflow
-        self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base._quantity)
+        self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base.quantity)
 
         # Sum surface and baseflow
         return self.surface.outflow + self.base.outflow

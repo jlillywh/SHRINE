@@ -50,12 +50,36 @@ class Store(Aegis):
         """
         Aegis.__init__(self)
         self.description = "An object that stores mass"
-
-        self._quantity = quantity
+        self.__quantity = quantity
         self.capacity = capacity
         self.overflow = 0.0
         self.outflow = 0.0
         self.update(0.0, self.outflow)
+
+    @property  # when you do Store.quantity, it will call this function
+    def quantity(self):
+        return self.__quantity
+
+    @quantity.setter  # when you do Store.quantity = x, it will call this function
+    def quantity(self, amount):
+        """Set the amount but limit it to the bounds immediately.
+            Parameters
+            ----------
+            amount : float
+                user defined amount to replace the existing _quantity
+
+            Returns
+            -------
+            self._quantity : float
+                The new _quantity of the store
+        """
+        if amount > self.capacity:
+            self.__quantity = self.capacity
+        elif amount < 0.0:
+            self.__quantity = 0.0
+        else:
+            self.__quantity = amount
+        return self.__quantity
 
     def update(self, inflow, request):
         """Updates the _quantity given inflow and request being applied
@@ -82,7 +106,7 @@ class Store(Aegis):
 
         overflow = 0.0
         outflow = 0.0
-        temp_quantity = self._quantity + inflow - request
+        temp_quantity = self.quantity + inflow - request
 
         if temp_quantity > self.capacity:
             overflow = temp_quantity - self.capacity
@@ -94,24 +118,4 @@ class Store(Aegis):
 
         self.overflow = overflow
         self.outflow = outflow
-        self.set_quantity(temp_quantity)
-
-    def set_quantity(self, amount):
-        """Set the amount but limit it to the bounds immediately.
-            Parameters
-            ----------
-            amount : float
-                user defined amount to replace the existing _quantity
-
-            Returns
-            -------
-            self._quantity : float
-                The new _quantity of the store
-        """
-        if amount > self.capacity:
-            self._quantity = self.capacity
-        elif amount < 0.0:
-            self._quantity = 0.0
-        else:
-            self._quantity = amount
-        return self._quantity
+        self.quantity = temp_quantity
