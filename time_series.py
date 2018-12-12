@@ -1,30 +1,13 @@
-from datetime import date, timedelta
-import random
+import pandas as pd
+from pandas import Series
+import numpy as np
 from aegis import Aegis
 
-class TimeSeries(Aegis):
-    def __init__(self, start_date=date.today()):
-        Aegis.__init__(self)
-        self.date_header = "Date"
-        self.value_header = "Value"
-        self.start_date = start_date
-        self.num_records = 10
-        self.end_date = self.start_date + timedelta(days=self.num_records)
+class TimeSeries(Series):
+    def __init__(self, start_date='1/1/2019', periods=365, freq='D'):
+        Series.__init__(self)
+        self.range = pd.date_range(start_date, periods=periods, freq=freq)
+        self.values = pd.Series(np.zeros(len(self.range)), index=self.range)
 
-        self.dates = []
-        self.values = []
-
-        for i in range(self.num_records):
-            self.dates.append(self.start_date + timedelta(days=i))
-            self.values.append(random.randint(1,10))
-
-"""
-
-        self.dates = []
-
-        for i in range(self.num_records):
-            self.dates.append(self.start_date + timedelta(days=1))
-
-    def get_value_header(self):
-        print(self.value_header)
-"""
+    def set_value(self, at_date, value):
+	    self.values[at_date] = value

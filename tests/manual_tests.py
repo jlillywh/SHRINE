@@ -1,23 +1,19 @@
+import pandas as pd
+import numpy as np
 from awbm import Awbm
-from store_array import StoreArray
+from clock import Clock
 
-catchment = Awbm()
+c = Clock()
+ts = pd.Series(0, index=pd.date_range(c.start_date, periods=365, freq='D'))
+a = Awbm()
 
-precip = 10.0
-et = 1.0
-catchment.buckets.set_quantities([4.2, 140.4, 42.9])
-catchment.base.set_quantity(10.0)
-catchment.surface.set_quantity(10.0)
-runoff = catchment.runoff(precip, et)
+while c.running:
+	precip = np.random.uniform() * 10.0
+	et = np.random.uniform()
 
-print("Bucket amounts = " + str(catchment.buckets.total_quantity()))
-print("Bucket overflow = " + str(catchment.buckets.total_overflow()))
-print("Surface Store amount = " + str(catchment.surface._quantity))
-print("Baseflow Store amount = " + str(catchment.base._quantity))
+	ts[c.current_date] = a.runoff(precip, et)
 
-print("Catchment runoff = " + str(runoff))
+	c.advance()
 
-sa = StoreArray()
-inflow = [2.5, 7.8, 23.65]
-outflow = [11.0, 0.0, 2.2]
-sa.update(inflow, outflow)
+print(ts.head())
+
