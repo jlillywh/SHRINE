@@ -36,7 +36,7 @@ class Aegis:
 
         self.name = self.__class__.__name__
         self.id = next(self._ids)
-        self.description = "A basic object."
+        self.description = "An object of " + str(self.name) + " type."
         self.created_on = datetime.today()
 
     def getInstanceCount(self):

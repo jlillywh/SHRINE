@@ -5,6 +5,7 @@ import test_store
 import test_awbm
 import test_stores_array
 import test_clock
+import test_catchment
 
 # Initialize the test suite
 loader = unittest.TestLoader()

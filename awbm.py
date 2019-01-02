@@ -3,17 +3,17 @@ from store import Store
 from store_array import StoreArray
 
 class Awbm:
-    """A class used to represent a rainfall runoff object
+    """A class used to represent a rainfall outflow object
 
-        The AWBM object represents a rainfall-runoff process that
+        The AWBM object represents a rainfall-outflow process that
         carries it's hydrologic state properties, which are useful
-        for simulating rainfall runoff for one or more watersheds.
+        for simulating rainfall outflow for one or more watersheds.
         It is formulated to operate on a per area basis where the
         result is in units of length per time (i.e. mm/day) so that
         the object can be used as part of a larger model to estimate
-        volumetric runoff from a watershed. In essence, you multiply
-        the resulting runoff rate from the awbm object by the area
-        of the watershed.
+        volumetric outflow from a catch01. In essence, you multiply
+        the resulting outflow rate from the awbm object by the area
+        of the catch01.
 
         Attributes
         ----------
@@ -22,7 +22,7 @@ class Awbm:
         baseflow_index : float
             the fraction of total bucket overflow that
         surface_recession : float
-            Surface runoff recession constant
+            Surface outflow recession constant
         baseflow_recession : float
             Baseflow recession constant (for selected K_step)
         depth_comp_capacity : array[float]
@@ -38,9 +38,9 @@ class Awbm:
         _bucket_overflow : float
             updates the state of the buckets and calculates overflow
             from each bucket and sums the total [mm]
-        runoff : float
+        outflow : float
             this is the main output of AWBM. It represents the
-            runoff discharge rate from the watershed on a per
+            outflow discharge rate from the catch01 on a per
             area basis [mm]
         set_bucket_capacity :
             reset the capacity values for each bucket [mm]
@@ -89,7 +89,7 @@ class Awbm:
         return sum_overflow
 
     def runoff(self, precip, et):
-        """Calculates runoff rate given precip and effective ET
+        """Calculates outflow rate given precip and effective ET
 
             Runoff is the process of routing overflows from the buckets
             by splitting the flow into a surface store and a baseflow
@@ -97,7 +97,7 @@ class Awbm:
             user. The _quantity accumulated in both of these stores is
             subsequently removed using a recession flow that is also a
             function of constants supplied by the user. Recession flow is
-            added together and becomes the resulting runoff rate from
+            added together and becomes the resulting outflow rate from
             the awbm object. The flow rate is in terms of depth.
 
             Parameters
@@ -108,9 +108,9 @@ class Awbm:
                 effective evapotranspiration [mm]
 
             Returns
-            ----------
-            runoff : float
-                runoff from the catchment [mm] on a per unit area basis
+            -------
+            outflow : float
+                outflow from the catchment [mm] on a per unit area basis
 
             Raises
             ------
@@ -123,14 +123,14 @@ class Awbm:
         self.buckets.update(precip_a, et_a)
         overflow = self.buckets.total_overflow()
 
-        # Split flows to surface runoff and baseflow
+        # Split flows to surface outflow and baseflow
         to_baseflow = overflow * self.baseflow_index
         to_surface = overflow * (1.0 - self.baseflow_index)
 
-        # Surface runoff solved using recession outflow
+        # Surface outflow solved using recession outflow
         self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface.quantity)
 
-        # Baseflow runoff solved using recession outflow
+        # Baseflow outflow solved using recession outflow
         self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base.quantity)
 
         # Sum surface and baseflow
