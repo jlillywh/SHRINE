@@ -15,7 +15,6 @@ class Clock(Aegis):
         """
     def __init__(self, start_date='1/1/2019', end_date='1/1/2020', time_step='1 days'):
         Aegis.__init__(self)
-        self.name = "Clock"
         self.description = "Clock to keep track of simulation time."
         ## Static time variables
         self.start_date = pd.Timestamp(start_date)
