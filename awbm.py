@@ -49,7 +49,7 @@ class Awbm:
     def __init__(self):
         self.partial_area_fraction = [0.134, 0.433, 0.433]
 
-        self.depth_comp_capacity = [37.0, 324.0, 147.0]
+        self.depth_comp_capacity = [37.44, 324.4, 146.6]
         self.baseflow_index = 0.658
         self.surface_recession = 0.869
         self.surface = Store(0.0)
@@ -62,6 +62,7 @@ class Awbm:
             bucket_capacities[i] = self.partial_area_fraction[i] * self.depth_comp_capacity[i]
 
         self.buckets = StoreArray(self.bucket_count)
+        self.buckets.set_quantities([0.0, 0.0, 0.0])
         self.buckets.set_capacity(bucket_capacities)
 
     def _bucket_overflow(self, inflow, outflow):

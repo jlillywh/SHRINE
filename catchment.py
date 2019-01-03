@@ -33,8 +33,10 @@ class Catchment(Aegis):
         Parameters
         ----------
             area : float
+                Area of the catchment in km2
             runoff_method : Aegis
             outflow : float
+                Runoff outflow from the catchment in terms of m3/d
         """
 
         Aegis.__init__(self)
@@ -58,4 +60,6 @@ class Catchment(Aegis):
             NA
         """
 
-        self.outflow = self.runoff_method.runoff(precip, et) * self.area
+        area_meters = self.area * 1.0e6       #convert from km2 to m2
+        outflow_meters = self.runoff_method.runoff(precip, et) * 1.0e-3
+        self.outflow = outflow_meters * area_meters

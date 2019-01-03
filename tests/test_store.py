@@ -32,7 +32,7 @@ class TestStoreBoundsCase(unittest.TestCase):
         self.capacity = 15.0
         self.s1 = Store(init_quantity, self.capacity)
         self.s1.name = self.store_name
-
+        self.precision = 3
         #print("Test: " + str(self.s1.getInstanceCount()))
 
     def tearDown(self):
@@ -70,6 +70,18 @@ class TestStoreBoundsCase(unittest.TestCase):
         self.assertEqual(quantity1, self.s1.capacity)
         self.assertEqual(quantity2, 0.0)
         self.assertEqual(quantity3, 13.8685)
+
+    def testOverflow(self):
+        """Make sure the store returns the correct overflow rate.
+        """
+        inflow = 0.6295
+        cumulative_overflow = 0.0
+        for i in range(0,10):
+            self.s1.update(inflow)
+            cumulative_overflow += self.s1.overflow
+
+        self.assertAlmostEqual(cumulative_overflow, 1.295, self.precision)
+
 
 
 if __name__ == '__main__':

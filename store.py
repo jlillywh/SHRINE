@@ -31,7 +31,7 @@ class Store(Aegis):
             updates _quantity while ensuring bounds respected
     """
 
-    def __init__(self, quantity=100.0, capacity=float("inf")):
+    def __init__(self, quantity=0.0, capacity=float("inf")):
         """
         Parameters
         ----------
@@ -81,7 +81,7 @@ class Store(Aegis):
             self.__quantity = amount
         return self.__quantity
 
-    def update(self, inflow, request):
+    def update(self, inflow, request=0.0):
         """Updates the _quantity given inflow and request being applied
 
         If _quantity ends up out of bounds (upper or lower) then it is
@@ -91,7 +91,7 @@ class Store(Aegis):
         ----------
         inflow : float
             Inflowing material to the store
-        request : float
+        request : float, optional
             Request to discharge from the store (if available)
             if available, then the request becomes outflow
 

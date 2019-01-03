@@ -17,7 +17,7 @@ class TestStoresCase(unittest.TestCase):
         outflow = [11.0, 0.0, 2.2, 100.0]
         self.sa.update(inflow, outflow)
 
-        self.total_quantity = 325.98
+        self.total_quantity = 29.25
 
     def tearDown(self):
         """
@@ -33,7 +33,7 @@ class TestStoresCase(unittest.TestCase):
 	    self.assertEqual(self.sa.total_overflow(), 0.0)
 
     def testOutflow(self):
-        self.assertAlmostEqual(self.sa.total_outflow(), 113.2)
+        self.assertAlmostEqual(self.sa.total_outflow(), 9.93)
 
 if __name__ == '__main__':
     unittest.main()
