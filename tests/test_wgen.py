@@ -13,6 +13,11 @@ class TestWGEN(unittest.TestCase):
 		"""Destroy the object after running tests"""
 		del self.w
 
+	def testDetermWGEN(self):
+		self.w.deterministic = 0.1
+		self.assertEqual(self.w.precipitation(), self.w.alpha_array[self.c.current_date.month-1])
+
+
 	def testMonthlyRain(self):
 		"""Check cumulative rain avg"""
 		rain_f_array = [1.27, 1.68, 2.97, 3.4, 4.12, 4.79,

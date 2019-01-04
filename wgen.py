@@ -30,6 +30,11 @@ class Wgen(Aegis):
             ----------
             lat : float
                 Station latitude in degrees
+            deterministic : float
+                Used to override random numbers for verification purposes
+                (default value < 0 enables random number)
+                If deterministic is used, 0 <= value <= 1 must be true
+                Deterministic value causes rain_gamma to use mean
             pww_array : list(float)
                 Probability wet given wet
             pwd_array : list(float)
@@ -75,6 +80,8 @@ class Wgen(Aegis):
     def __init__(self):
         Aegis.__init__(self)
         self.lat = 40.76
+        self.deterministic = -1.0
+        self.markov_deterministic = -1.0
 
         self.pww_array = [0.4113, 0.4026, 0.4585, 0.4826,
                           0.4537, 0.4714, 0.4468, 0.3464,
@@ -120,7 +127,11 @@ class Wgen(Aegis):
         month = date.month - 1
         alpha = self.alpha_array[month]  # also known as the shape factor
         beta = self.beta_array[month]  # also known as the scale factor
-        rain_gamma = np.random.gamma(alpha, beta)
+
+        if self.deterministic < 0.0:
+            rain_gamma = np.random.gamma(alpha, beta)
+        else:
+            rain_gamma = alpha
 
         # Rain correction factor
         # TODO: implemennt correction factors in precip as function of "pw"
@@ -133,7 +144,11 @@ class Wgen(Aegis):
 
         pw = pwd / (1.0 - pww + pwd)
         prob = (pww if self.wet else pwd)
-        rn = np.random.uniform()
+
+        if self.deterministic < 0.0:
+            rn = np.random.uniform()
+        else:
+            rn = self.deterministic
 
         # Determine wet or dry day using Markov Chain model
         if self.wet:
