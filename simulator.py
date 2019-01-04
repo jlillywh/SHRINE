@@ -1,6 +1,7 @@
 from aegis import Aegis
 from clock import Clock
 from watershed import Watershed
+from wgen import Wgen
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,11 +12,12 @@ class Simulator(Aegis):
 
 		self.c = Clock()
 		self.w = Watershed()
+		self.r = Wgen()
 		self.ts = pd.Series(0, index=pd.date_range(self.c.start_date, periods=365, freq='D'))
 
 	def run(self):
 		while self.c.running:
-			precip = np.random.uniform() * 3.0
+			precip = self.r.precipitation(self.c.current_date) * 25.4
 			et = np.random.uniform()
 			self.w.update(precip, et)
 			self.ts[self.c.current_date] = self.w.outflow

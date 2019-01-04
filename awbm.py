@@ -148,7 +148,7 @@ class Awbm:
         self.partial_area_fraction = new_fractions
         bucket_capacities = [0.0] * self.bucket_count
         for i in range(self.bucket_count):
-           bucket_capacities[i] = new_fractions[i] * self.depth_comp_capacity
+            bucket_capacities[i] = new_fractions[i] * self.depth_comp_capacity
         self.buckets.set_capacity(bucket_capacities)
         return "Array of fractions replaced."
 
