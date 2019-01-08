@@ -96,7 +96,7 @@ class Wgen(Aegis):
                            0.5401, 0.5888, 0.5996, 0.5701,
                            0.8209, 0.7203, 0.3651, 0.2659]
         self.wet = False
-        self.min_rain = 0.005
+        self.min_rain = 0.01
         self.rain = 0.0
 
         # Temperature inputs
@@ -152,12 +152,12 @@ class Wgen(Aegis):
 
         # Determine wet or dry day using Markov Chain model
         if self.wet:
-            if rn - pwd <= 0.0:
+            if rn - pww <= 0.0:
                 self.wet = True
             else:
                 self.wet = False
         else:
-            if rn - pww <= 0.0:
+            if rn - pwd <= 0.0:
                 self.wet = True
             else:
                 self.wet = False

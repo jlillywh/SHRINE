@@ -23,6 +23,7 @@ class Simulator(Aegis):
 			self.ts[self.c.current_date] = self.w.outflow
 
 			self.c.advance()
+		print("Simulation Complete!")
 
 	def plot_ts(self):
 		df = self.ts.to_frame()

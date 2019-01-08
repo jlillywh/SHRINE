@@ -32,7 +32,6 @@ class Clock(Aegis):
         """Increment the clock by 1 time step."""
         if self.current_date >= self.end_date:
             self.running = False
-            print("Simulation Complete!")
         else:
             self.current_date += self.time_step
             self.remaining_time -= self.time_step
@@ -40,9 +39,11 @@ class Clock(Aegis):
     def set_start_date(self, new_date):
         """Change the start date before running a new simulation
             It is assumed that you want the end date to also change when
-            you change the start date becasue the duration would be held
+            you change the start date because the duration would be held
             constant. Therefore, the end_date is also adjusted here. The
             current date is also reset to the start date.
+
+            The "running" state is also set to True.
 
             Parameters
             ----------
@@ -55,6 +56,7 @@ class Clock(Aegis):
         self.start_date = pd.Timestamp(new_date, freq=self.time_step)
         self.current_date = self.start_date
         self.end_date = self.current_date + self.duration
+        self.running = True
         self.range = pd.date_range(start=self.start_date, end=self.end_date)
 
     def set_duration(self, new_duration):
