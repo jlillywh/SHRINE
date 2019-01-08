@@ -131,7 +131,7 @@ class Wgen(Aegis):
         if self.rain_deterministic < 0.0:
             rain_gamma = np.random.gamma(alpha, beta)
         else:
-            rain_gamma = alpha * beta       #mean = alpha * beta for gamma distribution
+            rain_gamma = self.rain_deterministic      #mean = alpha * beta for gamma distribution
 
         # Rain correction factor
         # TODO: implemennt correction factors in precip as function of "pw"

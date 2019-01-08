@@ -21,9 +21,13 @@ class TestWGEN(unittest.TestCase):
         rain = self.w.precipitation()
         self.assertEqual(rain, self.w.alpha_array[0])
     
-    def testJanRain(self):
-        realizations = 1000
+    def test1monthRain(self):
+        realizations = 200
         total_precip = 0.0
+        self.c.set
+        self.w.rain_deterministic = -1
+        self.w.markov_deterministic = -1
+        self.w.min_rain = 0.0
         for i in range(0,realizations):
             precip =  self.w.precipitation(self.c.current_date)
             total_precip += precip
