@@ -16,8 +16,10 @@ class TestWGEN(unittest.TestCase):
         del self.w
     
     def testDetermWGEN(self):
-        self.w.deterministic = 0.1
-        self.assertEqual(self.w.precipitation(), self.w.alpha_array[0])
+        self.w.rain_deterministic = 0.05
+        self.w.markov_deterministic = 0.177
+        rain = self.w.precipitation()
+        self.assertEqual(rain, self.w.alpha_array[0])
     
     def testJanRain(self):
         realizations = 1000
@@ -46,7 +48,7 @@ class TestWGEN(unittest.TestCase):
             rain_array[i] /= realizations
         
         for i in range(0, 12):
-            self.assertAlmostEqual(rain_array[i] / realizations, self.obs[i], self.precision)
+            self.assertAlmostEqual(rain_array[i], self.obs[i], self.precision)
 
 if __name__ == '__main__':
     unittest.main()
