@@ -10,14 +10,14 @@ class Wgen(Aegis):
             in the 1980s in Fortran at the US Department of Agriculture
             Agricultural Research Service (Richardson and Wright 1984).
             The model can be used to generate daily values of precipitation,
-            maximum temperature, minimum temperature, and solar radiation.
+            maximum calc_temperature, minimum calc_temperature, and solar radiation.
             Precipitation is a first-order Markov chain-gamma model, where
             the probability of rain on a given day is conditioned on the
             wet or dry status of the previous day. The procedure for
             generating daily values of tmax, tmin, and radiation is based
             on the weakly stationary generating process using a one-term
             Fourier series to model the seasonal variation in both
-            temperature and solar radiation. WGEN requires long time series
+            calc_temperature and solar radiation. WGEN requires long time series
             of daily weather data to estimate parameters, limiting its use
             to regions of the world where sufficient data are available.
 
@@ -50,6 +50,8 @@ class Wgen(Aegis):
                 daily rain below this threshold are thrown out
             rain : float
                 daily rain amount (in)
+            rain_today : bool
+                True if raining today; false otherwise
 
             txmd : float
                 Mean of Tmax (dry) aka "u", Fdeg
@@ -71,10 +73,16 @@ class Wgen(Aegis):
                 Amplitude of coefficient of variation of Tmin (wet or dry) aka "C"
             dt_day : float
                 Middle of the year when days start to cool down (typically middle of July for northern hemisphere)
-
+            tmin : float
+                daily min calc_temperature
+            tmax : float
+                daily max calc_temperature
 
             Methods
             -------
+            precipitation(date)
+            calc_temperature(date)
+            tavg
     	"""
 
     def __init__(self):
@@ -98,6 +106,7 @@ class Wgen(Aegis):
         self.wet = False
         self.min_rain = 0.01
         self.rain = 0.0
+        self.rain_today = (False if self.rain < self.min_rain else True)
 
         # Temperature inputs
         self.txmd = 65.703
@@ -105,6 +114,15 @@ class Wgen(Aegis):
         self.atx = 25.58
         self.cvtx = 0.188
         self.acvtx = -0.136
+        self.tn = 44.521
+        self.atn = 23.387
+        self.cvtn = 0.262
+        self.acvtn = -0.222
+        self.dt_day = 200
+
+        self.tmin = 0.0
+        self.tmax = 0.0
+        self.temp_determ = False    # If True, calculate temperature with determined Fourier coefficients
 
     def precipitation(self, date=pd.Timestamp('1/1/2019')):
         """Generate daily precipitation values from monthly data
@@ -122,6 +140,10 @@ class Wgen(Aegis):
             Parameters
             ----------
             date : Timestamp
+
+            Returns
+            -------
+            none
         """
 
         month = date.month - 1
@@ -169,4 +191,95 @@ class Wgen(Aegis):
         # TODO implement overwrite with observed rain
         use_observed_rain = False
         self.rain = (0.0 if use_observed_rain else sim_rain)
+        self.rain_today = (False if self.rain < self.min_rain else True)
         return self.rain
+
+    def calc_temperature(self, date=pd.Timestamp('1/1/2019')):
+        """Estimate calc_temperature based on time of year, wet day, and location
+            The procedure that is used in WGEN for generating daily values
+            of tmax and tmin is based on the weakly stationary generating
+            process given by Matalas (1967). A one-term Fourier series is
+            used to model the seasonal variation in both calc_temperature and
+            solar radiation. The coefficients of the Fourier term were
+            determined throughout the locations tested and it was found that
+            some of the coefficients were strongly location dependent
+            (Richardson and Wright, 1984), thus limiting the application of
+            this model to areas where these coefficients are available.
+
+            Parameters
+            ----------
+                date = Timestamp
+        """
+
+        dayofyear = date.dayofyear
+        """Calculate a one harmonic series"""
+        loop_count = 3
+        v = 0.0
+        e = np.zeros(loop_count)
+        rn1_determ = [0.25, 0.7, 0.59]
+        rn2_determ = [0.22, 0.015, 0.42]
+        for i in range(0, loop_count):
+            j = 0
+            out_bounds = True
+            while out_bounds:
+                rn1 = (rn1_determ[i] if self.temp_determ else np.random.uniform())
+                rn2 = (rn2_determ[i] if self.temp_determ else np.random.uniform())
+                v = min(math.sqrt(-2.0 * math.log(rn1)) * math.cos(6.283185 * rn2), 2.6)
+                out_bounds = abs(v) > 2.5 and j < 100
+                j += 1
+            e[i]+= v
+        a = np.array([[0.567, 0.086, -0.002],
+                       [0.253, 0.504, -0.05],
+                       [-0.006, -0.039, 0.244]])
+
+        b = np.array([[0.781, 0.000,  0.000],
+                       [0.328, 0.637,  0.00],
+                       [0.238, -0.341, 0.873]])
+
+        r = np.zeros(loop_count)
+        rr = np.zeros(loop_count)
+        x = np.zeros(loop_count)
+
+        for i in range(0, loop_count):
+            for j in range(0, loop_count):
+                r[i] += b[i, j] * e[j]
+                rr[i] += a[i, j] * x[j]
+        x = r + rr
+
+        """Calculate calc_temperature factors tns and tnm"""
+        d1 = self.txmd + self.txmw
+        dt = math.cos(0.0172 * (dayofyear - self.dt_day))
+        txm = self.txmd + self.atx * dt
+        xcr1 = 0.06
+        if self.cvtx + self.acvtx * dt >= 0.0:
+            xcr1 = self.cvtx + self.acvtx * dt
+
+        txs = txm * xcr1
+        txm1 = txm - d1
+        txs1 = txm1 * xcr1
+        txxs = txs
+        txxm = txm
+        if self.rain_today:
+            txxs = txs1
+            txxm = txm1
+
+        tnm = self.tn + self.atn * dt
+        xcr2 = 0.06
+        if self.cvtn + self.acvtn * dt >= 0.0:
+            xcr2 = self.cvtn + self.acvtn * dt
+
+        tns = tnm * xcr2
+
+        """Generate calc_temperature min/max values"""
+        tmax1 = x[0] * txxs + txxm
+        tmin1 = x[1] * tns + tnm
+
+        """TODO add calc_temperature correlation factors"""
+        cf_max = 0.0  # Max Temperature correlation factor
+        cf_min = 0.0  # Min Temperature correlation factor
+        self.tmax = max(tmax1, tmin1) + cf_max
+        self.tmin = min(tmax1, tmin1) + cf_min
+
+    @property
+    def tavg(self):
+        return (self.tmax + self.tmin) / 2.0
