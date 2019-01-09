@@ -12,6 +12,9 @@ class Clock(Aegis):
 
         Methods
         -------
+            set_current_date
+            reset
+            advance
         """
     def __init__(self, start_date='1/1/2019', end_date='1/1/2020', time_step='1 days'):
         Aegis.__init__(self)
@@ -24,6 +27,15 @@ class Clock(Aegis):
         self.time_step = pd.Timedelta(time_step)
 
         ## Dynamic time variables
+        self.current_date = self.start_date
+        self.remaining_time = self.duration
+        self.running = True
+        
+    def reset(self):
+        """Reset the clock settings back to their original state.
+        
+            This is useful when performing multiple simulations
+        """
         self.current_date = self.start_date
         self.remaining_time = self.duration
         self.running = True
@@ -58,6 +70,19 @@ class Clock(Aegis):
         self.end_date = self.current_date + self.duration
         self.running = True
         self.range = pd.date_range(start=self.start_date, end=self.end_date)
+        
+    def set_current_date(self, new_date):
+        """Set the current date of the clock.
+        
+            This is useful if you want to force the clock time to a known
+            point in time for debugging.
+            
+            Parameters : str
+                new_date
+        """
+        self.current_date = pd.Timestamp(new_date, freq=self.time_step)
+        if self.current_date >= self.end_date:
+            self.running = False
 
     def set_duration(self, new_duration):
         """Change the duration and update the end_date.

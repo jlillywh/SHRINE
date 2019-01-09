@@ -18,6 +18,30 @@ class TestClockCase(unittest.TestCase):
     def testEndTime(self):
         """End Time should be 100 days from start"""
         self.assertEqual(self.c.end_date, self.end_date)
+        
+    def testClockReset(self):
+        days = 17
+        for d in range(0, days):
+            self.c.advance()
+            
+        self.c.reset()
+        self.assertEqual(self.c.current_date, self.c.start_date)
+        
+    def testAdvanceClock(self):
+        """Make sure that the attributes are correct after
+        advancing the clock for a while.
+        """
+        clock = Clock('1/1/2019', '1/10/2019')
+        
+        realizations = 10
+        
+        for r in range(0, realizations):
+            clock.reset()
+            while clock.running:
+                clock.advance()
+        
+        self.assertEqual(clock.current_date, clock.end_date)
+        
 
     def testRemainingTime(self):
         """Check to see if remaining time is correct after one clock advancement"""
