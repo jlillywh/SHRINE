@@ -45,7 +45,9 @@ class Wgen(Aegis):
             alpha_array : list(float)
                 Gamma distribution shape parameter
             beta_array : list(float)
-                Gamma distribution scale parameter
+                Gamma distribution scale parameter (Note that some textbooks
+                show the scale factor to be lambda and lambda = 1/beta)
+                some textbooks)
             wet : bool
                 wet/dry state for the current day (retains value from previous day)
             min_rain : float

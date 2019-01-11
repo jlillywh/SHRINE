@@ -33,28 +33,11 @@ class TestWGEN(unittest.TestCase):
         rain = rain_total / realizations
         self.assertAlmostEqual(rain, 0.15, self.precision)
     
-    def test1monthRain(self):
-        """Check a single month of rain total"""
-        realizations = 200
-        total_precip = 0.0
-        self.c.set_current_date('1/1/2019')
-        month = self.c.current_date.month - 1
-        daysInMonth = self.c.current_date.daysinmonth
-        #self.w.rain_deterministic = -1
-        #self.w.markov_deterministic = -1
-        
-        for i in range(0,realizations):
-            self.w.update(self.c.current_date)
-            total_precip += self.w.rain
-            
-        total_precip = (total_precip / realizations) * daysInMonth
-        self.assertAlmostEqual(total_precip, self.rain_obs[month], self.precision)
-    
     def testMonthlyRain(self):
         """Check cumulative rain avg"""
         rain_array = [0.0] * 12
         realizations = 500
-        precision = 0
+        precision = 1
         for r in range(1, realizations):
             self.c.reset()
             while self.c.running:
@@ -65,9 +48,11 @@ class TestWGEN(unittest.TestCase):
         
         for i in range(0, 12):
             rain_array[i] /= realizations
+
+        np.testing.assert_almost_equal(self.rain_obs, rain_array, decimal=2, err_msg='test', verbose=True)
         
-        for i in range(0, 12):
-            self.assertAlmostEqual(rain_array[i], self.rain_obs[i], precision)
+        #for i in range(0, 12):
+        #    self.assertAlmostEqual(rain_array[i], self.rain_obs[i], precision, "Month: " + str(i+1))
 
     def testAvgTemp(self):
         """Test max calc_temperature for 1 day"""
