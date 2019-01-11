@@ -118,6 +118,8 @@ class Wgen(Aegis):
         self.min_rain = 0.01
         self.rain = 0.0
         self.rain_today = (False if self.rain < self.min_rain else True)
+        self.rain_deterministic = False
+        self.markov_deterministic = False
 
         # Temperature inputs
         self.txmd = 65.703
@@ -258,7 +260,7 @@ class Wgen(Aegis):
             for j in range(0, loop_count):
                 r[i] += b[i, j] * e[j]
                 rr[i] += a[i, j] * self.x[j]
-        x = r + rr
+        self.x = r + rr
 
         """Calculate calc_temperature factors tns and tnm"""
         d1 = self.txmd - self.txmw
@@ -285,8 +287,8 @@ class Wgen(Aegis):
         tns = tnm * xcr2
 
         """Generate calc_temperature min/max values"""
-        tmax1 = x[0] * txxs + txxm
-        tmin1 = x[1] * tns + tnm
+        tmax1 = self.x[0] * txxs + txxm
+        tmin1 = self.x[1] * tns + tnm
 
         """TODO add calc_temperature correlation factors"""
         cf_max = 0.0  # Max Temperature correlation factor

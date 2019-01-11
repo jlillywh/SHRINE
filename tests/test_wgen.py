@@ -1,6 +1,7 @@
 import unittest
 from clock import Clock
 from wgen import Wgen
+import numpy as np
 
 class TestWGEN(unittest.TestCase):
     def setUp(self):
@@ -34,7 +35,7 @@ class TestWGEN(unittest.TestCase):
     
     def test1monthRain(self):
         """Check a single month of rain total"""
-        realizations = 9000
+        realizations = 200
         total_precip = 0.0
         self.c.set_current_date('1/1/2019')
         month = self.c.current_date.month - 1
@@ -68,17 +69,25 @@ class TestWGEN(unittest.TestCase):
         for i in range(0, 12):
             self.assertAlmostEqual(rain_array[i], self.rain_obs[i], precision)
 
-    def testMaxTemp(self):
+    def testAvgTemp(self):
         """Test max calc_temperature for 1 day"""
+        
+        # Below are daily average temps from deterministic GoldSim model
+        # Each value taken from the 1st day of each month starting with Jan
+        goldsim_tavg = [37.43, 19.04, 23.47, 33.7, 47.97, 63.43,
+                        73.54, 74.41, 65.17, 50.55, 35.4, 24.74]
         self.w.temp_determ = True
         self.w.rain_deterministic = True
         self.w.markov_deterministic = True
         monthly_temps = []
-        for month in range(1,13):
-            self.c.set_current_date(str(month) + '/1/2019')
+        while self.c.running:
             self.w.update(self.c.current_date)
-            monthly_temps.append(self.w.tavg)
-        self.assertAlmostEqual(self.w.tavg, 36.53, self.precision)
+            if self.c.current_date.day == 1 and self.c.current_date.year == 2019:
+                monthly_temps.append(self.w.tavg)
+            self.c.advance()
+        
+        #self.assertSequenceEqual(monthly_temps, goldsim_tavg)
+        np.testing.assert_almost_equal(goldsim_tavg, monthly_temps, decimal=1, err_msg='test', verbose=True)
 
 if __name__ == '__main__':
     unittest.main()
