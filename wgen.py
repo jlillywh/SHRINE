@@ -231,23 +231,23 @@ class Wgen(Aegis):
         loop_count = 3
         v = 0.0
         e = np.zeros(loop_count)
-        rn1_determ = [0.25, 0.5, 0.75]
-        rn2_determ = [0.75, 0.5, 0.25]
+        RN1_DETERM = [0.25, 0.5, 0.75]
+        RN2_DETERM = [0.75, 0.5, 0.25]
         for i in range(0, loop_count):
             j = 0
             out_bounds = True
             while out_bounds:
-                rn1 = (rn1_determ[i] if self.temp_determ else np.random.uniform())
-                rn2 = (rn2_determ[i] if self.temp_determ else np.random.uniform())
+                rn1 = (RN1_DETERM[i] if self.temp_determ else np.random.uniform())
+                rn2 = (RN2_DETERM[i] if self.temp_determ else np.random.uniform())
                 v = min(math.sqrt(-2.0 * math.log(rn1)) * math.cos(6.283185 * rn2), 2.6)
                 out_bounds = abs(v) > 2.5 and j < 100
                 j += 1
             e[i]+= v
-        a = np.array([[0.567, 0.086, -0.002],
+        A = np.array([[0.567, 0.086, -0.002],
                        [0.253, 0.504, -0.05],
                        [-0.006, -0.039, 0.244]])
 
-        b = np.array([[0.781, 0.000,  0.000],
+        B = np.array([[0.781, 0.000,  0.000],
                        [0.328, 0.637,  0.00],
                        [0.238, -0.341, 0.873]])
 
@@ -256,8 +256,8 @@ class Wgen(Aegis):
 
         for i in range(0, loop_count):
             for j in range(0, loop_count):
-                r[i] += b[i, j] * e[j]
-                rr[i] += a[i, j] * self.x[j]
+                r[i] += B[i, j] * e[j]
+                rr[i] += A[i, j] * self.x[j]
         x = r + rr
 
         """Calculate calc_temperature factors tns and tnm"""
