@@ -261,7 +261,7 @@ class Wgen(Aegis):
         x = r + rr
 
         """Calculate calc_temperature factors tns and tnm"""
-        d1 = self.txmd + self.txmw
+        d1 = self.txmd - self.txmw
         dt = math.cos(0.0172 * (dayofyear - self.dt_day))
         txm = self.txmd + self.atx * dt
         xcr1 = 0.06
