@@ -30,11 +30,14 @@ class Wgen(Aegis):
             ----------
             lat : float
                 Station latitude in degrees
-            rain_deterministic : float
+            rain_deterministic : bool, default False
                 Used to override random numbers for verification purposes
-                (default value < 0 enables random number)
-                If deterministic is used, 0 <= value <= 1 must be true
-                Deterministic value causes rain_gamma to use mean
+                A true value will enable the deterministic override and
+                False will allow random numbers to be generated (default)
+                A deterministic value of 0.25 is used when set to true.
+            markov_deterministic : bool default False
+                Used to override the random state of wet vs. dry.
+                A deterministic value of 0.177 is used when set to true
             pww_array : list(float)
                 Probability wet given wet
             pwd_array : list(float)
@@ -73,10 +76,20 @@ class Wgen(Aegis):
                 Amplitude of coefficient of variation of Tmin (wet or dry) aka "C"
             dt_day : float
                 Middle of the year when days start to cool down (typically middle of July for northern hemisphere)
+            x : Array[float]
+                Coefficients used in Fourier smoothing for temperature.
+                These are state variables remembered from one time step to the next.
             tmin : float
                 daily min calc_temperature
             tmax : float
                 daily max calc_temperature
+            temp_determ : bool, default False
+                If True, calculate temperature with determined Fourier coefficients
+                instead of relying on random numbers, which is the default. This
+                option is used for verification so that you can predict the result.
+                If this variable is set to true, then the rain variables must also
+                be deterministic. A markov_deterministic = 0.177 and
+                rain_deterministic = 0.25 are used.
 
             Methods
             -------
@@ -88,8 +101,6 @@ class Wgen(Aegis):
     def __init__(self):
         Aegis.__init__(self)
         self.lat = 40.76
-        self.rain_deterministic = -1.0
-        self.markov_deterministic = -1.0
 
         self.pww_array = [0.4113, 0.4026, 0.4585, 0.4826,
                           0.4537, 0.4714, 0.4468, 0.3464,
@@ -119,10 +130,15 @@ class Wgen(Aegis):
         self.cvtn = 0.262
         self.acvtn = -0.222
         self.dt_day = 200
+        self.x = [0.9, 1.9, -1.4]
 
         self.tmin = 0.0
         self.tmax = 0.0
-        self.temp_determ = False    # If True, calculate temperature with determined Fourier coefficients
+        self.temp_determ = False
+
+    def update(self, date=pd.Timestamp('1/1/2019')):
+        self.precipitation(date)
+        self.calc_temperature(date)
 
     def precipitation(self, date=pd.Timestamp('1/1/2019')):
         """Generate daily precipitation values from monthly data
@@ -150,10 +166,10 @@ class Wgen(Aegis):
         alpha = self.alpha_array[month]  # also known as the shape factor
         beta = self.beta_array[month]  # also known as the scale factor
 
-        if self.rain_deterministic < 0.0:
-            rain_gamma = np.random.gamma(alpha, beta)
+        if self.rain_deterministic:
+            rain_gamma = 0.25
         else:
-            rain_gamma = self.rain_deterministic      #mean = alpha * beta for gamma distribution
+            rain_gamma = np.random.gamma(alpha, beta)
 
         # Rain correction factor
         # TODO: implemennt correction factors in precip as function of "pw"
@@ -167,10 +183,10 @@ class Wgen(Aegis):
         pw = pwd / (1.0 - pww + pwd)
         prob = (pww if self.wet else pwd)
 
-        if self.markov_deterministic < 0.0:
-            rn = np.random.uniform()
+        if self.markov_deterministic:
+            rn = 0.177
         else:
-            rn = self.markov_deterministic
+            rn = np.random.uniform()
 
         # Determine wet or dry day using Markov Chain model
         if self.wet:
@@ -192,7 +208,6 @@ class Wgen(Aegis):
         use_observed_rain = False
         self.rain = (0.0 if use_observed_rain else sim_rain)
         self.rain_today = (False if self.rain < self.min_rain else True)
-        return self.rain
 
     def calc_temperature(self, date=pd.Timestamp('1/1/2019')):
         """Estimate calc_temperature based on time of year, wet day, and location
@@ -216,8 +231,8 @@ class Wgen(Aegis):
         loop_count = 3
         v = 0.0
         e = np.zeros(loop_count)
-        rn1_determ = [0.25, 0.7, 0.59]
-        rn2_determ = [0.22, 0.015, 0.42]
+        rn1_determ = [0.25, 0.5, 0.75]
+        rn2_determ = [0.75, 0.5, 0.25]
         for i in range(0, loop_count):
             j = 0
             out_bounds = True
@@ -238,12 +253,11 @@ class Wgen(Aegis):
 
         r = np.zeros(loop_count)
         rr = np.zeros(loop_count)
-        x = np.zeros(loop_count)
 
         for i in range(0, loop_count):
             for j in range(0, loop_count):
                 r[i] += b[i, j] * e[j]
-                rr[i] += a[i, j] * x[j]
+                rr[i] += a[i, j] * self.x[j]
         x = r + rr
 
         """Calculate calc_temperature factors tns and tnm"""

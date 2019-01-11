@@ -9,6 +9,7 @@ class Clock(Aegis):
         Attributes
         ----------
             start_date : pandas Timestamp
+            duration :
 
         Methods
         -------
@@ -83,6 +84,11 @@ class Clock(Aegis):
         self.current_date = pd.Timestamp(new_date, freq=self.time_step)
         if self.current_date >= self.end_date:
             self.running = False
+            self.duration = pd.Timedelta('0 days')
+        else:
+            self.duration = self.end_date - self.current_date
+
+        self.remaining_time = self.duration
 
     def set_duration(self, new_duration):
         """Change the duration and update the end_date.

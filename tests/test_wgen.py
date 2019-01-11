@@ -23,11 +23,12 @@ class TestWGEN(unittest.TestCase):
     
     def testDetermRain(self):
         """Check rain total using known chance of rain"""
-        self.w.markov_deterministic = 0.177
+        self.w.markov_deterministic = True
         realizations = 100
         rain_total = 0.0
         for r in range(0, realizations):
-            rain_total += self.w.precipitation()
+            self.w.update()
+            rain_total += self.w.rain
         rain = rain_total / realizations
         self.assertAlmostEqual(rain, 0.15, self.precision)
     
@@ -42,11 +43,10 @@ class TestWGEN(unittest.TestCase):
         #self.w.markov_deterministic = -1
         
         for i in range(0,realizations):
-            precip =  self.w.precipitation(self.c.current_date)
-            total_precip += precip
+            self.w.update(self.c.current_date)
+            total_precip += self.w.rain
             
         total_precip = (total_precip / realizations) * daysInMonth
-        
         self.assertAlmostEqual(total_precip, self.rain_obs[month], self.precision)
     
     def testMonthlyRain(self):
@@ -58,8 +58,8 @@ class TestWGEN(unittest.TestCase):
             self.c.reset()
             while self.c.running:
                 month = self.c.current_date.month - 1
-                precip = self.w.precipitation(self.c.current_date)
-                rain_array[month] += precip
+                self.w.update(self.c.current_date)
+                rain_array[month] += self.w.rain
                 self.c.advance()
         
         for i in range(0, 12):
@@ -70,15 +70,14 @@ class TestWGEN(unittest.TestCase):
 
     def testMaxTemp(self):
         """Test max calc_temperature for 1 day"""
-        realizations = 100
-        precision = 0
-        avg_day_temp = 0.0
-        self.c.set_current_date('1/1/2019')
-        month = self.c.current_date.month - 1
         self.w.temp_determ = True
-        self.w.markov_deterministic = 0.15
-        self.w.calc_temperature(self.c.current_date)
-
+        self.w.rain_deterministic = True
+        self.w.markov_deterministic = True
+        monthly_temps = []
+        for month in range(1,13):
+            self.c.set_current_date(str(month) + '/1/2019')
+            self.w.update(self.c.current_date)
+            monthly_temps.append(self.w.tavg)
         self.assertAlmostEqual(self.w.tavg, 36.53, self.precision)
 
 if __name__ == '__main__':
