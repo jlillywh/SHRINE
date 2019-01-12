@@ -3,6 +3,8 @@ from catchment import Catchment
 from junction import Junction
 from error import NodeNotFound
 from error import NodeAlreadyExists
+import networkx as nx
+import matplotlib.pyplot as plt
 
 class Watershed(Aegis):
     """ For now, we are just going to build a simple watershed that assumes
@@ -28,6 +30,8 @@ class Watershed(Aegis):
         Attributes
         ----------
             junctions : Array
+            network : networkx.DiGraph
+                Shows the
 
         Methods
         -------
