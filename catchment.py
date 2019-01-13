@@ -27,7 +27,7 @@ class Catchment(Aegis):
         updates the outflow attribute
     """
 
-    def __init__(self, name="catchment1", area = 100.0):
+    def __init__(self, name="catchment1", area=100.0):
         """
 
         Parameters
@@ -40,6 +40,7 @@ class Catchment(Aegis):
         """
 
         Aegis.__init__(self)
+        self.name = name
         self.area = area
         self.runoff_method = Awbm()
         self.outflow = 0.0

@@ -31,7 +31,8 @@ class Watershed(Aegis):
         ----------
             junctions : Array
             network : networkx.DiGraph
-                Shows the
+                Represents the flow network of catchments and junctions using
+                a bi-directional graph.
 
         Methods
         -------
@@ -48,6 +49,8 @@ class Watershed(Aegis):
         Aegis.__init__(self)
         self.outflow_node = Junction('J1')
         self.junctions = [self.outflow_node]
+        self.network = nx.DiGraph()
+        self.network.add_node(self.outflow_node.name)
 
     def update(self, precip, et, junction):
         for i in junction.inflows:
@@ -74,6 +77,7 @@ class Watershed(Aegis):
                 raise NodeAlreadyExists
             else:
                 self.junctions.append(Junction(junct_name))
+                self.network.add_node(junct_name)
         except NodeAlreadyExists:
             print("Node already exists! Cannot be added.")
     
@@ -92,8 +96,12 @@ class Watershed(Aegis):
             junction = self.get_junction(junct_name)
             if type(inflow_node) is Catchment:
                 junction.add_inflow(inflow_node)
+                self.network.add_node(inflow_node.name)
+                self.network.add_edge(inflow_node.name, junct_name)
             elif type(inflow_node) is str:
                 junction.add_inflow(self.get_junction(inflow_node))
+                self.network.add_node(inflow_node)
+                self.network.add_edge(inflow_node, junct_name)
         except NodeNotFound:
             print("Junction does not exist!")
         
@@ -145,3 +153,8 @@ class Watershed(Aegis):
             else:
                 continue
         return found
+    
+    def draw(self):
+        plt.subplot()
+        nx.draw(self.network, with_labels=True, font_weight='bold')
+        plt.show()

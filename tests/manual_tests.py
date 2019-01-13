@@ -6,3 +6,5 @@ s.run()
 
 s.plot_ts()
 
+s.draw(s.w)
+

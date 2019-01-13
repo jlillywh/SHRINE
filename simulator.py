@@ -13,10 +13,10 @@ class Simulator(Aegis):
 
 		self.c = Clock()
 		self.w = Watershed()
-		self.w.add_inflow(Catchment(), 'J1')
+		self.w.add_inflow(Catchment('C1'), 'J1')
 		self.w.add_junction('J5')
 		self.w.add_inflow('J5', 'J1')
-		self.w.add_inflow(Catchment(), 'J5')
+		self.w.add_inflow(Catchment('C2'), 'J5')
 		self.r = Wgen()
 		self.ts = pd.Series(0, index=pd.date_range(self.c.start_date, periods=365, freq='D'))
 
@@ -37,3 +37,6 @@ class Simulator(Aegis):
 		df.plot()
 
 		plt.show()
+		
+	def draw(self, object):
+		object.draw()
