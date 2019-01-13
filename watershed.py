@@ -30,6 +30,9 @@ class Watershed(Aegis):
         Attributes
         ----------
             junctions : Array
+            outflow_node : Junction
+                This is the final junction in the model that discharges from
+                all other nodes of the watershed.
             network : networkx.DiGraph
                 Represents the flow network of catchments and junctions using
                 a bi-directional graph.
