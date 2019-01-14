@@ -7,67 +7,87 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 class Watershed(Aegis):
-    """ For now, we are just going to build a simple watershed that assumes
-        a basic network configuration because we are not ready to tackle
-        flow networks. This water assumes the following setup:
-                C1          C2
-                 |           |
-                 \           /
-                  \         /
-                   \       /
-                    \     /
-                     \   /
-                      \ /
-                      J1
-                       |
-          C3__         |
-              \_______J2
-
-        Where C1, C2, and C3 are inflows that contribute outflow discharge
-        to the next downstream junction (J1 and J2). J2 is the outflow from
-        the watershed.
+    """ This class is used to create a watershed consisting of
+        catchments and junctions.
+        
+        Precipitation and ET are passed as input to the catchments globally
+        from the watershed. Each catchment in the watershed processes the
+        excess rainfall into estimated runoff, which is passed to the
+        junction it is connected to. From there, junctions add up all
+        inflows and pass their outflow to the next junction it is
+        connected to. This is done recursively starting from the outflow node
+        and working upstream from there.
+        
+        You can add catchments and junctions then connect them together using
+        the built-in methods on the watershed object.
 
         Attributes
         ----------
-            junctions : Array
+            junctions : Array(Junction)
             outflow_node : Junction
                 This is the final junction in the model that discharges from
                 all other nodes of the watershed.
+            outflow : float
+                Total outflow from the outlet_node. This property is updated
+                when the update() method is called.
             network : networkx.DiGraph
                 Represents the flow network of catchments and junctions using
                 a bi-directional graph.
 
         Methods
         -------
-            update(precipitation, et)
-            outlfow()
+            update(precipitation, et, outlet_node)
+                Calculates runoff from all catchments and routes it down
+                through the flow network
+            outflow (@property)
+                This is the resulting discharge from the watershed.
             add_junction(junct_name)
             add_node(node, junction)
             set_outflow_node
                 Assign the junction within the watershed that
                 is the outflow node.
+                
+            draw()
+                This method will show a DiGraph from the networkx library that
+                represents the schematic of the watershed and how catchments
+                and junctions are connected.
     """
 
     def __init__(self):
         Aegis.__init__(self)
         self.outflow_node = Junction('J1')
+        self.outflow = 0.0
         self.junctions = [self.outflow_node]
         self.network = nx.DiGraph()
         self.network.add_node(self.outflow_node.name)
 
     def update(self, precip, et, junction):
+        """Calculates runoff from all catchments and routes it down
+                through the flow network until the junction specified.
+                
+                For a typical update, the junction would be the outlet
+                of the watershed. The flow rate is stored as a list of
+                inflows within each junction.
+                
+            Parameters
+            ----------
+                precip : float
+                et : float
+                junction : Junction
+        """
+        
         for i in junction.inflows:
             if type(i) is Catchment:
                 i.update_runoff(precip, et)
             elif type(i) is Junction:
                 self.update(precip, et, i)
-    
-    @property
-    def outflow(self):
-        return self.outflow_node.outflow
+        self.outflow = self.outflow_node.outflow
     
     def add_junction(self, junct_name):
         """Adds a new junction to the watershed.
+            
+            Build a new junction object by name. This junction can be
+            added to the flow network later.
         
             Parameters
             ----------
@@ -82,7 +102,7 @@ class Watershed(Aegis):
                 self.junctions.append(Junction(junct_name))
                 self.network.add_node(junct_name)
         except NodeAlreadyExists:
-            print("Node already exists! Cannot be added.")
+            print("Node " + junct_name + " already exists! Cannot be added.")
     
     def add_inflow(self, inflow_node, junct_name):
         """Adds a catchment or junction to a junction in the watershed.
@@ -106,7 +126,7 @@ class Watershed(Aegis):
                 self.network.add_node(inflow_node)
                 self.network.add_edge(inflow_node, junct_name)
         except NodeNotFound:
-            print("Junction does not exist!")
+            print("Junction " + junct_name + " does not exist!")
         
         
     def set_outflow_node(self, junct_name):
@@ -117,7 +137,7 @@ class Watershed(Aegis):
             else:
                 self.outflow_node = outflow_junction
         except NodeNotFound:
-            print("Cannot set because this junction does not exist!")
+            print("Cannot set because this junction " + junct_name + " does not exist!")
     
     def get_junction(self, junct_name):
         """Find the junction that matches the name provided.
@@ -135,7 +155,7 @@ class Watershed(Aegis):
             if not found:
                 raise NodeNotFound
         except NodeNotFound:
-            print("This junction is not found!")
+            print("Junction " + junct_name + " is not found!")
 
     def junction_exists(self, junct_name):
         """Find if the junction matches the name provided.
