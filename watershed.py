@@ -24,6 +24,7 @@ class Watershed(Aegis):
         Attributes
         ----------
             junctions : Array(Junction)
+            catchments : Array(Catchments)
             outflow_node : Junction
                 This is the final junction in the model that discharges from
                 all other nodes of the watershed.
@@ -60,6 +61,8 @@ class Watershed(Aegis):
         self.junctions = [self.outflow_node]
         self.network = nx.DiGraph()
         self.network.add_node(self.outflow_node.name)
+        self.catchments = []
+        self.add_catchment('C1', self.outflow_node.name)
 
     def update(self, precip, et, junction):
         """Calculates runoff from all catchments and routes it down
@@ -83,7 +86,7 @@ class Watershed(Aegis):
                 self.update(precip, et, i)
         self.outflow = self.outflow_node.outflow
     
-    def add_junction(self, junct_name):
+    def add_junction(self, junct_name, receiving_junction):
         """Adds a new junction to the watershed.
             
             Build a new junction object by name. This junction can be
@@ -91,47 +94,72 @@ class Watershed(Aegis):
         
             Parameters
             ----------
-                junct_name : str
-                    Name of the new junction
+            junct_name : str
+                Name of the new junction
+            receiving_junction : str
+                Name of the receiving junction
         """
         
         try:
-            if self.junction_exists(junct_name):
+            outlet_node = self.get_node(receiving_junction, self.junctions)
+            if self.node_exists(junct_name, self.junctions):
                 raise NodeAlreadyExists
             else:
-                self.junctions.append(Junction(junct_name))
+                j = Junction(junct_name)
+                outlet_node.add_inflow(j)
+                self.junctions.append(j)
                 self.network.add_node(junct_name)
+                self.network.add_edge(junct_name, receiving_junction)
         except NodeAlreadyExists:
             print("Node " + junct_name + " already exists! Cannot be added.")
-    
-    def add_inflow(self, inflow_node, junct_name):
-        """Adds a catchment or junction to a junction in the watershed.
-        
+
+    def add_catchment(self, catchment_name, receiving_junction):
+        """Adds a new catchment to the watershed.
+
+            Build a new junction object by name. This junction can be
+            added to the flow network later.
+
             Parameters
             ----------
-                junct_name : str
-                    The name of the junction that accepts inflow
-                inflow_node : Catchment or Junction
-                    The catchment or junction that discharges
-                    into the junction
+            catchment_name : str
+                Name of the new catchment
+            receiving_junction : str
+                Name of the receiving junction
         """
+    
         try:
-            junction = self.get_junction(junct_name)
-            if type(inflow_node) is Catchment:
-                junction.add_inflow(inflow_node)
-                self.network.add_node(inflow_node.name)
-                self.network.add_edge(inflow_node.name, junct_name)
-            elif type(inflow_node) is str:
-                junction.add_inflow(self.get_junction(inflow_node))
-                self.network.add_node(inflow_node)
-                self.network.add_edge(inflow_node, junct_name)
-        except NodeNotFound:
-            print("Junction " + junct_name + " does not exist!")
+            outlet_node = self.get_node(receiving_junction, self.junctions)
+            if self.node_exists(catchment_name, self.catchments):
+                raise NodeAlreadyExists
+            else:
+                c = Catchment(catchment_name)
+                outlet_node.add_inflow(c)
+                self.catchments.append(c)
+                self.network.add_node(catchment_name)
+                self.network.add_edge(catchment_name, receiving_junction)
+
+        except NodeAlreadyExists:
+            print("Node " + catchment_name + " already exists! Cannot be added.")
+
+    # TODO add ability to move a node if an existing node is added.
         
         
     def set_outflow_node(self, junct_name):
+        """Sets the outflow node for the watershed.
+        
+            This node must be an existing junction object. If not, then an error
+            will be raised.
+            
+            Parameters
+            ----------
+            junct_name : str
+                The name of the junction that you want to assign to be
+                the outflow node for the watershed.
+                
+        """
+        
         try:
-            outflow_junction = self.get_junction(junct_name)
+            outflow_junction = self.get_node(junct_name, self.junctions)
             if outflow_junction == None:
                 raise NodeNotFound
             else:
@@ -139,42 +167,61 @@ class Watershed(Aegis):
         except NodeNotFound:
             print("Cannot set because this junction " + junct_name + " does not exist!")
     
-    def get_junction(self, junct_name):
+    def get_node(self, node_name, node_list):
         """Find the junction that matches the name provided.
         Return the junction node
         
-        """
-        found = False
-        try:
-            for j in self.junctions:
-                if j.name == junct_name:
-                    found = True
-                    return j
-                else:
-                    continue
-            if not found:
-                raise NodeNotFound
-        except NodeNotFound:
-            print("Junction " + junct_name + " is not found!")
+        Parameters
+        ----------
+        node_name : str
+            The name of the node we are checking for existence
+        node_list : list(Aegis objects)
+        
+        Returns
+        -------
+        node : Aegis object
+            Return the node if found; None if not found
 
-    def junction_exists(self, junct_name):
-        """Find if the junction matches the name provided.
+        """
+        found_node = None
+        try:
+            found = self.node_exists(node_name, node_list)
+            if len(node_list) > 0 and found:
+                for node in node_list:
+                    if node.name == node_name:
+                        found = True
+                        found_node = node
+                        break
+                    else:
+                        continue
+            if not found:
+                return None
+                raise NodeNotFound
+            else:
+                return found_node
+        except NodeNotFound:
+            print("Junction " + node_name + " is not found!")
+
+    def node_exists(self, node_name, node_list):
+        """Find if the node matches the name provided.
             Parameters
             ----------
-                junct_name : str
-                    The name of the junction we are checking for existence
+                node_name : str
+                    The name of the node we are checking for existence
+                node_list : list(Aegis objects)
             Returns
             -------
                 found : bool
-                    True if the junction is found; False if not
+                    True if the node is found; False if not
 
         """
         found = False
-        for j in self.junctions:
-            if j.name == junct_name:
-                found = True
-            else:
-                continue
+        if len(node_list) > 0:
+            for node in node_list:
+                if node.name == node_name:
+                    found = True
+                else:
+                    continue
         return found
     
     def draw(self):

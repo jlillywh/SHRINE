@@ -30,13 +30,20 @@ class Catchment(Aegis):
     def __init__(self, name="catchment1", area=100.0):
         """
 
-        Parameters
+        Attributes
         ----------
-            area : float
-                Area of the catchment in km2
-            runoff_method : Aegis
-            outflow : float
-                Runoff outflow from the catchment in terms of m3/d
+        name : str
+            The name of the catchment must start with 'C' or 'c'
+        area : float
+            Area of the catchment in km2
+        runoff_method : Aegis
+        outflow : float
+            Runoff outflow from the catchment in terms of m3/d
+            
+        Methods
+        -------
+        update_runoff(precip, et)
+        
         """
 
         Aegis.__init__(self)

@@ -2,6 +2,30 @@ from aegis import Aegis
 
 class Junction(Aegis):
     def __init__(self, name="J1"):
+        """A junction combines 1 or more inflows to output the sum
+        
+            This is often used for adding up multiple inflows.
+            
+            Attributes
+            ----------
+            name : str
+                The name must start with the character 'J' or 'j'
+                
+            inflows : list
+                list of inflow objects, which can be 1 or more Catchment
+                or other Junction objects.
+                
+            Methods
+            -------
+            add_inflow(node)
+                Appends an inflow node to the list of inflows for this
+                Junction
+                
+            outflow()
+                Calculates the total outflow from the Junction, which
+                is the sum of all inflows.
+                
+        """
         Aegis.__init__(self)
 
         self.inflows = []
