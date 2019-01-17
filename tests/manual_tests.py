@@ -1,10 +1,5 @@
-from simulator import Simulator
+from watershed import Watershed
 
-s = Simulator()
-
-s.run()
-
-s.plot_ts()
-
-s.draw(s.w)
+w = Watershed()
+w.add_junction('J3', 'J2')
 

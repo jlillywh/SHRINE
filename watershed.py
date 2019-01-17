@@ -104,6 +104,8 @@ class Watershed(Aegis):
             outlet_node = self.get_node(receiving_junction, self.junctions)
             if self.node_exists(junct_name, self.junctions):
                 raise NodeAlreadyExists
+            elif not self.node_exists(receiving_junction, self.junctions):
+                raise NodeNotFound
             else:
                 j = Junction(junct_name)
                 outlet_node.add_inflow(j)
@@ -112,7 +114,9 @@ class Watershed(Aegis):
                 self.network.add_edge(junct_name, receiving_junction)
         except NodeAlreadyExists:
             print("Node " + junct_name + " already exists! Cannot be added.")
-
+        except NodeNotFound:
+            print("Node " + junct_name + " not found.")
+            
     def add_catchment(self, catchment_name, receiving_junction):
         """Adds a new catchment to the watershed.
 
@@ -131,6 +135,8 @@ class Watershed(Aegis):
             outlet_node = self.get_node(receiving_junction, self.junctions)
             if self.node_exists(catchment_name, self.catchments):
                 raise NodeAlreadyExists
+            elif not self.node_exists(receiving_junction, self.junctions):
+                raise NodeNotFound
             else:
                 c = Catchment(catchment_name)
                 outlet_node.add_inflow(c)
@@ -195,7 +201,6 @@ class Watershed(Aegis):
                     else:
                         continue
             if not found:
-                return None
                 raise NodeNotFound
             else:
                 return found_node
