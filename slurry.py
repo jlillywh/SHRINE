@@ -5,13 +5,13 @@ from constants import U
 
 class Slurry:
     def __init__(self):
-        """Estimate the water and solid flow components of
-            slurry flow.
+        """Estimate the water and solid demand components of
+            slurry demand.
             
             This is often used for mining applications where
             the mine produces a slurry from the mining process
             and flows into a tailings facility. At this point,
-            the solids in the flow settle into the pond and
+            the solids in the demand settle into the pond and
             cleaner water comes to the top.
             
             Attributes
@@ -50,7 +50,7 @@ class Slurry:
         self.solids_sg = 2.8
         
     def update(self):
-        """Calculate the flow of slurry along with its consituents.
+        """Calculate the demand of slurry along with its consituents.
         """
         
         self.feed_moisture.update()

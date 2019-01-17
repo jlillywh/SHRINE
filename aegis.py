@@ -35,6 +35,7 @@ class Aegis:
         """
 
         self.name = self.__class__.__name__
+        self.class_name = self.name
         self.id = next(self._ids)
         self.description = "An object of " + str(self.name) + " type."
         self.created_on = datetime.today()

@@ -32,18 +32,20 @@ class Watershed(Aegis):
                 Total outflow from the outlet_node. This property is updated
                 when the update() method is called.
             network : networkx.DiGraph
-                Represents the flow network of catchments and junctions using
+                Represents the demand network of catchments and junctions using
                 a bi-directional graph.
 
         Methods
         -------
             update(precipitation, et, outlet_node)
                 Calculates runoff from all catchments and routes it down
-                through the flow network
+                through the demand network
             outflow (@property)
                 This is the resulting discharge from the watershed.
-            add_junction(junct_name)
-            add_node(node, junction)
+            add_junction(junct_name, receiving_junction)
+            add_catchment(catchment_name, receiving_junction)
+            move_node(from_node, to_node)
+            delete_node(node_name)
             set_outflow_node
                 Assign the junction within the watershed that
                 is the outflow node.
@@ -56,20 +58,20 @@ class Watershed(Aegis):
 
     def __init__(self):
         Aegis.__init__(self)
+        self.network = nx.DiGraph()
         self.outflow_node = Junction('J1')
         self.outflow = 0.0
+        self.network.add_node(self.outflow_node.name, type=self.outflow_node.class_name, flow=self.outflow)
         self.junctions = [self.outflow_node]
-        self.network = nx.DiGraph()
-        self.network.add_node(self.outflow_node.name)
         self.catchments = []
         self.add_catchment('C1', self.outflow_node.name)
 
     def update(self, precip, et, junction):
         """Calculates runoff from all catchments and routes it down
-                through the flow network until the junction specified.
+                through the demand network until the junction specified.
                 
                 For a typical update, the junction would be the outlet
-                of the watershed. The flow rate is stored as a list of
+                of the watershed. The demand rate is stored as a list of
                 inflows within each junction.
                 
             Parameters
@@ -90,7 +92,7 @@ class Watershed(Aegis):
         """Adds a new junction to the watershed.
             
             Build a new junction object by name. This junction can be
-            added to the flow network later.
+            added to the demand network later.
         
             Parameters
             ----------
@@ -121,7 +123,7 @@ class Watershed(Aegis):
         """Adds a new catchment to the watershed.
 
             Build a new junction object by name. This junction can be
-            added to the flow network later.
+            added to the demand network later.
 
             Parameters
             ----------
@@ -141,14 +143,29 @@ class Watershed(Aegis):
                 c = Catchment(catchment_name)
                 outlet_node.add_inflow(c)
                 self.catchments.append(c)
-                self.network.add_node(catchment_name)
+                self.network.add_node(catchment_name, type=c.class_name)
                 self.network.add_edge(catchment_name, receiving_junction)
 
         except NodeAlreadyExists:
             print("Node " + catchment_name + " already exists! Cannot be added.")
 
     # TODO add ability to move a node if an existing node is added.
+    def delete_node(self, node_name):
+        # TODO add a method to determine what junction a catchment is connected to
         
+        # Iterate over the list of nodes
+        sub = nx.bfs_tree(self.network, source=node_name, reverse=True)
+        for i in list(sub.nodes):
+            self.junctions.remove(i)
+            self.network.remove_node(i)
+            
+    def get_connected_node(self, node_name):
+        self.network.neighbors(self.network)
+    def move_node(self, from_node, to_node):
+        """Move existing node to another existing node
+        """
+        
+    
         
     def set_outflow_node(self, junct_name):
         """Sets the outflow node for the watershed.
@@ -231,5 +248,5 @@ class Watershed(Aegis):
     
     def draw(self):
         plt.subplot()
-        nx.draw(self.network, with_labels=True, font_weight='bold')
+        nx.draw(self.network, with_labels=True)
         plt.show()

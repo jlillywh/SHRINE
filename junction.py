@@ -1,4 +1,5 @@
 from aegis import Aegis
+from catchment import  Catchment
 
 class Junction(Aegis):
     def __init__(self, name="J1"):
@@ -20,6 +21,8 @@ class Junction(Aegis):
             add_inflow(node)
                 Appends an inflow node to the list of inflows for this
                 Junction
+            delete_inflow(node)
+                Remove item from list of inflows recursively
                 
             outflow()
                 Calculates the total outflow from the Junction, which
@@ -34,6 +37,13 @@ class Junction(Aegis):
     def add_inflow(self, node):
         """ Add an Aegis node to the junction"""
         self.inflows.append(node)
+        
+    def delete_inflow(self, node):
+        """Remove an existing inflow from the junction"""
+        if type(node) is Catchment:
+            self.inflows.remove(node)
+        elif type(node) is Junction:
+            self.delete_inflow(node)
 
     @property
     def outflow(self):
