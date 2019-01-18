@@ -19,9 +19,9 @@ n.add_node('c3', type='catchment')
 n.add_node('c4', type='catchment')
 n.add_node('c5', type='catchment')
 n.add_node('c6', type='catchment')
-n.add_node('j1', type='catchment')
-n.add_node('j2', type='catchment')
-n.add_node('j3', type='catchment')
+n.add_node('j1')
+n.add_node('j2')
+n.add_node('j3')
 n.add_edge('c1', 'j1', runoff=1.0)
 n.add_edge('c2', 'j1', runoff=1.0)
 n.add_edge('j2', 'j1')
@@ -32,7 +32,7 @@ n.add_edge('c5', 'j3', runoff=1.0)
 n.add_edge('c6', 'j3', runoff=1.0)
 
 n.edges['c3', 'j2']['runoff'] = 2.0
-
+print(n['c3'])
 flow_value, flow_dict = nx.maximum_flow(n, 'A', 'j1', capacity='runoff')
 print(flow_value)
 

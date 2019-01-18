@@ -19,7 +19,7 @@ class TestWatershed(unittest.TestCase):
         et = 0.25
 
         for i in range(0,10):
-            self.w.update(precip, et, self.w.outflow_node)
+            self.w.update(precip, et, self.w.sink_node)
 
         self.assertAlmostEqual(self.w.outflow, 19938.4, self.precision)
 
