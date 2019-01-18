@@ -60,6 +60,7 @@ class Watershed(Aegis):
         Aegis.__init__(self)
         self.network = nx.DiGraph()
         self.source_node = 'A'
+        self.network.add_node(self.source_node, type='Atmosphere')
         self.sink_node = Junction('J1')
         self.outflow = 0.0
         self.network.add_node(self.sink_node.name, type='Junction')
@@ -125,6 +126,7 @@ class Watershed(Aegis):
 
         self.network.add_node(catchment_name, type=Catchment(catchment_name))
         self.network.add_edge(catchment_name, receiving_junction, runoff=99.0)
+        self.network.add_node(self.source_node, type=self.source_node)
         self.network.add_edge(self.source_node, catchment_name)
 
     def delete_node(self, node_name):
