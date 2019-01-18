@@ -93,13 +93,13 @@ class Awbm:
         """Calculates outflow rate given precip and effective ET
 
             Runoff is the process of routing overflows from the buckets
-            by splitting the flow into a surface store and a baseflow
+            by splitting the demand into a surface store and a baseflow
             store. The split is a function of a constant supplied by the
             user. The _quantity accumulated in both of these stores is
-            subsequently removed using a recession flow that is also a
-            function of constants supplied by the user. Recession flow is
+            subsequently removed using a recession demand that is also a
+            function of constants supplied by the user. Recession demand is
             added together and becomes the resulting outflow rate from
-            the awbm object. The flow rate is in terms of depth.
+            the awbm object. The demand rate is in terms of depth.
 
             Parameters
             ----------

@@ -1,10 +1,12 @@
 import unittest
 from watershed import Watershed
+from catchment import Catchment
 
 class TestWatershed(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
         self.w = Watershed()
+        self.w.add_node(Catchment('C1'), 'J1')
         self.precision = 1
 
     def tearDown(self):
@@ -17,9 +19,9 @@ class TestWatershed(unittest.TestCase):
         et = 0.25
 
         for i in range(0,10):
-            self.w.update(precip, et)
+            self.w.update(precip, et, self.w.outflow_node)
 
-        self.assertAlmostEqual(self.w.outflow, 43966.9, self.precision)
+        self.assertAlmostEqual(self.w.outflow, 19938.4, self.precision)
 
 
 if __name__ == '__main__':
