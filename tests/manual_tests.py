@@ -1,11 +1,27 @@
 from watershed import Watershed
+from catchment import Catchment
+
+import networkx as nx
 
 w = Watershed()
-w.add_catchment('c2', 'j1')
-w.add_junction('j2', 'j1')
+w.add_catchment('c2', 'J1')
+w.add_junction('j2', 'J1')
 w.add_catchment('c3', 'j2')
 w.add_catchment('c4', 'j2')
 w.add_junction('j3', 'j2')
+w.add_catchment('c5', 'j3')
+w.add_catchment('c6', 'j3')
+
+for i in w.network.nodes:
+    runoff = 0.0
+    #print("node is type " + str(w.network.nodes[i]['type']))
+    if w.network.nodes[i]['type'] == Catchment:
+        
+        w.network.nodes[i]['type'].update_runoff(10.0, 1.0)
+        runoff = w.network.nodes[i]['type'].outflow
+    print(runoff)
+
+w.draw()
 
 #n.edges['c3', 'j2']['runoff'] = 2.0
 #print(n['c3'])

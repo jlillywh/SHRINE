@@ -82,6 +82,12 @@ class Watershed(Aegis):
                 et : float
                 junction : Junction
         """
+        
+        for node in self.network.nodes:
+            if self.network.nodes[node]['type'] == Catchment:
+                self.network.nodes[node]['type'].update_runoff(precip, et)
+                runoff = self.network.nodes[node]['type'].outflow
+                self.network.edges[node]
 
         # Calculate runoff then assign to edge one at a time
         runoff_c1 = self.network.nodes['C1']['type'].outflow
@@ -108,6 +114,7 @@ class Watershed(Aegis):
             receiving_junction : str
                 Name of the receiving junction
         """
+        self.network.add_node(junct_name, type='Junction')
         self.network.add_edge(junct_name, receiving_junction)
             
     def add_catchment(self, catchment_name, receiving_junction):
