@@ -90,12 +90,12 @@ class Watershed(Aegis):
                 self.network.edges[node]
 
         # Calculate runoff then assign to edge one at a time
-        runoff_c1 = self.network.nodes['C1']['type'].outflow
-        self.network.edges['C1', 'J1']['runoff'] = runoff_c1
+        #runoff_c1 = self.network.nodes['C1']['type'].outflow
+        #self.network.edges['C1', 'J1']['runoff'] = runoff_c1
 
         # or do it all at once using an attribute hash
-        runoff_hash = {('C1', 'J1'): runoff_c1, ('A', 'C1'): 2.6}
-        nx.set_edge_attributes(self.network, runoff_hash, 'runoff')
+        #runoff_hash = {('C1', 'J1'): runoff_c1, ('A', 'C1'): 2.6}
+        #nx.set_edge_attributes(self.network, runoff_hash, 'runoff')
 
         # Use the max_flow algorithm to calculate the total flow from the watershed
         flow_value, flow_dict = nx.maximum_flow(self.network, self.source_node, self.sink_node, capacity='runoff')
@@ -175,6 +175,8 @@ class Watershed(Aegis):
         return self.network.nodes[node_name]
 
     def draw(self):
+        network_copy = self.network.copy()
+        network_copy.remove_node(self.source_node)
         plt.subplot()
-        nx.draw(self.network, with_labels=True)
+        nx.draw(network_copy, with_labels=True)
         plt.show()
