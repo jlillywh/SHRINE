@@ -12,8 +12,8 @@ w.add_junction('j3', 'j2')
 w.add_catchment('c5', 'j3')
 w.add_catchment('c6', 'j3')
 
+runoff = 0.0
 for i in w.network.nodes:
-    runoff = 0.0
     #print("node is type " + str(w.network.nodes[i]['type']))
     if w.network.nodes[i]['type'] == Catchment:
         
@@ -26,8 +26,8 @@ w.draw()
 #n.edges['c3', 'j2']['runoff'] = 2.0
 #print(n['c3'])
 
-#flow_value, flow_dict = nx.maximum_flow(n, 'A', 'j1', capacity='runoff')
-#print(flow_value)
+flow_value, flow_dict = nx.maximum_flow(w.network, 'A', 'J1', capacity='runoff')
+print(flow_value)
 
 #draw(n)
 #walk = nx.bfs_tree(n, source='j1', reverse=True)
