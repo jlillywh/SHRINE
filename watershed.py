@@ -68,7 +68,7 @@ class Watershed(Aegis):
         self.network.add_edge(self.source_node, 'C1')
         self.network.add_edge('C1', 'J1', runoff=99.0)
 
-    def update(self, precip, et, junction):
+    def update(self, precip, et):
         """Calculates runoff from all catchments and routes it down
                 through the demand network until the junction specified.
                 
@@ -82,12 +82,12 @@ class Watershed(Aegis):
                 et : float
                 junction : Junction
         """
-        
         for node in self.network.nodes:
-            if self.network.nodes[node]['type'] == Catchment:
-                self.network.nodes[node]['type'].update_runoff(precip, et)
-                runoff = self.network.nodes[node]['type'].outflow
-                self.network.edges[node]
+            if type(self.network.nodes[node]['type']) == Catchment:
+                catchment = self.network.nodes[node]['type']
+                catchment.update_runoff(precip, et)
+                scr = list(self.network.successors(node))[0]
+                self.network.edges[node, scr]['runoff'] = catchment.outflow
 
         # Calculate runoff then assign to edge one at a time
         #runoff_c1 = self.network.nodes['C1']['type'].outflow
@@ -98,7 +98,7 @@ class Watershed(Aegis):
         #nx.set_edge_attributes(self.network, runoff_hash, 'runoff')
 
         # Use the max_flow algorithm to calculate the total flow from the watershed
-        flow_value, flow_dict = nx.maximum_flow(self.network, self.source_node, self.sink_node, capacity='runoff')
+        flow_value, flow_dict = nx.maximum_flow(self.network, self.source_node, self.sink_node.name, capacity='runoff')
         self.outflow = flow_value
     
     def add_junction(self, junct_name, receiving_junction):
