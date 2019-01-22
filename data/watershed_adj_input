@@ -1,0 +1,9 @@
+a c1 c2 c3 c4 c5 c6
+c1 J1
+c2 J1
+c3 n2
+c4 n2
+c5 n3
+c6 n3
+n3 n2
+n2 J1
