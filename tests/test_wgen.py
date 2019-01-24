@@ -22,16 +22,15 @@ class TestWGEN(unittest.TestCase):
         """Destroy the object after running tests"""
         del self.w
     
-    def testDetermRain(self):
+    def test1DayRain(self):
         """Check rain total using known chance of rain"""
-        self.w.markov_deterministic = True
         realizations = 100
         rain_total = 0.0
         for r in range(0, realizations):
             self.w.update()
             rain_total += self.w.rain
         rain = rain_total / realizations
-        self.assertAlmostEqual(rain, 0.15, self.precision)
+        self.assertAlmostEqual(rain, 0.0488, self.precision)
     
     def testMonthlyRain(self):
         """Check cumulative rain avg"""
@@ -59,6 +58,8 @@ class TestWGEN(unittest.TestCase):
         
         # Below are daily average temps from deterministic GoldSim model
         # Each value taken from the 1st day of each month starting with Jan
+        observed_tavg = [28.99, 33.75, 41.5, 55.37, 65.06, 73.66,
+                         78.14, 76.57, 68.98, 58.03, 44.17, 33.45]
         goldsim_tavg = [37.43, 19.04, 23.47, 33.7, 47.97, 63.43,
                         73.54, 74.41, 65.17, 50.55, 35.4, 24.74]
         self.w.temp_determ = True
