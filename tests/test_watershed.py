@@ -6,8 +6,8 @@ class TestWatershed(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
         self.w = Watershed()
-        self.w.add_node(Catchment('C1'), 'J1')
-        self.precision = 1
+        #self.w.add_node(Catchment('C1'), 'J1')
+        self.precision = 2
 
     def tearDown(self):
         """Destroy the object after running tests"""
@@ -19,9 +19,9 @@ class TestWatershed(unittest.TestCase):
         et = 0.25
 
         for i in range(0,10):
-            self.w.update(precip, et, self.w.sink_node)
+            self.w.update(precip, et)
 
-        self.assertAlmostEqual(self.w.outflow, 19938.4, self.precision)
+        self.assertAlmostEqual(self.w.outflow, 63905.34, self.precision)
 
 
 if __name__ == '__main__':
