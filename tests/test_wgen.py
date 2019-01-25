@@ -72,7 +72,6 @@ class TestWGEN(unittest.TestCase):
                 monthly_temps.append(self.w.tavg)
             self.c.advance()
         
-        #self.assertSequenceEqual(monthly_temps, goldsim_tavg)
         np.testing.assert_almost_equal(goldsim_tavg, monthly_temps, decimal=1, err_msg='test', verbose=True)
 
 if __name__ == '__main__':
