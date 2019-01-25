@@ -230,37 +230,7 @@ class Wgen(Aegis):
 
         dayofyear = date.dayofyear
         """Calculate a one harmonic series"""
-        loop_count = 3
-        v = 0.0
-        e = np.zeros(loop_count)
-        rn1_determ = [0.25, 0.5, 0.75]
-        rn2_determ = [0.75, 0.5, 0.25]
-        for i in range(0, loop_count):
-            j = 0
-            out_bounds = True
-            while out_bounds:
-                rn1 = (rn1_determ[i] if self.temp_determ else np.random.uniform())
-                rn2 = (rn2_determ[i] if self.temp_determ else np.random.uniform())
-                v = min(math.sqrt(-2.0 * math.log(rn1)) * math.cos(6.283185 * rn2), 2.6)
-                out_bounds = abs(v) > 2.5 and j < 100
-                j += 1
-            e[i]+= v
-        a = np.array([[0.567, 0.086, -0.002],
-                       [0.253, 0.504, -0.05],
-                       [-0.006, -0.039, 0.244]])
-
-        b = np.array([[0.781, 0.000,  0.000],
-                       [0.328, 0.637,  0.00],
-                       [0.238, -0.341, 0.873]])
-
-        r = np.zeros(loop_count)
-        rr = np.zeros(loop_count)
-
-        for i in range(0, loop_count):
-            for j in range(0, loop_count):
-                r[i] += b[i, j] * e[j]
-                rr[i] += a[i, j] * self.x[j]
-        x = r + rr
+        self.x = self.harmonic()
 
         """Calculate calc_temperature factors tns and tnm"""
         d1 = self.txmd - self.txmw
@@ -287,8 +257,8 @@ class Wgen(Aegis):
         tns = tnm * xcr2
 
         """Generate calc_temperature min/max values"""
-        tmax1 = x[0] * txxs + txxm
-        tmin1 = x[1] * tns + tnm
+        tmax1 = self.x[0] * txxs + txxm
+        tmin1 = self.x[1] * tns + tnm
 
         """TODO add calc_temperature correlation factors"""
         cf_max = 0.0  # Max Temperature correlation factor
@@ -299,3 +269,43 @@ class Wgen(Aegis):
     @property
     def tavg(self):
         return (self.tmax + self.tmin) / 2.0
+
+    def fourier(self):
+        """Fourier routine"""
+        deterministic = self.temp_determ
+        v = 0.0
+        e = np.zeros(3)
+        rn1_determ = [0.25, 0.5, 0.75]
+        rn2_determ = [0.75, 0.5, 0.25]
+        for i in range(0, 3):
+            j = 0
+            out_bounds = True
+            while out_bounds:
+                rn1 = (rn1_determ[i] if deterministic else np.random.uniform())
+                rn2 = (rn2_determ[i] if deterministic else np.random.uniform())
+                v = min(math.sqrt(-2.0 * math.log(rn1)) * math.cos(6.283185 * rn2), 2.6)
+                out_bounds = abs(v) > 2.5 and j < 100
+                j += 1
+            e[i] += v
+        return e
+        
+    def harmonic(self):
+        """Calculate a one harmonic series"""
+        e = self.fourier()
+        x = self.x
+        a = np.array([[0.567, 0.086, -0.002],
+                      [0.253, 0.504, -0.05],
+                      [-0.006, -0.039, 0.244]])
+    
+        b = np.array([[0.781, 0.000, 0.000],
+                      [0.328, 0.637, 0.00],
+                      [0.238, -0.341, 0.873]])
+    
+        r = np.zeros(3)
+        rr = np.zeros(3)
+    
+        for i in range(0, 3):
+            for j in range(0, 3):
+                r[i] += b[i, j] * e[j]
+                rr[i] += a[i, j] * x[j]
+        return r + rr
