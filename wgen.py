@@ -290,6 +290,7 @@ class Wgen(Aegis):
         return e
         
     def harmonic(self):
+        """Calculate a one harmonic series"""
         e = self.fourier()
         x = self.x
         a = np.array([[0.567, 0.086, -0.002],
