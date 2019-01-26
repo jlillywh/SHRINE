@@ -54,6 +54,10 @@ class Watershed(Aegis):
                 This method will show a DiGraph from the networkx library that
                 represents the schematic of the watershed and how catchments
                 and junctions are connected.
+                
+            get_catchment(catchment_name)
+                Retrieves a catchment from the watershed after first determining
+                if it exists. If so, it returns the catchment
     """
 
     def __init__(self):
@@ -172,7 +176,12 @@ class Watershed(Aegis):
             Return the node if found; None if not found
 
         """
-        return self.network.nodes[node_name]
+        try:
+            node = self.network.nodes[node_name]
+            n = node['type']
+            return n
+        except KeyError:
+            print("The node " + node_name + " does not exist!")
 
     def draw(self):
         network_copy = self.network.copy()

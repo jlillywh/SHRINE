@@ -43,6 +43,12 @@ class TestWatershed(unittest.TestCase):
 
         self.assertAlmostEqual(self.w.outflow, 383432.0, precision)
 
+    def testGettingWatershed(self):
+        """Make sure you can get a node when requested."""
+        
+        node = self.w.get_node('C1')
+        
+        self.assertTrue(type(node), Catchment)
 
 if __name__ == '__main__':
     unittest.main()
