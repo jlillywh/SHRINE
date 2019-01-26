@@ -22,6 +22,26 @@ class TestWatershed(unittest.TestCase):
             self.w.update(precip, et)
 
         self.assertAlmostEqual(self.w.outflow, 63905.34, self.precision)
+        
+    def testOutflowLargeWatershed(self):
+        """Outflow == defined value"""
+        precip = 6.54
+        et = 0.25
+        
+        precision = 1
+        
+        self.w.add_catchment('C2', 'J1')
+        self.w.add_catchment('C3', 'J2')
+        self.w.add_catchment('C4', 'J2')
+        self.w.add_catchment('C5', 'J3')
+        self.w.add_catchment('C6', 'J3')
+        self.w.add_junction('J2', 'J1')
+        self.w.add_junction('J3', 'J2')
+
+        for i in range(0,10):
+            self.w.update(precip, et)
+
+        self.assertAlmostEqual(self.w.outflow, 383432.0, precision)
 
 
 if __name__ == '__main__':
