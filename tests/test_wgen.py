@@ -35,7 +35,7 @@ class TestWGEN(unittest.TestCase):
     def testMonthlyRain(self):
         """Check cumulative rain avg"""
         rain_array = [0.0] * 12
-        realizations = 5000
+        realizations = 200
         self.w.min_rain = 0.0
         for r in range(1, realizations):
             self.c.reset()
@@ -48,11 +48,9 @@ class TestWGEN(unittest.TestCase):
         for i in range(0, 12):
             rain_array[i] /= realizations
 
-        np.testing.assert_almost_equal(self.rain_obs, rain_array, decimal=1, err_msg='test', verbose=True)
+        np.testing.assert_allclose(self.rain_obs, rain_array, rtol=0.1, atol=0.05, err_msg='Not close enough!',
+                                   verbose=True)
         
-        #for i in range(0, 12):
-        #    self.assertAlmostEqual(rain_array[i], self.rain_obs[i], precision, "Month: " + str(i+1))
-
     def testDetermTemp(self):
         """Using deterministic runs, ensure the correct temperature for the first
             day of each month."""
