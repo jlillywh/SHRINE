@@ -132,11 +132,12 @@ class Wgen(Aegis):
         self.cvtn = 0.262
         self.acvtn = -0.222
         self.dt_day = 200
-        self.x = [0.9, 1.9, -1.4]
+
+        self.temp_determ = False
+        self.x = [0] * 3
 
         self.tmin = 0.0
         self.tmax = 0.0
-        self.temp_determ = False
 
     def update(self, date=pd.Timestamp('1/1/2019')):
         self.precipitation(date)
@@ -292,6 +293,10 @@ class Wgen(Aegis):
     def harmonic(self):
         """Calculate a one harmonic series"""
         e = self.fourier()
+        if self.temp_determ:
+            self.x = [-0.3513, -1.754, 0.6244]
+        else:
+            self.x = [0] * 3
         x = self.x
         a = np.array([[0.567, 0.086, -0.002],
                       [0.253, 0.504, -0.05],
