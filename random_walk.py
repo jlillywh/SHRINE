@@ -11,7 +11,7 @@ class RandomWalk:
             position : float
                 The current point of the walk
             allow_negative : bool
-                True if negative values are allowed; false otherwise
+                True if negative depths are allowed; false otherwise
         """
         
         self.position = init_position

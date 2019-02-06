@@ -31,7 +31,7 @@ class Awbm:
             represents the capacity of the surface to absorb
             precipitation, remove losses, and overflow the
             amount that is in excess of the capacity.
-            Typically these values range from 10 mm to 400 mm
+            Typically these depths range from 10 mm to 400 mm
 
         Methods
         -------
@@ -43,7 +43,7 @@ class Awbm:
             outflow discharge rate from the catch01 on a per
             area basis [mm]
         set_bucket_capacity :
-            reset the capacity values for each bucket [mm]
+            reset the capacity depths for each bucket [mm]
     """
 
     def __init__(self):
@@ -144,7 +144,7 @@ class Awbm:
         ec.checkEqualLength(self.partial_area_fraction, new_fractions)
         ec.checkValuesAddTo1(new_fractions)
 
-        # If these tests pass, reassign the array values now
+        # If these tests pass, reassign the array depths now
         self.partial_area_fraction = new_fractions
         bucket_capacities = [0.0] * self.bucket_count
         for i in range(self.bucket_count):
@@ -163,7 +163,7 @@ class Awbm:
             """
         ec.checkEqualValues(self.bucket_count, len(new_capacities))
 
-        # If this test passes, reassign the array values now
+        # If this test passes, reassign the array depths now
         self.depth_comp_capacity = new_capacities
         bucket_capacities = [0.0] * self.bucket_count
         for i in range(self.bucket_count):

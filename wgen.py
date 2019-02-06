@@ -9,12 +9,12 @@ class Wgen(Aegis):
             WGEN is a stochastic weather generator originally developed
             in the 1980s in Fortran at the US Department of Agriculture
             Agricultural Research Service (Richardson and Wright 1984).
-            The model can be used to generate daily values of precipitation,
+            The model can be used to generate daily depths of precipitation,
             maximum calc_temperature, minimum calc_temperature, and solar radiation.
             Precipitation is a first-order Markov chain-gamma model, where
             the probability of rain on a given day is conditioned on the
             wet or dry status of the previous day. The procedure for
-            generating daily values of tmax, tmin, and radiation is based
+            generating daily depths of tmax, tmin, and radiation is based
             on the weakly stationary generating process using a one-term
             Fourier series to model the seasonal variation in both
             calc_temperature and solar radiation. WGEN requires long time series
@@ -144,7 +144,7 @@ class Wgen(Aegis):
         self.calc_temperature(date)
 
     def precipitation(self, date=pd.Timestamp('1/1/2019')):
-        """Generate daily precipitation values from monthly data
+        """Generate daily precipitation depths from monthly data
 
             The precipitation component of WGEN is a first-order Markov chain-gamma model.
             With the first-order Markov chain model, the probability of rain on a given
@@ -214,7 +214,7 @@ class Wgen(Aegis):
 
     def calc_temperature(self, date=pd.Timestamp('1/1/2019')):
         """Estimate calc_temperature based on time of year, wet day, and location
-            The procedure that is used in WGEN for generating daily values
+            The procedure that is used in WGEN for generating daily depths
             of tmax and tmin is based on the weakly stationary generating
             process given by Matalas (1967). A one-term Fourier series is
             used to model the seasonal variation in both calc_temperature and
@@ -257,7 +257,7 @@ class Wgen(Aegis):
 
         tns = tnm * xcr2
 
-        """Generate calc_temperature min/max values"""
+        """Generate calc_temperature min/max depths"""
         tmax1 = self.x[0] * txxs + txxm
         tmin1 = self.x[1] * tns + tnm
 

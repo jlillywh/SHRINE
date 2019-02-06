@@ -10,11 +10,11 @@ def checkPositive(myValue, myVariableName):
 
 def checkEqualValues(v1, v2):
     if v1 != v2:
-        nonEqualError = ValueError("The values are not the same.")
+        nonEqualError = ValueError("The depths are not the same.")
         raise nonEqualError
 
 def checkValuesAddTo1(my_array):
-    """Checks for the sum of all values in array < 1.0
+    """Checks for the sum of all depths in array < 1.0
 
         Parameters
         ----------
@@ -27,7 +27,7 @@ def checkValuesAddTo1(my_array):
 
         """
     if sum(my_array) != 1.0:
-        sumValuesError = ValueError("The values in the array do not sum to 1.0.")
+        sumValuesError = ValueError("The depths in the array do not sum to 1.0.")
         raise sumValuesError
 
 def checkInRange(value, lower_bound=0.0, upper_bound=1.0):
