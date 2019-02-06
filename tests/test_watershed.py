@@ -1,6 +1,6 @@
 import unittest
-from watershed import Watershed
-from catchment import Catchment
+from hydrology.watershed import Watershed
+from hydrology.catchment import Catchment
 
 class TestWatershed(unittest.TestCase):
     def setUp(self):

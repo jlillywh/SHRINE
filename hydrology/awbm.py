@@ -1,6 +1,6 @@
 import errorChecks as ec
-from store import Store
-from store_array import StoreArray
+from water_manage.store import Store
+from water_manage.store_array import StoreArray
 
 class Awbm:
     """A class used to represent a rainfall outflow object

@@ -1,4 +1,4 @@
-from store import Store
+from water_manage.store import Store
 
 class StoreArray:
     """Create an array of store objects"""

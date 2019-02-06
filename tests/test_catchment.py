@@ -1,5 +1,5 @@
 import unittest
-from catchment import Catchment
+from hydrology.catchment import Catchment
 
 class TestCatchment(unittest.TestCase):
     def setUp(self):

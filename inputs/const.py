@@ -1,4 +1,6 @@
 from aegis import Aegis
+import numpy as np
+import pandas as pd
 
 class Const(Aegis):
     """Class for creating constant data for a model.

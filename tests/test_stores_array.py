@@ -1,6 +1,5 @@
 import unittest
-import random
-from store_array import StoreArray
+from water_manage.store_array import StoreArray
 
 """To Do:
     - add test for transferring _quantity from one item to another.

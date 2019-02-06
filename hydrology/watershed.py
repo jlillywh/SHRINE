@@ -1,8 +1,6 @@
 from aegis import Aegis
-from catchment import Catchment
-from junction import Junction
-from error import NodeNotFound
-from error import NodeAlreadyExists
+from hydrology.catchment import Catchment
+from hydrology.junction import Junction
 import networkx as nx
 import matplotlib.pyplot as plt
 

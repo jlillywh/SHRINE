@@ -1,7 +1,7 @@
-from random_walk import RandomWalk
-from constants import WATER_DENSITY
+from numerical.random_walk import RandomWalk
+from inputs.constants import WATER_DENSITY
 import numpy as np
-from constants import U
+from inputs.constants import U
 
 class Slurry:
     def __init__(self):

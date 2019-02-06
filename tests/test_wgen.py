@@ -1,6 +1,6 @@
 import unittest
 from clock import Clock
-from wgen import Wgen
+from hydrology.wgen import Wgen
 import numpy as np
 
 class TestWGEN(unittest.TestCase):

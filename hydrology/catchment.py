@@ -1,5 +1,5 @@
 from aegis import Aegis
-from awbm import Awbm
+from hydrology.awbm import Awbm
 
 class Catchment(Aegis):
     """

@@ -1,5 +1,5 @@
 import unittest
-from store import Store
+from water_manage.store import Store
 
 class TestOutflowsCase(unittest.TestCase):
     def setUp(self):

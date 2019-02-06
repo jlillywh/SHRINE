@@ -1,4 +1,4 @@
-from watershed import Watershed
+from hydrology.watershed import Watershed
 
 w = Watershed()
 

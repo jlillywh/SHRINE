@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
 from aegis import Aegis
-from const import Const
+
 
 class Bar(Aegis):
     def __init__(self):

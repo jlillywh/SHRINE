@@ -1,5 +1,5 @@
-from watershed import Watershed
-from catchment import Catchment
+from hydrology.watershed import Watershed
+from hydrology.catchment import Catchment
 
 w = Watershed()
 w.add_node(Catchment(), 'J1')

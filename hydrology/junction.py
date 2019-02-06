@@ -1,5 +1,5 @@
 from aegis import Aegis
-from catchment import  Catchment
+from hydrology.catchment import  Catchment
 
 class Junction(Aegis):
     def __init__(self, name="J1"):

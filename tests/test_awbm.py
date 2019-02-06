@@ -1,5 +1,5 @@
 import unittest
-from awbm import Awbm
+from hydrology.awbm import Awbm
 
 class TestBucketCase(unittest.TestCase):
     def setUp(self):
