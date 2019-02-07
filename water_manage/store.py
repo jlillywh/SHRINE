@@ -1,5 +1,5 @@
-import errorChecks as ec
-from aegis import Aegis
+from validation import errorChecks as ec
+from global_attributes.aegis import Aegis
 
 class Store(Aegis):
     """A class used to represent a storage element

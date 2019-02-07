@@ -1,5 +1,3 @@
-from aegis import Aegis
-
 class Date:
     def __init__(self, date_string):
         #Aegis.__init__(self)

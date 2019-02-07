@@ -1,4 +1,4 @@
-from aegis import Aegis
+from global_attributes.aegis import Aegis
 from hydrology.awbm import Awbm
 
 class Catchment(Aegis):

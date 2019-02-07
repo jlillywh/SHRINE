@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import math
-from aegis import Aegis
+from global_attributes.aegis import Aegis
 
 class Wgen(Aegis):
     """A class to create an object that generates weather data.

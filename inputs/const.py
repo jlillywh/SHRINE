@@ -1,6 +1,6 @@
-from aegis import Aegis
-import numpy as np
-import pandas as pd
+from global_attributes.aegis import Aegis
+from global_attributes.list_set import ListSet
+
 
 class Const(Aegis):
     """Class for creating constant data for a model.
@@ -36,7 +36,7 @@ class Const(Aegis):
         name : str
             What the object represents. class name followed by
             id is the default
-        data : float or list(float)
+        data : float or list(float) or dict(str : float)
             The value of the data is initialized at zero
         unit : str
         description : str
@@ -44,6 +44,7 @@ class Const(Aegis):
         """
         
         Aegis.__init__(self)
+        
         if('name' in kwargs ):
             self.name = kwargs['name']
         else:
@@ -56,7 +57,12 @@ class Const(Aegis):
             self.description = kwargs['description']
         else:
             self.description = self.about
-        self.data = data
+        if ('listSet' in kwargs):
+            self.listSet = ListSet().get_list(kwargs['listSet'])
+            self.listSetName = kwargs['listSet']
+            self.data = dict(zip(self.listSet, data))
+        else:
+            self.data = data
         
     def print(self):
         return str(self.data) + " " + self.unit

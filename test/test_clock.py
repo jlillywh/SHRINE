@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import pandas as pd
-from clock import Clock
+from global_attributes.clock import Clock
 
 class TestClockCase(unittest.TestCase):
     def setUp(self):

@@ -1,7 +1,7 @@
 import pandas as pd
 from pandas import Series
 import numpy as np
-from aegis import Aegis
+
 
 class TimeSeries(Series):
     def __init__(self, start_date='1/1/2019', periods=365, freq='D'):

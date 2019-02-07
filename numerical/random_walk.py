@@ -27,7 +27,7 @@ class RandomWalk:
         else:
             self.position += rn
         
-from clock import Clock
+from global_attributes.clock import Clock
 import pandas as pd
 import matplotlib.pyplot as plt
 c = Clock()

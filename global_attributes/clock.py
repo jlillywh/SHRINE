@@ -1,5 +1,5 @@
 import pandas as pd
-from aegis import Aegis
+from global_attributes.aegis import Aegis
 
 
 class Clock(Aegis):

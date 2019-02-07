@@ -1,4 +1,4 @@
-import errorChecks as ec
+from validation import errorChecks as ec
 from water_manage.store import Store
 from water_manage.store_array import StoreArray
 

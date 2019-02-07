@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
-from aegis import Aegis
+from global_attributes.aegis import Aegis
 
 
 class Bar(Aegis):
@@ -20,13 +20,19 @@ class Bar(Aegis):
         self.result.append(output)
         if type(output.data) == float:
             self.values.append(output.data)
+            self.output_names.append(output.name)
         elif type(output.data) == list:
             for i in output.data:
                 self.values.append(i)
+                self.output_names.append(i)
+        elif type(output.data) == dict:
+            for key, value in output.data.items():
+                self.output_names.append(key)
+                self.values.append(value)
+                self.xlabel = output.listSetName
         else:
             raise TypeError(
                 'Parameter should be a Const or list of Const')
-        self.output_names.append(output.name)
         self.ylabel = "[" + str(self.result[0].unit) + "]"
         self.unit = self.result[0].unit
         self.num_outputs = len(self.values)
