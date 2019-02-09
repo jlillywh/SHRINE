@@ -1,5 +1,6 @@
 from global_attributes.aegis import Aegis
-from global_attributes.list_set import ListSet
+from global_attributes.set_label import SetLabel
+import pandas as pd
 
 
 class Const(Aegis):
@@ -58,7 +59,7 @@ class Const(Aegis):
         else:
             self.description = self.about
         if ('listSet' in kwargs):
-            self.listSet = ListSet().get_list(kwargs['listSet'])
+            self.listSet = SetLabel().get_list(kwargs['listSet'])
             self.listSetName = kwargs['listSet']
             self.data = dict(zip(self.listSet, data))
         else:
@@ -66,3 +67,25 @@ class Const(Aegis):
         
     def print(self):
         return str(self.data) + " " + self.unit
+    
+class Vector(Aegis):
+    """Class used to create objects that allow you to store
+        constant data in a 1 dimensional array.
+        
+        Attributes
+        ----------
+        values : list(float)
+        index : SetLabel
+        
+        Methods
+        -------
+        
+    """
+    def __init__(self, name, unit, values, index):
+        Aegis.__init__(self)
+        name = name
+        if len(index) > len(values):
+            values.extend([0] * len(index) - len(values))
+        self.data = pd.Series(data=values, index=index, name=name)
+    
+    

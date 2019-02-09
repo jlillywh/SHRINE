@@ -1,7 +1,7 @@
 from global_attributes.aegis import Aegis
 import pandas as pd
 
-class ListSet(Aegis):
+class SetLabel(Aegis):
     """Class for holding a group of lists
     
         By default, the set contains 2 lists. All lists
