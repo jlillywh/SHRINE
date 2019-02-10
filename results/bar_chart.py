@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
 from global_attributes.aegis import Aegis
-
+from pandas import Series
 
 class Bar(Aegis):
     def __init__(self):
@@ -30,6 +30,11 @@ class Bar(Aegis):
                 self.output_names.append(key)
                 self.values.append(value)
                 self.xlabel = output.listSetName
+        elif type(output.data) == Series:
+            for key, value in output.data.items():
+                self.output_names.append(key)
+                self.values.append(value)
+                self.xlabel = output.name
         else:
             raise TypeError(
                 'Parameter should be a Const or list of Const')

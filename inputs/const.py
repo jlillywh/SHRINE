@@ -83,7 +83,8 @@ class Vector(Aegis):
     """
     def __init__(self, name, unit, values, index):
         Aegis.__init__(self)
-        name = name
+        self.name = name
+        self.unit = unit
         if len(index) > len(values):
             values.extend([0] * len(index) - len(values))
         self.data = pd.Series(data=values, index=index, name=name)
