@@ -5,6 +5,16 @@ from global_attributes.aegis import Aegis
 from pandas import Series
 
 class Bar(Aegis):
+    """Bar chart class
+    
+        Properties
+        ----------
+        rotate_labels : boolean (default = False)
+            A flag used to rotate the labels on the x axis
+            This is set to true if crowding occurs.
+            
+    """
+    
     def __init__(self):
         Aegis.__init__(self)
         #self.bar_width = 0.35
@@ -15,6 +25,7 @@ class Bar(Aegis):
         self.unit = ''
         self.output_names = []
         self.values = []
+        self.rotate_labels = False
 
     def add_output(self, output):
         self.result.append(output)

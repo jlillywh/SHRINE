@@ -15,7 +15,7 @@ xls_file = fileman.get_file(file_name)
 table = xls_file.parse(sheet_name='Sheet1', name='evaporation', header=4, index_col=0)
 xls_file.close()
 
-v1 = Vector('evap', 'in', table.values[:,0], table.index)
+v1 = Vector('Months', 'in', table.values[:,0], table.index)
 
 b = Bar()
 b.add_output(v1)
