@@ -1,11 +1,10 @@
-from hydrology.watershed import Watershed
+import pandas as pd
+import os
+dir_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'data_external'))
+print(dir_path)
+xls_file = pd.ExcelFile(dir_path + '\data.xlsx')
 
-w = Watershed()
+table = xls_file.parse(sheet_name='Sheet1', header=4, index_col=0)
 
-precip = 10.0
-et = 0.1
+print(table)
 
-for i in range(0,10):
-    w.update(precip, et)
-    print(w.outflow)
-    
