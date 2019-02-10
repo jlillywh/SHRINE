@@ -9,10 +9,12 @@ class Bar(Aegis):
     
         Properties
         ----------
-        rotate_labels : boolean (default = False)
+        rotate_labels : str (default = 'horizontal')
             A flag used to rotate the labels on the x axis
             This is set to true if crowding occurs.
-            
+        space_bottom : float (default = 0.1)
+            Increase this value to provide more space at
+            the bottom of the chart for rotated xaxis labels
     """
     
     def __init__(self):
@@ -25,7 +27,8 @@ class Bar(Aegis):
         self.unit = ''
         self.output_names = []
         self.values = []
-        self.rotate_labels = False
+        self.rotate_labels = 'horizontal'
+        self.space_bottom = 0.1
 
     def add_output(self, output):
         self.result.append(output)
@@ -49,6 +52,7 @@ class Bar(Aegis):
         else:
             raise TypeError(
                 'Parameter should be a Const or list of Const')
+        self.rotation(self.output_names)
         self.ylabel = "[" + str(self.result[0].unit) + "]"
         self.unit = self.result[0].unit
         self.num_outputs = len(self.values)
@@ -57,12 +61,31 @@ class Bar(Aegis):
     def show(self):
         self.num_outputs = len(self.values)
         self.y_pos = np.arange(self.num_outputs)
-        plt.bar(self.y_pos, self.values, align='center')
         plt.title(self.title)
         plt.ylabel(self.ylabel)
         plt.xlabel(self.xlabel)
-        plt.xticks(self.y_pos, self.output_names)
+        plt.xticks(self.y_pos, self.output_names, rotation=self.rotate_labels)
+        plt.subplots_adjust(bottom=self.space_bottom)
+        plt.bar(self.y_pos, self.values, align='center')
         plt.show()
+        
+    def rotation(self, list_of_labels):
+        """Determins rotation based on longest item
+            in the list
+        """
+        try:
+            lst_sorted = sorted(list_of_labels, key=len)
+        except TypeError:
+            list_of_labels = [str(item) for item in list_of_labels]
+            lst_sorted = sorted(list_of_labels, key=len)
+        finally:
+            print("1 or more list values not correct type!")
+            
+        char_length = len(lst_sorted[-1])
+        if char_length > 4:
+            self.rotate_labels = 60.0
+            self.space_bottom = 0.25
+        
     
 
 # bar_width = 0.35
