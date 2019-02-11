@@ -1,4 +1,5 @@
 from data.fileman import FileManager
+from inputs.time_series import TimeSeries
 import pandas as pd
 from inputs.const import Vector
 from results.bar_chart import Bar
@@ -25,15 +26,18 @@ v1 = Vector('Evaporation', 'in', df['Evap'])
 b = Bar('Evap')
 b.add_output(v1)
 
-b.show()
-
-from inputs.time_series import TimeSeries
-
-
 ts1 = TimeSeries('Rainfall')
 ts1.load_csv(fileman.file_list['timeseries_data1.csv'])
+ts2 = ts1
 
-th = TimeSeriesChart('Rainfall')
+th1 = TimeSeriesChart('Rainfall')
+th1.add_result(ts1)
+th1.add_result(ts2)
+
+
+
+b.show()
+th1.show()
 
 
 

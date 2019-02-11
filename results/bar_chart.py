@@ -66,6 +66,7 @@ class Bar(Chart):
         plt.subplots_adjust(bottom=self.space_bottom)
         plt.bar(self.y_pos, self.values, align='center')
         plt.show()
+        plt.close()
         
     
         
