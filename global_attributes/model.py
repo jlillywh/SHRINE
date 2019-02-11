@@ -2,7 +2,7 @@ from global_attributes.aegis import Aegis
 from global_attributes.simulator import Simulator
 from global_attributes.clock import Clock
 from global_attributes.set_label import SetLabel
-from data_external.fileman import FileManager
+from data.fileman import FileManager
 
 
 class Model(Aegis):

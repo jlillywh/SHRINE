@@ -46,19 +46,19 @@ class Const(Aegis):
         
         Aegis.__init__(self)
         
-        if('name' in kwargs ):
+        if 'name' in kwargs:
             self.name = kwargs['name']
         else:
             self.name = self.class_name + " " + str(self.id)
-        if ('unit' in kwargs):
+        if 'unit' in kwargs:
             self.unit = kwargs['unit']
         else:
             self.unit = None
-        if ('description' in kwargs):
+        if 'description' in kwargs:
             self.description = kwargs['description']
         else:
             self.description = self.about
-        if ('listSet' in kwargs):
+        if 'listSet' in kwargs:
             self.listSet = SetLabel().get_list(kwargs['listSet'])
             self.listSetName = kwargs['listSet']
             self.data = dict(zip(self.listSet, data))
@@ -67,7 +67,8 @@ class Const(Aegis):
         
     def print(self):
         return str(self.data) + " " + self.unit
-    
+
+
 class Vector(Aegis):
     """Class used to create objects that allow you to store
         constant data in a 1 dimensional array.
@@ -81,12 +82,25 @@ class Vector(Aegis):
         -------
         
     """
-    def __init__(self, name, unit, values, index):
+    def __init__(self, name, unit='', value_list=[0] * 12, label_set='Months'):
+        """Create a vector using list and array label set name
+        
+            The standard constructor takes a list of values and a named label set
+            The label set must be in the list.
+            Units are optional
+            
+            Parameters
+            ----------
+            name : str
+            unit : str (optional)
+            value_list : list
+            label_set : str (default months of the year, "Months")
+                Name of the label set used for the index
+        """
         Aegis.__init__(self)
         self.name = name
         self.unit = unit
-        if len(index) > len(values):
-            values.extend([0] * len(index) - len(values))
-        self.data = pd.Series(data=values, index=index, name=name)
-    
-    
+        self.listSet = label_set
+        array_label_sets = SetLabel()
+        self.index = array_label_sets.get_list(label_set)
+        self.values = value_list

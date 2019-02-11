@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from global_attributes.aegis import Aegis
 from pandas import Series
+from inputs.const import Vector
 
 class Bar(Aegis):
     """Bar chart class
@@ -29,32 +30,41 @@ class Bar(Aegis):
         self.values = []
         self.rotate_labels = 'horizontal'
         self.space_bottom = 0.1
+        self.num_outputs = 0
+        self.y_pos = [0]
 
     def add_output(self, output):
         self.result.append(output)
-        if type(output.data) == float:
+        if type(output) == float:
             self.values.append(output.data)
             self.output_names.append(output.name)
-        elif type(output.data) == list:
+        elif type(output) == list:
             for i in output.data:
                 self.values.append(i)
                 self.output_names.append(i)
-        elif type(output.data) == dict:
+            self.ylabel = "[" + str(self.result[0].unit) + "]"
+        elif type(output) == Vector:
+            self.title = output.name
+            self.values = output.values
+            self.output_names = output.index
+            self.xlabel = output.listSet
+            self.ylabel = '[' + output.unit + ']'
+        elif type(output) == dict:
             for key, value in output.data.items():
                 self.output_names.append(key)
                 self.values.append(value)
                 self.xlabel = output.listSetName
-        elif type(output.data) == Series:
+                self.ylabel = "[" + str(self.result[0].unit) + "]"
+        elif type(output) == Series:
             for key, value in output.data.items():
                 self.output_names.append(key)
                 self.values.append(value)
                 self.xlabel = output.name
+                self.ylabel = "[" + str(self.result[0].unit) + "]"
         else:
             raise TypeError(
                 'Parameter should be a Const or list of Const')
         self.rotation(self.output_names)
-        self.ylabel = "[" + str(self.result[0].unit) + "]"
-        self.unit = self.result[0].unit
         self.num_outputs = len(self.values)
         self.y_pos = np.arange(self.num_outputs)
     
@@ -78,8 +88,6 @@ class Bar(Aegis):
         except TypeError:
             list_of_labels = [str(item) for item in list_of_labels]
             lst_sorted = sorted(list_of_labels, key=len)
-        finally:
-            print("1 or more list values not correct type!")
             
         char_length = len(lst_sorted[-1])
         if char_length > 4:

@@ -3,6 +3,8 @@
     <words>
       <w>baseflow</w>
       <w>precip</w>
+      <w>xlabel</w>
+      <w>ylabel</w>
     </words>
   </dictionary>
 </component>
