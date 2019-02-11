@@ -9,7 +9,7 @@ class Awbm:
         carries it's hydrologic state properties, which are useful
         for simulating rainfall outflow for one or more watersheds.
         It is formulated to operate on a per area basis where the
-        result is in units of length per time (i.e. mm/day) so that
+        outputs is in units of length per time (i.e. mm/day) so that
         the object can be used as part of a larger model to estimate
         volumetric outflow from a catch01. In essence, you multiply
         the resulting outflow rate from the awbm object by the area

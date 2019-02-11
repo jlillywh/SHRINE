@@ -86,7 +86,7 @@ class Wgen(Aegis):
             temp_determ : bool, default False
                 If True, calculate temperature with determined Fourier coefficients
                 instead of relying on random numbers, which is the default. This
-                option is used for verification so that you can predict the result.
+                option is used for verification so that you can predict the outputs.
                 If this variable is set to true, then the rain variables must also
                 be deterministic. A markov_deterministic = 0.177 and
                 rain_deterministic = 0.25 are used.

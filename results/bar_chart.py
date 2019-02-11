@@ -1,11 +1,11 @@
-import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
-from global_attributes.aegis import Aegis
+from results.chart import Chart
 from pandas import Series
 from inputs.const import Vector
 
-class Bar(Aegis):
+
+class Bar(Chart):
     """Bar chart class
     
         Properties
@@ -18,23 +18,13 @@ class Bar(Aegis):
             the bottom of the chart for rotated xaxis labels
     """
     
-    def __init__(self):
-        Aegis.__init__(self)
-        #self.bar_width = 0.35
-        self.title = "Bar Chart"
-        self.result = []
-        self.ylabel = ''
-        self.xlabel = 'Items'
-        self.unit = ''
-        self.output_names = []
+    def __init__(self, name):
+        Chart.__init__(self, name)
         self.values = []
-        self.rotate_labels = 'horizontal'
-        self.space_bottom = 0.1
-        self.num_outputs = 0
         self.y_pos = [0]
 
     def add_output(self, output):
-        self.result.append(output)
+        self.outputs.append(output)
         if type(output) == float:
             self.values.append(output.data)
             self.output_names.append(output.name)
@@ -42,9 +32,9 @@ class Bar(Aegis):
             for i in output.data:
                 self.values.append(i)
                 self.output_names.append(i)
-            self.ylabel = "[" + str(self.result[0].unit) + "]"
+            self.ylabel = "[" + str(self.outputs[0].unit) + "]"
         elif type(output) == Vector:
-            self.title = output.name
+            self.update_title(output.name)
             self.values = output.values
             self.output_names = output.index
             self.xlabel = output.listSet
@@ -54,23 +44,21 @@ class Bar(Aegis):
                 self.output_names.append(key)
                 self.values.append(value)
                 self.xlabel = output.listSetName
-                self.ylabel = "[" + str(self.result[0].unit) + "]"
+                self.ylabel = "[" + str(self.outputs[0].unit) + "]"
         elif type(output) == Series:
             for key, value in output.data.items():
                 self.output_names.append(key)
                 self.values.append(value)
                 self.xlabel = output.name
-                self.ylabel = "[" + str(self.result[0].unit) + "]"
+                self.ylabel = "[" + str(self.outputs[0].unit) + "]"
         else:
             raise TypeError(
                 'Parameter should be a Const or list of Const')
+        self.num_outputs = len(self.output_names)
         self.rotation(self.output_names)
-        self.num_outputs = len(self.values)
         self.y_pos = np.arange(self.num_outputs)
     
     def show(self):
-        self.num_outputs = len(self.values)
-        self.y_pos = np.arange(self.num_outputs)
         plt.title(self.title)
         plt.ylabel(self.ylabel)
         plt.xlabel(self.xlabel)
@@ -79,20 +67,7 @@ class Bar(Aegis):
         plt.bar(self.y_pos, self.values, align='center')
         plt.show()
         
-    def rotation(self, list_of_labels):
-        """Determins rotation based on longest item
-            in the list
-        """
-        try:
-            lst_sorted = sorted(list_of_labels, key=len)
-        except TypeError:
-            list_of_labels = [str(item) for item in list_of_labels]
-            lst_sorted = sorted(list_of_labels, key=len)
-            
-        char_length = len(lst_sorted[-1])
-        if char_length > 4:
-            self.rotate_labels = 60.0
-            self.space_bottom = 0.25
+    
         
     
 

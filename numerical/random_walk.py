@@ -4,7 +4,7 @@ class RandomWalk:
     def __init__(self, init_position=2.0):
         """Generates a random walk through time.
             
-            The "walk" is the cumulative result of random steps
+            The "walk" is the cumulative outputs of random steps
     
             Attributes
             ----------

@@ -3,7 +3,7 @@ import pandas as pd
 from inputs.const import Vector
 from results.bar_chart import Bar
 
-dir_path = '..\data'
+dir_path = '..\data_external'
 fileman = FileManager(dir_path)
 
 file_name = 'data.xlsx'
@@ -20,7 +20,7 @@ print(type(df['Evap']))
 
 v1 = Vector('Evaporation', 'in', df['Evap'])
 
-b = Bar()
+b = Bar('Evap')
 b.add_output(v1)
 
 b.show()
