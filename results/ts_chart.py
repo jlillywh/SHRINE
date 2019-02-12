@@ -27,5 +27,3 @@ class TimeSeriesChart(Chart):
         self.values.plot()
         plt.show()
         plt.close()
-    
-    
