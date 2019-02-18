@@ -14,7 +14,7 @@ class FileManager(Aegis):
     """
     def __init__(self, dir_name=''):
         Aegis.__init__(self)
-        self.dir_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), dir_name))
+        self.dir_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), dir_name + '\\'))
         self.file_list = {}
         
     def add_file(self, name):
@@ -27,10 +27,10 @@ class FileManager(Aegis):
         
         """
         
-        new_file = self.dir_path + '\\' + name
+        new_file = self.dir_path + name
         
         self.file_list.update({name: new_file})
-        #self.file_list['name'] = new_file
+        return new_file
         
     def get_file(self, name):
-        return pd.ExcelFile(self.file_list[name])
+        return self.file_list[name]

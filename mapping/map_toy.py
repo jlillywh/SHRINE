@@ -4,7 +4,7 @@ from pint import UnitRegistry
 ureg = UnitRegistry()
 from datetime import datetime
 
-with open('data\\apikey.txt') as f:
+with open('..\\data_external\\apikey.txt') as f:
     api_key = f.readline()
     f.close
 
