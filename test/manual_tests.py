@@ -3,7 +3,7 @@ from inputs.time_series import TimeSeries
 import pandas as pd
 from inputs.const import Vector
 from results.bar_chart import Bar
-from results.ts_chart import TimeSeriesChart
+from results.ts_chart import TimeHistoryChart
 
 dir_path = '..\data_external'
 fileman = FileManager(dir_path)
@@ -30,7 +30,7 @@ ts1 = TimeSeries('Rainfall')
 ts1.load_csv(fileman.file_list['timeseries_data1.csv'])
 ts2 = ts1
 
-th1 = TimeSeriesChart('Rainfall')
+th1 = TimeHistoryChart('Rainfall')
 th1.add_result(ts1)
 th1.add_result(ts2)
 

@@ -1,15 +1,15 @@
 from results.chart import Chart
 import matplotlib.pyplot as plt
+from results.time_history import TimeHistory
 import pandas as pd
 import numpy as np
 
-class TimeSeriesChart(Chart):
-    def __init__(self, name):
+
+class TimeHistoryChart(Chart):
+    def __init__(self, name, time_history=TimeHistory()):
         Chart.__init__(self, name)
-        range = pd.date_range('1/1/2019', periods=365, freq='D')
-        series = pd.Series(np.zeros(len(range)), index=range)
         self.outputs = []
-        self.values = series
+        self.values = time_history
         
     def add_result(self, time_series_result):
         """Add a time series object to the chart.

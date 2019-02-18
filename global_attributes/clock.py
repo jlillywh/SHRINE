@@ -10,6 +10,7 @@ class Clock(Aegis):
         ----------
             start_date : pandas Timestamp
             duration :
+            periods : int
 
         Methods
         -------

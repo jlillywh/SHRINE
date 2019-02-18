@@ -80,6 +80,7 @@ class Vector(Aegis):
         
         Methods
         -------
+        get_item(key name) : returns float
         
     """
     def __init__(self, name, unit='', value_list=[0] * 12, label_set='Months'):
@@ -104,3 +105,13 @@ class Vector(Aegis):
         array_label_sets = SetLabel()
         self.index = array_label_sets.get_list(label_set)
         self.values = value_list
+        
+    def get_item(self, name):
+        """Give the name of the index and return the value."""
+        idx = self.index.index(name)
+        return self.values[idx]
+
+    def __getitem__(self, name):
+        """Give the name of the index and return the value."""
+        idx = self.index.index(name)
+        return self.values[idx]
