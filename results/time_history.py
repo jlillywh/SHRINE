@@ -16,6 +16,7 @@ class TimeHistory(Aegis):
         periods : int
         freq : str
         series : pandas Series
+        th_list : list(Series)
 
         """
     
@@ -30,8 +31,9 @@ class TimeHistory(Aegis):
         self.series = pd.Series(np.zeros(len(range)), index=range)
         self.series.name = self.name
         self.series.index.name = 'date'
+        self.th_list = []
     
-    def set_value(self, at_date, value):
+    def set_value(self, series_name, at_date, value):
         """Find a value in the time series and replace it.
 
             Parameters
@@ -42,7 +44,18 @@ class TimeHistory(Aegis):
                 the type must match that of other values
                 already in the series.
         """
-        self.series[at_date] = value
+        self.series[series_name][at_date] = value
+    
+    def add_series(self, new_series):
+        """Add a series to be plotted with the other(s)
+        
+            Parameters
+            ----------
+            new_series : Series
+                Make sure the Series is named!
+        """
+        self.th_list.append(new_series)
+        self.series = pd.concat(self.th_list, axis=1)
     
     def load_csv(self, file_path):
         """Replaces the time series with data from csv file

@@ -2,6 +2,8 @@
   <dictionary name="jlillywhite">
     <words>
       <w>baseflow</w>
+      <w>dayofyear</w>
+      <w>evap</w>
       <w>precip</w>
       <w>xlabel</w>
       <w>ylabel</w>
