@@ -17,6 +17,7 @@ xls_file = pd.ExcelFile(input_file)
 
 monthly_data = pd.read_excel(xls_file, 'Monthly')
 xls_file.close()
+
 c = Clock()
 
 evap_table = Vector('Evaporation', 'in', monthly_data['Evap'])
