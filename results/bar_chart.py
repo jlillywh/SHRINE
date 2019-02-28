@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from results.chart import Chart
 from pandas import Series
-from inputs.const import Vector
+from inputs.data import Vector
 
 
 class Bar(Chart):
@@ -53,7 +53,7 @@ class Bar(Chart):
                 self.ylabel = "[" + str(self.outputs[0].unit) + "]"
         else:
             raise TypeError(
-                'Parameter should be a Const or list of Const')
+                'Parameter should be a Scalar or list of Scalar')
         self.num_outputs = len(self.output_names)
         self.rotation(self.output_names)
         self.y_pos = np.arange(self.num_outputs)

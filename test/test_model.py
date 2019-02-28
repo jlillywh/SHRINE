@@ -1,8 +1,7 @@
 from data.fileman import FileManager
 import pandas as pd
-from inputs.const import Vector
+from inputs.data import Vector
 from results.time_history import TimeHistory
-from results.ts_chart import TimeHistoryChart
 from global_attributes.clock import Clock
 
 

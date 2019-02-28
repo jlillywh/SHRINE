@@ -1,7 +1,7 @@
 from data.fileman import FileManager
 from inputs.time_series import TimeSeries
 import pandas as pd
-from inputs.const import Vector
+from inputs.data import Vector
 from results.bar_chart import Bar
 from results.ts_chart import TimeHistoryChart
 
