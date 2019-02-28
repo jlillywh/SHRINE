@@ -75,6 +75,7 @@ class Pipe(Aegis):
                 imperial units.
 
                 #TODO: add metric option
+                #TODO: add D-W calculation option
 
                 Parameters
                 ----------
