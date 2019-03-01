@@ -2,6 +2,7 @@ from global_attributes.aegis import Aegis
 from math import pi
 from inputs.constants import G_english, U
 from numerical.root_zero import Root
+from hydraulics.pressure_conduit_funcs import friction_loss
 
 
 class Pipe(Aegis):
@@ -70,36 +71,13 @@ class Pipe(Aegis):
     def hyd_radius(self):
         return self.area / self.wet_perim
     
-    def friction_loss(self, flow_rate):
-        """Calculates friction head loss based on flow rate in terms of
-                imperial units.
-
-                #TODO: add metric option
-                #TODO: add D-W calculation option
-
-                Parameters
-                ----------
-                flow_rate : float (in terms of cfs)
-                diameter : float (in terms of ft)
-                hazen_williams : integer
-                length : float (in terms of ft)
-
-                Returns
-                -------
-                head_loss : float (in terms of ft)
-            """
-
-        hf = ((4.73 * self.hazen_williams ** -1.852 * self.length *
-               self.diameter ** -4.87) * flow_rate ** 1.852)
-        return hf
-    
     def minor_loss(self, flow_rate):
         velocity = flow_rate / self.area
         hm = self.k * (velocity ** 2 / (2.0 * G_english))
         return hm
     
     def head_loss(self, flow_rate):
-        return self.friction_loss(flow_rate) + self.minor_loss(flow_rate)
+        return friction_loss(self, flow_rate) + self.minor_loss(flow_rate)
     
     def compare_h(self, q, delta_elevation):
         return self.head_loss(q) > delta_elevation

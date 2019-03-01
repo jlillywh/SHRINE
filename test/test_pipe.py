@@ -11,10 +11,10 @@ class TestPipe(unittest.TestCase):
         """Destroy the object after running tests"""
         del self.p1
 
-    def testFrictionLoss(self):
-        """Friction loss should be correct"""
+    def testHeadLoss(self):
+        """Head loss should be correct"""
         q = 7.47
-        self.assertAlmostEqual(self.p1.friction_loss(q), 27.6, 1)
+        self.assertAlmostEqual(self.p1.head_loss(q), 30, 1)
         
     def testMinorLoss(self):
         """Friction loss should be correct"""
