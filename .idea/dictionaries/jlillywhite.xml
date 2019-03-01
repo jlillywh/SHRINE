@@ -5,8 +5,10 @@
       <w>dayofyear</w>
       <w>disp</w>
       <w>evap</w>
+      <w>hazen</w>
       <w>lillywhite</w>
       <w>precip</w>
+      <w>weisbach</w>
       <w>xlabel</w>
       <w>ylabel</w>
     </words>

@@ -1,7 +1,8 @@
 from global_attributes.aegis import Aegis
 from math import pi
-from inputs.constants import G_english, U
+from inputs.constants import G_english, nu
 from numerical.root_zero import Root
+import math
 from hydraulics.pressure_conduit_funcs import friction_loss
 
 
@@ -46,19 +47,35 @@ class Pipe(Aegis):
         Aegis.__init__(self)
         self.length = length
         self.diameter = diameter
-        self.type = material
-        
+        self._material = material
+        self.hazen_williams = 125
+        self.roughness = 0.0006562
+        self.assign_roughness(material)
+        self.k = k
+        self.f = 0.02
+    
+    def assign_roughness(self, material):
         if material == 'concrete':
             self.hazen_williams = 130
+            self.roughness = 0.00164
         elif material == 'steel':
             self.hazen_williams = 120
+            self.roughness = 0.0003281
         elif material == 'plastic':
             self.hazen_williams = 140
+            self.roughness = 3.28e-5
         else:
-            self.hazen_williams = 100
-        
-        self.k = k
+            self.hazen_williams = 125
+            self.roughness = 0.0006562
+    
+    @property
+    def material(self):
+        return self._material
      
+    @material.setter
+    def material(self, new_material):
+        self._material = new_material
+        self.assign_roughness(new_material)
     @property
     def area(self):
         return pi * self.diameter ** 2 / 4.0
@@ -76,14 +93,14 @@ class Pipe(Aegis):
         hm = self.k * (velocity ** 2 / (2.0 * G_english))
         return hm
     
-    def head_loss(self, flow_rate):
-        return friction_loss(self, flow_rate) + self.minor_loss(flow_rate)
+    def head_loss(self, flow_rate, method='HW'):
+        return friction_loss(self, flow_rate, method) + self.minor_loss(flow_rate)
     
     def compare_h(self, q, delta_elevation):
         return self.head_loss(q) > delta_elevation
     
-    def gravity_flow(self, delta_elevation):
-        f = lambda q: self.head_loss(q) > delta_elevation
+    def gravity_flow(self, delta_elevation, method='HW'):
+        f = lambda q: self.head_loss(q, method) > delta_elevation
         func = Root()
         return func.binary_search(f)
 
