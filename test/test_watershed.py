@@ -30,11 +30,11 @@ class TestWatershed(unittest.TestCase):
         
         precision = 1
         
-        self.w.add_catchment('C2', 'J1')
-        self.w.add_catchment('C3', 'J2')
-        self.w.add_catchment('C4', 'J2')
-        self.w.add_catchment('C5', 'J3')
-        self.w.add_catchment('C6', 'J3')
+        self.w.link_catchment('C2', 'J1')
+        self.w.link_catchment('C3', 'J2')
+        self.w.link_catchment('C4', 'J2')
+        self.w.link_catchment('C5', 'J3')
+        self.w.link_catchment('C6', 'J3')
         self.w.add_junction('J2', 'J1')
         self.w.add_junction('J3', 'J2')
 

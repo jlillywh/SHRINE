@@ -49,7 +49,7 @@ def friction_loss(pipe, flow_rate, method='HW'):
             
         else:
             if pipe.roughness / pipe.diameter < 0.01:
-                # Moody approximation (iterate solving "f" until done
+                # Moody approximation (iterate solving "f" until done)
                 f2 = (-2.0 * math.log10(((pipe.roughness / pipe.diameter) / 3.7) + (2.51 / (reynolds * (f ** 0.5))))) ** -2
                 while not math.isclose(f2, f, rel_tol=1e-6):
                     f2 = f

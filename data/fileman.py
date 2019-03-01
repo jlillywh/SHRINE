@@ -9,8 +9,8 @@ class FileManager(Aegis):
     
     Attributes
     ----------
-    file : File object
-        the name of the file
+    file_list : list(File objects)
+        a list containing the path and name of each file
     """
     def __init__(self, dir_name=''):
         Aegis.__init__(self)
