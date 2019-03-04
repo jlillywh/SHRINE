@@ -70,6 +70,7 @@ class Watershed(Aegis):
         self.network = nx.DiGraph()
         self.source_node = 'A'
         self.network.add_node(self.source_node, node_type=100)
+        # self.network.add_node(self.source_node, node_type=100)
         self.sink_node = Junction('J1')
         self.outflow = 0.0
         self.network.add_node(self.sink_node.name, node_type=300)
@@ -92,8 +93,8 @@ class Watershed(Aegis):
                 junction : Junction
         """
         for node in self.network.nodes:
-            if type(self.network.nodes[node]['node_type']) == 200:
-                catchment = self.network.nodes[node]['node_type']
+            if self.network.nodes[node]['node_type'] == 200:
+                catchment = self.network.nodes[node]['catchment']
                 catchment.update_runoff(precip, et)
                 scr = list(self.network.successors(node))[0]
                 self.network.edges[node, scr]['runoff'] = catchment.outflow
@@ -196,6 +197,10 @@ class Watershed(Aegis):
     def load_from_file(self, filename):
         self.network = nx.read_gml(filename)
         catchments = [x for x, y in self.network.nodes(data=True) if y['node_type'] == 200]
+        self.network.add_node('A', node_type=100)
+        self.source_node = 'A'
+        self.sink_node = Junction('J3')
 
         for c in catchments:
+            self.network.nodes[c]['catchment'] = Catchment()
             self.network.add_edge(self.source_node, c)

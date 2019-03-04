@@ -7,29 +7,18 @@ from data.fileman import FileManager
 class TestWatershed(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
-        self.w = Watershed()
-        # self.w.add_node(Catchment('C1'), 'J1')
         self.precision = 2
         
         fm = FileManager('..\\data_external')
         filename = 'watershed_GML_input.gml'
         fm.add_file(filename)
+        
+        self.w = Watershed()
         self.w.load_from_file(fm.file_list[filename])
-        self.w.draw()
 
     def tearDown(self):
         """Destroy the object after running tests"""
         del self.w
-
-    def testOutflow(self):
-        """Outflow == defined value"""
-        precip = 6.54
-        et = 0.25
-
-        for i in range(0, 10):
-            self.w.update(precip, et)
-
-        self.assertAlmostEqual(self.w.outflow, 63905.34, self.precision)
         
     def testOutflowLargeWatershed(self):
         """Outflow == defined value"""
@@ -37,16 +26,8 @@ class TestWatershed(unittest.TestCase):
         et = 0.25
         
         precision = 1
-        
-        self.w.link_catchment('C2', 'J1')
-        self.w.link_catchment('C3', 'J2')
-        self.w.link_catchment('C4', 'J2')
-        self.w.link_catchment('C5', 'J3')
-        self.w.link_catchment('C6', 'J3')
-        self.w.add_junction('J2', 'J1')
-        self.w.add_junction('J3', 'J2')
 
-        for i in range(0,10):
+        for i in range(0, 10):
             self.w.update(precip, et)
 
         self.assertAlmostEqual(self.w.outflow, 383432.0, precision)

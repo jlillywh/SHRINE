@@ -14,11 +14,10 @@ w = Watershed()
 w.load_from_file(watershed_input_file)
 w.draw()
 
-G = nx.read_gml(watershed_input_file)
-print(G.nodes)
-plt.subplot()
-nx.draw(G, with_labels=True)
-plt.show()
+for i in range(10):
+    w.update(10.0, 1.4)
+
+print(w.outflow)
 
 
 
