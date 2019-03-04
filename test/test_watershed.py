@@ -1,13 +1,21 @@
 import unittest
 from hydrology.watershed import Watershed
 from hydrology.catchment import Catchment
+from data.fileman import FileManager
+
 
 class TestWatershed(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
         self.w = Watershed()
-        #self.w.add_node(Catchment('C1'), 'J1')
+        # self.w.add_node(Catchment('C1'), 'J1')
         self.precision = 2
+        
+        fm = FileManager('..\\data_external')
+        filename = 'watershed_GML_input.gml'
+        fm.add_file(filename)
+        self.w.load_from_file(fm.file_list[filename])
+        self.w.draw()
 
     def tearDown(self):
         """Destroy the object after running tests"""
@@ -18,7 +26,7 @@ class TestWatershed(unittest.TestCase):
         precip = 6.54
         et = 0.25
 
-        for i in range(0,10):
+        for i in range(0, 10):
             self.w.update(precip, et)
 
         self.assertAlmostEqual(self.w.outflow, 63905.34, self.precision)
@@ -49,6 +57,7 @@ class TestWatershed(unittest.TestCase):
         node = self.w.get_node('C1')
         
         self.assertTrue(type(node), Catchment)
+
 
 if __name__ == '__main__':
     unittest.main()

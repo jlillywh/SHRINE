@@ -22,7 +22,11 @@ class Watershed(Aegis):
         Attributes
         ----------
             junctions : Array(Junction)
+                node_type = 300
             catchments : Array(Catchments)
+                node_type = 200
+            source_node : Atmosphere
+                node_type = 100
             sink_node : Junction
                 This is the final junction in the model that discharges from
                 all other nodes of the watershed.
@@ -56,17 +60,20 @@ class Watershed(Aegis):
             get_catchment(catchment_name)
                 Retrieves a catchment from the watershed after first determining
                 if it exists. If so, it returns the catchment
+                
+            load_from_file(file_name)
+                Loads a new watershed from a file, overwriting any existing nodes
     """
 
     def __init__(self):
         Aegis.__init__(self)
         self.network = nx.DiGraph()
         self.source_node = 'A'
-        self.network.add_node(self.source_node, type='Atmosphere')
+        self.network.add_node(self.source_node, node_type=100)
         self.sink_node = Junction('J1')
         self.outflow = 0.0
-        self.network.add_node(self.sink_node.name, type='Junction')
-        self.network.add_node('C1', type=Catchment('C1'))
+        self.network.add_node(self.sink_node.name, node_type=300)
+        self.network.add_node('C1', node_type=200)
         self.network.add_edge(self.source_node, 'C1')
         self.network.add_edge('C1', 'J1', runoff=99.0)
 
@@ -85,14 +92,14 @@ class Watershed(Aegis):
                 junction : Junction
         """
         for node in self.network.nodes:
-            if type(self.network.nodes[node]['type']) == Catchment:
-                catchment = self.network.nodes[node]['type']
+            if type(self.network.nodes[node]['node_type']) == 200:
+                catchment = self.network.nodes[node]['node_type']
                 catchment.update_runoff(precip, et)
                 scr = list(self.network.successors(node))[0]
                 self.network.edges[node, scr]['runoff'] = catchment.outflow
 
         # Calculate runoff then assign to edge one at a time
-        #runoff_c1 = self.network.nodes['C1']['type'].outflow
+        #runoff_c1 = self.network.nodes['C1']['node_type'].outflow
         #self.network.edges['C1', 'J1']['runoff'] = runoff_c1
 
         # or do it all at once using an attribute hash
@@ -119,7 +126,7 @@ class Watershed(Aegis):
         self.network.add_node(junct_name, type='Junction')
         self.network.add_edge(junct_name, receiving_junction)
             
-    def add_catchment(self, catchment_name, receiving_junction):
+    def link_catchment(self, catchment_name, receiving_junction):
         """Adds a new catchment to the watershed.
 
             Build a new junction object by name. This junction can be
@@ -175,9 +182,7 @@ class Watershed(Aegis):
 
         """
         try:
-            node = self.network.nodes[node_name]
-            n = node['type']
-            return n
+            return self.network.nodes[node_name]
         except KeyError:
             print("The node " + node_name + " does not exist!")
 
@@ -187,3 +192,10 @@ class Watershed(Aegis):
         plt.subplot()
         nx.draw(network_copy, with_labels=True)
         plt.show()
+        
+    def load_from_file(self, filename):
+        self.network = nx.read_gml(filename)
+        catchments = [x for x, y in self.network.nodes(data=True) if y['node_type'] == 200]
+
+        for c in catchments:
+            self.network.add_edge(self.source_node, c)
