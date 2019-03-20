@@ -1,10 +1,12 @@
-#Class for creating datum coordinates
-#Accept up to 2 arguments but no more.
-
 from geometry.point import Point
+from collections import namedtuple
 
 
 class Datum(Point):
+    """Class for creating datum coordinates
+        
+        A datum is a reference point that has a location
+        in space along with an elevation based on a geodetic datum """
     def __init__(self, elevation=0):
         Point.__init__(self)
         self._location = (self._x, self._y)

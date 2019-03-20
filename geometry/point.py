@@ -1,78 +1,107 @@
-"""
-Cass for creating and managing geometric point objects
-Author: Jason Lillywhite
-Date: March, 2013
-"""
 from global_attributes.aegis import Aegis
 from inputs.constants import U
 
 
 class Point(Aegis):
-    def __init__(self, x=0, y=0, z=0):
-        self._x = x * U.meter
-        self._y = y * U.meter
-        self._z = z * U.meter
+    """A class to create a new point in a 3-dimensional space.
+    
+        This point has x, y, z coordinates in terms of length magnitude
+        and also a unit dimension for the magnitude of each. Each
+        coordinate is labeled 'x', 'y', and 'z' for convenience.
+    
+    Parameters
+    ----------
+    x, y, z: int or float with dimensions
+        Coordinates of the point. Defaults are zero. For 2-dimensions, z = 0
+        The default unit is meters.
+    coords : dictionary of x, y, and z
+        Dictionary of values that represent the x, y, z coordinate values
+        Values also have unit dimensions of length
+    unit : str
+        specify the unit name for all coordinates of the point.
+        
+    Methods
+    -------
+    set_unit(disp_unit)
+        Allows the user to set a new unit and value is automatically converted
+        
+    TODO: add a "move" method
+        
+    """
+    def __init__(self, x=0, y=0, z=0, unit='meter'):
+        self.unit = U.parse_expression(unit)
+        self.coords = {'x': x * self.unit, 'y': y * self.unit, 'z': z * self.unit}
     
     def coordinates(self):
-        return [self._x, self._y, self._z]
+        """Iterates over the coordinates and returns the value of each"""
+        for c in self.coords:
+            print(self.coords[c].magnitude)
     
     @property
     def x(self):
-        return self._x
+        return self.coords['x']
     
     @x.setter
     def x(self, value):
-        self._x = value * self._x.units
+        self.coords['x'] = value * self.unit
     
     @property
     def y(self):
-        return self._y
+        return self.coords['y']
     
     @y.setter
     def y(self, value):
-        self._y = value * self._y.units
+        self.coords['y'] = value * self.unit
 
     @property
     def z(self):
-        return self._z
+        return self.coords['z']
 
     @z.setter
     def z(self, value):
-        self._z = value * self._z.units
+        self.coords['z'] = value * self.unit
     
     def set_unit(self, disp_unit):
+        """Change the unit for the coordinates of the point.
+        
+            After you change the unit, the values are automatically updated
+            
+            Parameters
+            ----------
+            disp_unit : str
+                The new unit. This name must exist in the Pint library!
+            
+            Exceptions
+            ----------
+            ValueError
+                If the unit name is not found, an error is printed and the
+                values/unit remain unchanged
+            """
+        
         while True:
             try:
-                self._x = self._x.to(disp_unit)
-                self._y = self._y.to(disp_unit)
-                self._z = self._z.to(disp_unit)
+                self.unit = U.parse_expression(disp_unit)
+                for coord in self.coords:
+                    self.coords[coord] = self.coords[coord].to(self.unit)
                 break
     
             except ValueError:
                 print("Oops!  That was no valid unit.  Try again...")
                 break
-    
-    # Find the quadrant in which the point is located in
-    def quadrant(self):
-        x, y = self._x, self._y
-    
-        if x == 0 and y == 0:
-            return 0
-        elif x > 0 and y >= 0:
-            return 1
-        elif x <= 0 and y > 0:
-            return 2
-        elif x < 0 and y <= 0:
-            return 3
-        else:
-            return 4
 
-
-#Testing
-'''
-p1 = Point(1, -3)
-p2 = Point(3.4, 0)
-
-print p1.coordinates()
-print p2.quadrant()
-'''
+    def move(self, distance, direction):
+        """Move the point by a distance in a direction
+        
+            Parameters
+            ----------
+            distance : float
+                The magnitude of the change in length.
+            direction : str
+                A label for the direction based on x,y,z coordinates.
+                For x, positive value is to the right, negative is left
+                for y, positive = up, negative = down
+                for z, positive = away from you, negative = toward you
+                
+        """
+        
+        self.coords[direction] += distance * self.unit

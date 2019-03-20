@@ -9,6 +9,7 @@ import test_catchment
 import test_watershed
 import test_wgen
 import test_pipe
+import test_point
 
 # Initialize the test suite
 loader = unittest.TestLoader()
@@ -23,6 +24,7 @@ suite.addTests(loader.loadTestsFromModule(test_catchment))
 suite.addTests(loader.loadTestsFromModule(test_watershed))
 suite.addTests(loader.loadTestsFromModule(test_wgen))
 suite.addTests(loader.loadTestsFromModule(test_pipe))
+suite.addTests(loader.loadTestsFromModule(test_point))
 
 # Initialize a runner, pass it the suite and run it
 runner = unittest.TextTestRunner(verbosity=3)
