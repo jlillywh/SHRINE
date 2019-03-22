@@ -3,7 +3,9 @@ from iapws import IAPWS97
 
 # Set up the units of measurement database
 U = pint.UnitRegistry()
-U.define('cfs = cu_ft / second')
+
+# load the custom units file
+U.load_definitions('..\\global_attributes\\aegis_units.txt')
 #TODO add custom units file based on https://pint.readthedocs.io/en/latest/defining.html
 
 # Water density at 4 deg C in units of g/cm3
