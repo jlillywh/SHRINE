@@ -4,6 +4,7 @@ from iapws import IAPWS97
 # Set up the units of measurement database
 U = pint.UnitRegistry()
 U.define('cfs = cu_ft / second')
+#TODO add custom units file based on https://pint.readthedocs.io/en/latest/defining.html
 
 # Water density at 4 deg C in units of g/cm3
 WATER_DENSITY = 1.102 * U.g / U.cm**3
