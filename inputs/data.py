@@ -1,6 +1,9 @@
 from global_attributes.aegis import Aegis
 from global_attributes.set_label import SetLabel
-from inputs.constants import U
+from inputs.constants import U, ArrayLabelSet
+import pandas as pd
+import numpy as np
+import copy
 
 
 class Scalar(Aegis):
@@ -11,11 +14,8 @@ class Scalar(Aegis):
         
     Attributes
     ----------
-    name : str
-        What the object represents
-    unit : pint unit
+    unit : pint Quantity unit
         The type of unit used to define the data
-        TODO: Add pint units library usage
     data : pint Quantity
         The value of the data with units of measurement
     magnitude: float
@@ -25,10 +25,12 @@ class Scalar(Aegis):
     
     Methods
     -------
-    set_data(value)
-        set the value of the data without changing the unit
-        
-    print()
+    magnitude()
+        setter function to set the value of the data without changing the unit
+    unit()
+        setter function to set the new unit. The magnitude of the value is
+        converted automatically
+    show()
         Prints the value followed by the unit as a string
     """
     
@@ -37,13 +39,11 @@ class Scalar(Aegis):
         
         Parameters
         ----------
-        name : str
-            What the object represents. class name followed by
-            id is the default
-        value : float or list(float) or dict(str : float)
-            The value of the data is initialized at zero
+        value : float
+            Default is 0.0
         unit : str
         description : str
+            What the object represents.
         
         """
         
@@ -109,15 +109,22 @@ class Vector(Aegis):
         
         Attributes
         ----------
-        values : list(float)
-        index : SetLabel
+        unit : pint Quantity Unit
+        data : pandas DataFrame
+        magnitude : list(float)
         
         Methods
         -------
+        unit
+            setter method (vector.unit = 'm')
+            
+        magnitude
+            set magnitude with ndarray
+            
         get_item(key name) : returns float
-        
     """
-    def __init__(self, name, unit='', value_list=[0] * 12, label_set='Months'):
+    
+    def __init__(self, value_list=[0] * 12, unit=None, label_set='Months'):
         """Create a vector using list and array label set name
         
             The standard constructor takes a list of values and a named label set
@@ -126,26 +133,75 @@ class Vector(Aegis):
             
             Parameters
             ----------
-            name : str
             unit : str (optional)
             value_list : list
+            #TODO make sure value_list length == label_set_array length
             label_set : str (default months of the year, "Months")
                 Name of the label set used for the index
         """
-        Aegis.__init__(self)
-        self.name = name
-        self.unit = unit
-        self.listSet = label_set
-        array_label_sets = SetLabel()
-        self.index = array_label_sets.get_list(label_set)
-        self.values = value_list
         
-    def get_item(self, name):
-        """Give the name of the index and return the value."""
-        idx = self.index.index(name)
-        return self.values[idx]
+        Aegis.__init__(self)
+        self.listSet = label_set
+        self._magnitude = np.asarray(value_list)
+        v = [0] * len(value_list)
+        if unit:
+            self._unit = U.parse_expression(unit)
+            for i in range(value_list.shape[0]):
+                v[i] = value_list[i] * self._unit
+    
+        self.data = ArrayLabelSet.get_list(label_set)
+        self.data['Values'] = pd.Series(v, index=self.data.index)
 
-    def __getitem__(self, name):
-        """Give the name of the index and return the value."""
-        idx = self.index.index(name)
-        return self.values[idx]
+    @property
+    def magnitude(self):
+        return self._magnitude
+
+    @magnitude.setter
+    def magnitude(self, new_magnitude):
+        """Sets the magnitude of all values
+        
+            Parameters
+            ----------
+            new_magnitude : numpy array
+        """
+        
+        self._magnitude = np.asarray(new_magnitude)
+        v = [0] * len(new_magnitude)
+        for i in range(len(new_magnitude)):
+            v[i] = new_magnitude[i] * self._unit
+        self.data['Values'] = pd.Series(v, index=self.data.index)
+
+    @property
+    def unit(self):
+        """Unit of the vector values.
+            Setter
+            ------
+                Set as str: vector.unit = 'meter'
+            Getter
+                returns a pint Quantity
+        """
+        
+        return self._unit
+
+    @unit.setter
+    def unit(self, new_unit):
+        while True:
+            try:
+                self._unit = U.parse_expression(new_unit)
+                break
+            except ValueError:
+                print("Oops!  That was no valid unit.  Try again...")
+                break
+    
+        while True:
+            try:
+                for i in range(self._magnitude.shape[0]):
+                    self.data.iloc[i, 1] = self.data.iloc[i, 1].to(self._unit)
+                    x = self.data.iloc[i, 1]
+                    y = copy.copy(x)
+                    self._magnitude[i] = y.magnitude
+                break
+            except AttributeError:
+                for i in range(len(self.magnitude)):
+                    self.data.iloc[i, 1] = self.data.iloc[i, 1] * self._unit
+                break

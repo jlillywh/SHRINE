@@ -1,12 +1,16 @@
 import pint
 from iapws import IAPWS97
+from global_attributes.set_label import SetLabel
+
+# Set up the array label sets used for the model
+ArrayLabelSet = SetLabel()
+Months = ArrayLabelSet.get_list('Months')
 
 # Set up the units of measurement database
 U = pint.UnitRegistry()
 
 # load the custom units file
-U.load_definitions('..\\global_attributes\\aegis_units.txt')
-#TODO add custom units file based on https://pint.readthedocs.io/en/latest/defining.html
+U.load_definitions('..\\data\\aegis_units.txt')
 
 # Water density at 4 deg C in units of g/cm3
 WATER_DENSITY = 1.102 * U.g / U.cm**3

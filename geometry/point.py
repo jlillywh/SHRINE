@@ -25,8 +25,6 @@ class Point(Aegis):
     set_unit(disp_unit)
         Allows the user to set a new unit and value is automatically converted
         
-    TODO: add a "move" method
-        
     """
     def __init__(self, x=0, y=0, z=0, unit='meter'):
         self.unit = U.parse_expression(unit)
