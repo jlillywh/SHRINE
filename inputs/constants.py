@@ -10,7 +10,7 @@ Months = ArrayLabelSet.get_list('Months')
 U = pint.UnitRegistry()
 
 # load the custom units file
-U.load_definitions('.\\data\\aegis_units.txt')
+U.load_definitions('..\\data\\aegis_units.txt')
 
 # Water density at 4 deg C in units of g/cm3
 WATER_DENSITY = 1.102 * U.g / U.cm**3
