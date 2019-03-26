@@ -5,6 +5,12 @@ class Error(Exception):
     
     pass
 
+class WrongUnits(Error):
+    def __init__(self, m):
+        self.message = m
+    
+    pass
+
 class NodeNotFound(Error):
     """Node is not found when searching a list
     """

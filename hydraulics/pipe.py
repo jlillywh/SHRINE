@@ -4,6 +4,7 @@ from inputs.constants import G, nu, U
 from numerical.root_zero import Root
 import math
 from hydraulics.pressure_conduit_funcs import friction_loss
+from validation.error import WrongUnits
 
 
 class Pipe(Aegis):
@@ -60,7 +61,7 @@ class Pipe(Aegis):
         
         Aegis.__init__(self)
         self.length = length
-        self.diameter = diameter
+        self._diameter = diameter
         self._material = material
         self.hazen_williams = 125
         self.roughness = 0.0006562 * U.ft
@@ -81,6 +82,31 @@ class Pipe(Aegis):
         else:
             self.hazen_williams = 125
             self.roughness = 0.0006562 * U.ft
+    
+    @property
+    def diameter(self):
+        return self._diameter
+    
+    @diameter.setter
+    def diameter(self, new_diameter):
+        """Set the diameter
+            Parameters
+            ----------
+            new_diameter : pint Quantity in length
+                Set the new diameter in terms of length units
+        """
+        while True:
+            try:
+                if new_diameter.check('[length]'):
+                    self._diameter = new_diameter
+                    break
+                else:
+                    m = "Wrong dimension. Should be in terms of length."
+                    raise WrongUnits(m)
+                    break
+            except AttributeError:
+                self._diameter = new_diameter * self._diameter.units
+                break
     
     @property
     def material(self):
@@ -160,7 +186,7 @@ class Pipe(Aegis):
             #TODO fix this method. Units error
         """
         
-        f = lambda q: self.head_loss(q, method) > delta_elevation
+        f = lambda q: self.head_loss(q * U.cfs, method) > delta_elevation
         func = Root()
-        return func.binary_search(f)
+        return func.binary_search(f) * U.cfs
 
