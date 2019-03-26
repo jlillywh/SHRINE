@@ -1,2 +1,3 @@
 d = day = dy
 cfs = cu_ft / second
+sec = second = s

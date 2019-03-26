@@ -1,4 +1,4 @@
-from inputs.constants import nu, G_english
+from inputs.constants import nu, G, U
 import math
 
 
@@ -12,7 +12,7 @@ def friction_loss(pipe, flow_rate, method='HW'):
         Parameters
         ----------
         pipe : Pipe object
-        flow_rate : float
+        flow_rate : pint Quantity of volumetric flow
         method : str 'HW' is default
             Options are HW: Hazen-Williams or DW: Darcy-Weisbach
         
@@ -23,10 +23,15 @@ def friction_loss(pipe, flow_rate, method='HW'):
     """
     hf = 0.0
     if method == 'HW':
-        hf = ((4.73 * pipe.hazen_williams ** -1.852 * pipe.length * pipe.diameter ** -4.87) * flow_rate ** 1.852)
+        # Temporarily convert units to English before calculating
+        length = pipe.length.to(U.ft).magnitude
+        diameter = pipe.diameter.to(U.ft).magnitude
+        flow_rate = flow_rate.to(U.cfs).magnitude
+        hf = ((4.73 * pipe.hazen_williams ** -1.852 * length * diameter ** -4.87) * flow_rate ** 1.852)
+        hf = hf * U.ft
     elif method == 'DW':
         velocity = flow_rate / pipe.area
-        kin_viscosity = nu.to('ft^2/s').magnitude
+        kin_viscosity = nu #.to('ft^2/s').magnitude
         reynolds = pipe.diameter * velocity / kin_viscosity
         f = 0.02
         
@@ -59,6 +64,6 @@ def friction_loss(pipe, flow_rate, method='HW'):
                 f = 0.25 / (math.log(pipe.roughness/(3.7 * pipe.diameter) + 5.74 / (reynolds**0.9)))**2
 
         # Darcy - Weisbach equation for both smooth and rough walled pipes
-        hf = f * pipe.length / pipe.diameter * velocity**2 / (2 * G_english)
+        hf = f * pipe.length / pipe.diameter * velocity**2 / (2 * G)
     
     return hf
