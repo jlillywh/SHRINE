@@ -2,6 +2,7 @@ import unittest
 
 # Import all tests here
 import test_store
+import test_reservoir
 import test_awbm
 import test_stores_array
 import test_clock
@@ -27,6 +28,7 @@ suite.addTests(loader.loadTestsFromModule(test_wgen))
 suite.addTests(loader.loadTestsFromModule(test_pipe))
 suite.addTests(loader.loadTestsFromModule(test_point))
 suite.addTests(loader.loadTestsFromModule(test_data))
+suite.addTests(loader.loadTestsFromModule(test_reservoir))
 
 # Initialize a runner, pass it the suite and run it
 runner = unittest.TextTestRunner(verbosity=3)

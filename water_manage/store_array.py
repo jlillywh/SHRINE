@@ -1,18 +1,21 @@
 from water_manage.store import Store
+from inputs.constants import U
+
 
 class StoreArray:
     """Create an array of store objects"""
 
-    def __init__(self, count=3):
+    def __init__(self, count=3, unit=U.mm):
         """The default is 3 stores only because this was initially
         used in the AWBM implementation.
         """
         self.stores = []
         self.count = count
-
+        self.unit = unit
+    
         i = 0
         while i < self.count:
-            self.stores.append(Store())
+            self.stores.append(Store(0.0  * self.unit))
             i += 1
 
     def __getitem__(self, index):
@@ -20,7 +23,7 @@ class StoreArray:
         return self.stores[index]
 
     def set_capacity(self, capacity_array):
-        """Set the capacity of all items"""
+        """Set the _capacity of all items"""
         i = 0
         while i < self.count:
             self.stores[i].capacity = capacity_array[i]
@@ -51,14 +54,14 @@ class StoreArray:
 
     def total_quantity(self):
         """Return the total _quantity by adding all store quantities"""
-        sum_quantity = 0.0
+        sum_quantity = 0.0 * self.unit
         for i in range(self.count):
             sum_quantity += self.stores[i].quantity
         return sum_quantity
 
     def total_overflow(self):
         """Sum of overflows for all stores"""
-        sum_overflow = 0.0
+        sum_overflow = 0.0 * self.unit / U.day
         i = 0
         while i < self.count:
             sum_overflow += self.stores[i].overflow
@@ -67,7 +70,7 @@ class StoreArray:
 
     def total_outflow(self):
         """Sum of all outflows from the stores"""
-        sum_outflow = 0.0
+        sum_outflow = 0.0 * self.unit / U.day
         i = 0
         while i < self.count:
             sum_outflow += self.stores[i].outflow
@@ -83,13 +86,16 @@ class StoreArray:
                 The index of the array of the store that you want to move
                 material from
             to_index : int
-                The index that you want material moved to."""
+                The index that you want material moved to.
+            amount : Quantity (rate)
+            
+        """
         i = 0
         while i < self.count:
             if i == from_index:
                 from_store = self.stores[from_index]
-                from_store.update(0.0, amount)
-                self.stores[to_index].update(from_store.outflow, 0.0)
+                from_store.update(0.0 * self.unit / U.day, amount)
+                self.stores[to_index].update(from_store.outflow, 0.0 * self.unit / U.day)
                 break
             else:
                 i += 1

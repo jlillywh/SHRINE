@@ -4,7 +4,12 @@ def checkPositive(myValue, myVariableName):
     :param myVariableName : str
     :return: valueError
     """
-    if myValue < 0.0:
+    try:
+        myValue_unit = myValue.units
+    except AttributeError:
+        myValue_unit = 1.0
+        
+    if myValue < 0.0 * myValue_unit:
         negValueError = ValueError(myVariableName + ' should be a positive')
         raise negValueError
 

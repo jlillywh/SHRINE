@@ -1,5 +1,8 @@
 from validation import errorChecks as ec
 from global_attributes.aegis import Aegis
+from inputs.constants import U
+from validation.error import WrongUnits
+
 
 class Store(Aegis):
     """A class used to represent a storage element
@@ -12,15 +15,16 @@ class Store(Aegis):
             a formatted string to print out the store properties
         name : str
             the name of the store
-        quantity : float
+        quantity : pint Quantity (volume, mass, or length)
             the amount in the store. Prefixed with underscore because
             you should never redefine this value without using the
             "set_quantity" method to ensure bounds are not exceeded.
-        capcity : float
-            the upper bound on _quantity
-        overflow : float
-            amount in excess of capacity after applying inflow and outflow
-        outflow : float
+        capcity : pint Quantity
+            the upper bound on _quantity. This must be compatible with
+            the quantity unit
+        overflow : pint Quantity of a rate of quantity change
+            amount in excess of _capacity after applying inflow and outflow
+        outflow : pint Quantity of a rate of quantity change
             requested outflow until store is empty
 
         Methods
@@ -31,57 +35,130 @@ class Store(Aegis):
             updates _quantity while ensuring bounds respected
     """
 
-    def __init__(self, quantity=0.0, capacity=float("inf")):
+    def __init__(self, quantity=10 * U.m**3):
         """
         Parameters
         ----------
-        name : str, optional
-            the name of the object (inherited)
-        description : str, optional
-            describe what the store represents
-        quantity : float, optional
+        quantity : pint Quantity
             the amount in the store
-        capacity : float, optional
+        _capacity : pint Quantity
             the upper bound on _quantity
-        overflow : float
-            excess outflow when _quantity exceeds capacity
-        outflow : float
+        overflow : pint Quantity rate
+            excess outflow when _quantity exceeds _capacity
+        outflow : pint Quantity rate
             The actual amount discharged from the store
         """
         Aegis.__init__(self)
-        self.description = "An object that stores mass"
-        self.__quantity = quantity
-        self.capacity = capacity
-        self.overflow = 0.0
-        self.outflow = 0.0
-        self.update(0.0, self.outflow)
+        self._quantity = quantity
+        self.quantity_dim = quantity.dimensionality
+        self._quantity_units = quantity.units
+        self._capacity = float("inf") * self._quantity_units
+        self.overflow = max(quantity - self._capacity, 0.0 * self._quantity_units) / U.day
+        self.outflow = 0.0 * self._quantity_units / U.day
 
+    @property  # when you do Store.quantity_units, it will call this function
+    def quantity_units(self):
+        return self._quantity_units
+
+    @quantity_units.setter  # when you do Store.quantity = x, it will call this function
+    def quantity_units(self, new_unit):
+        """Set the new quantity unit for the Store.
+        
+            Parameters
+            ----------
+            new_unit : str
+                string representation of the unit.
+        """
+        
+        try:
+            new_unit = U.parse_expression(new_unit)
+            if new_unit.check(self.quantity_dim):
+                self._quantity_units = new_unit
+                self._quantity = self._quantity.to(new_unit)
+                self._capacity = self._capacity.to(new_unit)
+                self.overflow = self.overflow.to(new_unit / U.day)
+                self.outflow = self.outflow.to(new_unit / U.day)
+            else:
+                m = "Wrong dimension. Should be in terms of " + str(self.quantity_dim) + '.'
+                raise WrongUnits(m)
+        except AttributeError or U.errors.UndefinedUnitError:
+            m = "Undefined unit dimension! Should be in terms of " + str(self.quantity_dim) + '.'
+            raise WrongUnits(m)
+        
+    
     @property  # when you do Store.quantity, it will call this function
     def quantity(self):
-        return self.__quantity
+        return self._quantity
 
     @quantity.setter  # when you do Store.quantity = x, it will call this function
     def quantity(self, amount):
         """Set the amount but limit it to the bounds immediately.
             Parameters
             ----------
-            amount : float
+            amount : Quantity
                 user defined amount to replace the existing _quantity
 
             Returns
             -------
-            self._quantity : float
+            self._quantity : Quantity
                 The new _quantity of the store
         """
-        if amount > self.capacity:
-            self.__quantity = self.capacity
-        elif amount < 0.0:
-            self.__quantity = 0.0
-        else:
-            self.__quantity = amount
-        return self.__quantity
+        
+        try:
+            if amount.check(self.quantity_dim):
+                self._quantity = amount.to(self._quantity_units)
+            else:
+                m = "Wrong dimension. Should be in terms of " + str(self.quantity_dim) + '.'
+                raise WrongUnits(m)
+        except AttributeError:
+            self._quantity = amount * self._quantity_units
+        
+        ec.checkPositive(amount, "quantity")
+        
+        
+        self.update(0 * self._quantity_units/U.day, 0 * self._quantity_units/U.day)
 
-    def update(self, inflow, request=0.0):
+        return self._quantity
+
+    @property  # when you do Store.capacity, it will call this function
+    def capacity(self):
+        return self._capacity
+
+    @capacity.setter  # when you do Store.capacity = x, it will call this function
+    def capacity(self, new_capacity):
+        """Set the amount but limit it to the bounds immediately.
+            Parameters
+            ----------
+            new_capacity : Quantity
+                user defined amount to replace the existing _capacity
+
+            Returns
+            -------
+            self._capacity : Quantity
+                The new _capacity of the store
+        """
+        
+        try:
+            if new_capacity.check(self.quantity_dim):
+                new_capacity = new_capacity.to(self._quantity_units)
+            else:
+                m = "Wrong dimension. Should be in terms of " + str(self.quantity_dim) + '.'
+                raise WrongUnits(m)
+        except AttributeError:
+            new_capacity = new_capacity * self._quantity_units
+
+        ec.checkPositive(new_capacity, "capacity")
+        
+        if new_capacity < self._quantity:
+            self.overflow = (self._quantity - new_capacity) / U.day
+            self._capacity = new_capacity
+            self._quantity = new_capacity
+        else:
+            self.overflow = 0.0 * self._quantity_units
+            self._capacity = new_capacity
+        return self._capacity
+
+    def update(self, inflow, request):
         """Updates the _quantity given inflow and request being applied
 
         If _quantity ends up out of bounds (upper or lower) then it is
@@ -89,9 +166,9 @@ class Store(Aegis):
 
         Parameters
         ----------
-        inflow : float
+        inflow : Quantity (rate)
             Inflowing material to the store
-        request : float, optional
+        request : Quantity (rate)
             Request to discharge from the store (if available)
             if available, then the request becomes outflow
 
@@ -104,18 +181,19 @@ class Store(Aegis):
         ec.checkPositive(inflow, "inflow")
         ec.checkPositive(request, "request")
 
-        overflow = 0.0
-        outflow = 0.0
-        temp_quantity = self.quantity + inflow - request
+        overflow = 0.0 * self._quantity_units / U.day
+        outflow = 0.0 * self._quantity_units / U.day
+        temp_quantity = self._quantity + (inflow - request) * U.day
 
-        if temp_quantity > self.capacity:
-            overflow = temp_quantity - self.capacity
+        if temp_quantity > self._capacity:
+            overflow = (temp_quantity - self._capacity) / U.day
             outflow = request
-        elif temp_quantity < 0.0:
-            outflow = request + temp_quantity
+            temp_quantity = self._capacity
+        elif temp_quantity < 0.0 * self._quantity_units:
+            outflow = request + temp_quantity / U.day
         else:
             outflow = request
 
         self.overflow = overflow
         self.outflow = outflow
-        self.quantity = temp_quantity
+        self._quantity = temp_quantity

@@ -6,9 +6,6 @@ def friction_loss(pipe, flow_rate, method='HW'):
     """Function that takes a reach of pipe and flow rate then returns the head loss
         due to friction.
         
-        #TODO: add metric option
-        #TODO: add D-W calculation option
-        
         Parameters
         ----------
         pipe : Pipe object

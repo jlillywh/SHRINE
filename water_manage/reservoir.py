@@ -1,7 +1,8 @@
 from water_manage.store import Store
-import pandas as pd
+import numpy as np
 import math
 from inputs.constants import WATER_DENSITY, G
+from inputs.constants import U
 
 
 class Reservoir(Store):
@@ -41,14 +42,16 @@ class Reservoir(Store):
     
         
     """
-    def __init__(self):
-        Store.__init__(self)
-        self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
-        self.spillway_crest = 10.0
+    def __init__(self, quantity=0.0 * U.m3):
+        Store.__init__(self, quantity)
+        self.elevations = [0.0,5.0,20.0] * U.m
+        self.volumes = [0.0, 100.0, 520.0] * U.m**3
+        #self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
+        self.spillway_crest = 10.0 * U.m
         self.spillway_type = 'broad'
-        self.bottom = 0.0
-        self.water_level = 7.5
-        self.outlet_elevation = 3.75
+        self.bottom = 0.0 * U.m
+        self.water_level = 7.5 * U.m
+        self.outlet_elevation = 3.75 * U.m
     
     @property
     def update_water_level(self):
@@ -60,7 +63,7 @@ class Reservoir(Store):
             interpolation on a lookup table (DataFrame)
         """
         
-        self.water_level = 0.0104 * math.exp(0.059 * self.__quantity)
+        self.water_level = np.interp(self._quantity, self.volumes, self.elevations) * U.m
         
     def spillway_flow(self):
         """Calculate the spillway flow based on the weir equation
@@ -72,16 +75,16 @@ class Reservoir(Store):
             For ogee weir:
             
         """
-        spill_flow = 0.0
-        spillway_volume = 16.864 * math.log(self.__quantity) + 77.23
+        spill_flow = 0.0 * U.m3/U.day
+        spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes) * self._quantity_units
         
         if self.water_level > self.spillway_crest:
             h = self.water_level - self.spillway_crest
-            v = self.__quantity - spillway_volume
+            v = self._quantity - spillway_volume
             spill_flow = h * G / WATER_DENSITY #Broad crested weir (needs to be fixed!)
-            spill_flow = min(spill_flow, v)
+            spill_flow = min(spill_flow, v/U.day)
             
-            self.__quantity -= spill_flow
+            self._quantity -= spill_flow * U.day
             self.update_water_level()
         
         return spill_flow

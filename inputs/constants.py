@@ -7,7 +7,8 @@ ArrayLabelSet = SetLabel()
 Months = ArrayLabelSet.get_list('Months')
 
 # Set up the units of measurement database
-U = pint.UnitRegistry()
+# I am using auto reduction of dimensions but this could be expensive so be aware!
+U = pint.UnitRegistry(auto_reduce_dimensions=True)
 
 # load the custom units file
 try:

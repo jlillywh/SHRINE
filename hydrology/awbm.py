@@ -1,6 +1,8 @@
 from validation import errorChecks as ec
 from water_manage.store import Store
+from inputs.constants import U
 from water_manage.store_array import StoreArray
+
 
 class Awbm:
     """A class used to represent a rainfall outflow object
@@ -49,20 +51,20 @@ class Awbm:
     def __init__(self):
         self.partial_area_fraction = [0.134, 0.433, 0.433]
 
-        self.depth_comp_capacity = [37.44, 324.4, 146.6]
+        self.depth_comp_capacity = [37.44, 324.4, 146.6] * U.mm
         self.baseflow_index = 0.658
         self.surface_recession = 0.869
-        self.surface = Store(0.0)
+        self.surface = Store(0.0 * U.mm)
         self.baseflow_recession = 0.309
-        self.base = Store(0.0)
+        self.base = Store(0.0 * U.mm)
 
         self.bucket_count = 3
-        bucket_capacities = [0.0]*self.bucket_count
+        bucket_capacities = [0.0 * U.mm] * self.bucket_count
         for i in range(self.bucket_count):
             bucket_capacities[i] = self.partial_area_fraction[i] * self.depth_comp_capacity[i]
 
         self.buckets = StoreArray(self.bucket_count)
-        self.buckets.set_quantities([0.0, 0.0, 0.0])
+        self.buckets.set_quantities([0.0, 0.0, 0.0] * U.mm)
         self.buckets.set_capacity(bucket_capacities)
 
     def _bucket_overflow(self, inflow, outflow):
@@ -83,7 +85,7 @@ class Awbm:
             sum_overflow : float
                 the sum of overflows from all the buckets
         """
-        sum_overflow = 0.0
+        sum_overflow = 0.0 * U.mm/U.day
         for i in range(len(self.buckets)):
             self.buckets[i].update(inflow[i], outflow[i])
             sum_overflow += self.buckets[i].overflow
@@ -129,10 +131,10 @@ class Awbm:
         to_surface = overflow * (1.0 - self.baseflow_index)
 
         # Surface outflow solved using recession outflow
-        self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface.quantity)
+        self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface.quantity / U.day)
 
         # Baseflow outflow solved using recession outflow
-        self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base.quantity)
+        self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base.quantity / U.day)
 
         # Sum surface and baseflow
         return self.surface.outflow + self.base.outflow
@@ -146,7 +148,7 @@ class Awbm:
 
         # If these tests pass, reassign the array depths now
         self.partial_area_fraction = new_fractions
-        bucket_capacities = [0.0] * self.bucket_count
+        bucket_capacities = [0.0 * U.mm] * self.bucket_count
         for i in range(self.bucket_count):
             bucket_capacities[i] = new_fractions[i] * self.depth_comp_capacity
         self.buckets.set_capacity(bucket_capacities)
@@ -165,7 +167,7 @@ class Awbm:
 
         # If this test passes, reassign the array depths now
         self.depth_comp_capacity = new_capacities
-        bucket_capacities = [0.0] * self.bucket_count
+        bucket_capacities = [0.0 * U.mm] * self.bucket_count
         for i in range(self.bucket_count):
             bucket_capacities[i] = new_capacities[i] * self.partial_area_fraction[i]
         self.buckets.set_capacity(bucket_capacities)

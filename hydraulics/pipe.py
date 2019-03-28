@@ -183,7 +183,6 @@ class Pipe(Aegis):
             Returns
             -------
             flow rate in terms of pint Quantity of 'cfs'
-            #TODO fix this method. Units error
         """
         
         f = lambda q: self.head_loss(q * U.cfs, method) > delta_elevation
