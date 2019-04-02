@@ -30,7 +30,7 @@ class Reservoir(Store):
         bottom : float
             Elevation of the bottom of the reservoir
             
-        water_level : float
+        _water_level : float
             Elevation of the water surface
         
         Methods
@@ -42,30 +42,31 @@ class Reservoir(Store):
     
         
     """
-    def __init__(self, quantity=0.0 * U.m3):
-        Store.__init__(self, quantity)
+    def __init__(self):
+        Store.__init__(self)
         self.elevations = [0.0,5.0,20.0] * U.m
-        self.volumes = [0.0, 100.0, 520.0] * U.m**3
+        self.volumes = [0.0, 10000.0, 520000.0] * U.m**3
         #self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
         self.spillway_crest = 10.0 * U.m
+        self.spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes) * self._quantity_units
         self.spillway_type = 'broad'
         self.bottom = 0.0 * U.m
-        self.water_level = 7.5 * U.m
+        self._water_level = 0.0 * U.m
         self.outlet_elevation = 3.75 * U.m
-    
+        self.weir_coef = 3.2
+        self.weir_length = 1.0 * U.m
+
     @property
-    def update_water_level(self):
-        """Return the water level that corresponds to the current
-            water quantity in the reservoir
-            
-            Currently, this is a simple exponential relationship
-            between depth and volume. Later, we need to perform
-            interpolation on a lookup table (DataFrame)
-        """
-        
-        self.water_level = np.interp(self._quantity, self.volumes, self.elevations) * U.m
-        
-    def spillway_flow(self):
+    def water_level(self):
+        return self._water_level
+
+    @water_level.setter
+    def water_level(self, new_water_level):
+        self._water_level = new_water_level
+        self._quantity = np.interp(self._water_level, self.elevations, self.volumes) * U.m**3
+        self.update(0 * self._rate_units, 0 * self._rate_units)
+    
+    def calc_overflow(self):
         """Calculate the spillway flow based on the weir equation
         
             For broad-crested weir:
@@ -75,18 +76,23 @@ class Reservoir(Store):
             For ogee weir:
             
         """
-        spill_flow = 0.0 * U.m3/U.day
-        spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes) * self._quantity_units
         
-        if self.water_level > self.spillway_crest:
-            h = self.water_level - self.spillway_crest
-            v = self._quantity - spillway_volume
-            spill_flow = h * G / WATER_DENSITY #Broad crested weir (needs to be fixed!)
-            spill_flow = min(spill_flow, v/U.day)
+        if self._water_level > self.spillway_crest:
             
-            self._quantity -= spill_flow * U.day
-            self.update_water_level()
-        
-        return spill_flow
+            h = self._water_level - self.spillway_crest
+            v = self._quantity - self.spillway_volume
+            # The Kindsvater-Carter: rectangular, sharp-crested weir (suppressed)
+            # Ce * Le|ft| * He|ft|^(3/2) * 1 cfs
+            Ce = 3.28
+            l = self.weir_length.to(U.ft).magnitude
+            h = h.to(U.ft).magnitude
     
+            self.overflow = (self.weir_coef * l * h**(3.0/2.0) *
+                             U.cfs).to(U.m3/U.day)
+            self.overflow = min(self.overflow, v/U.day)
+    
+            self._quantity -= self.overflow * U.day
+            self.water_level = np.interp(self._quantity,
+                                         self.volumes, self.elevations) * U.m
+
 

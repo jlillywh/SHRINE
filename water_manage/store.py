@@ -35,7 +35,7 @@ class Store(Aegis):
             updates _quantity while ensuring bounds respected
     """
 
-    def __init__(self, quantity=10 * U.m**3):
+    def __init__(self, quantity=0.0 * U.m**3):
         """
         Parameters
         ----------
@@ -52,9 +52,12 @@ class Store(Aegis):
         self._quantity = quantity
         self.quantity_dim = quantity.dimensionality
         self._quantity_units = quantity.units
+        self._rate_units = self._quantity_units / U.day
         self._capacity = float("inf") * self._quantity_units
+        self.inflow = 0.0 * self._quantity_units
         self.overflow = max(quantity - self._capacity, 0.0 * self._quantity_units) / U.day
-        self.outflow = 0.0 * self._quantity_units / U.day
+        self.request = 0.0 * self._quantity_units
+        self.outflow = 0.0 * self._rate_units
 
     @property  # when you do Store.quantity_units, it will call this function
     def quantity_units(self):
@@ -74,10 +77,11 @@ class Store(Aegis):
             new_unit = U.parse_expression(new_unit)
             if new_unit.check(self.quantity_dim):
                 self._quantity_units = new_unit
+                self._rate_units = self._quantity_units / U.day
                 self._quantity = self._quantity.to(new_unit)
                 self._capacity = self._capacity.to(new_unit)
-                self.overflow = self.overflow.to(new_unit / U.day)
-                self.outflow = self.outflow.to(new_unit / U.day)
+                self.overflow = self.overflow.to(self._rate_units)
+                self.outflow = self.outflow.to(self._rate_units)
             else:
                 m = "Wrong dimension. Should be in terms of " + str(self.quantity_dim) + '.'
                 raise WrongUnits(m)
@@ -116,7 +120,7 @@ class Store(Aegis):
         ec.checkPositive(amount, "quantity")
         
         
-        self.update(0 * self._quantity_units/U.day, 0 * self._quantity_units/U.day)
+        self.update(0 * self._rate_units, 0 * self._rate_units)
 
         return self._quantity
 
@@ -180,20 +184,24 @@ class Store(Aegis):
 
         ec.checkPositive(inflow, "inflow")
         ec.checkPositive(request, "request")
+        
+        self.inflow = inflow
+        self.request = request
 
-        overflow = 0.0 * self._quantity_units / U.day
-        outflow = 0.0 * self._quantity_units / U.day
-        temp_quantity = self._quantity + (inflow - request) * U.day
+        self._quantity += (self.inflow - self.request) * U.day
 
-        if temp_quantity > self._capacity:
-            overflow = (temp_quantity - self._capacity) / U.day
-            outflow = request
-            temp_quantity = self._capacity
-        elif temp_quantity < 0.0 * self._quantity_units:
-            outflow = request + temp_quantity / U.day
+        self.calc_overflow()
+        self.calc_outflow()
+        
+    def calc_overflow(self):
+        if self._quantity > self._capacity:
+            self.overflow = (self._quantity - self._capacity) / U.day
+            self._quantity = self._capacity
         else:
-            outflow = request
-
-        self.overflow = overflow
-        self.outflow = outflow
-        self._quantity = temp_quantity
+            self.overflow = 0.0 * self._quantity_units / U.day
+            
+    def calc_outflow(self):
+        if self._quantity < 0.0 * self._quantity_units:
+            self.outflow = self.request + self._quantity / U.day
+        else:
+            self.outflow = self.request
