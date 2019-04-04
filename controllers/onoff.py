@@ -29,43 +29,52 @@ class OnOff:
             Parameters
             ----------
             measurement : Quantity
-                This is the state variable that we are monitoring in measurement to the set_point
+                This is the state variable that we are monitoring in measurement to the _set_point
             direction: str
                 The choices are 'UP' or 'DOWN'
                 A positive value indicates that rate inputs add to the measurement to bring the
-                measurement up to the set_point
+                measurement up to the _set_point
             set_point: Quantity
-                The set_point is the value sought by the measurement quantity.
+                The _set_point is the value sought by the measurement quantity.
             deadband : Quantity
-                The range of dead zone around the set_point. No change of state will occur within
+                The range of dead zone around the _set_point. No change of state will occur within
                 this zone
             deadband_justify : str
-                This defines how the deadband is situated relative to the set_point. A value of
-                'center' means the set_point lies exactly in the center of the dead band. A value
+                This defines how the deadband is situated relative to the _set_point. A value of
+                'center' means the _set_point lies exactly in the center of the dead band. A value
                 of 'top' means the targt lies at the very bottom of the deadband while 'bottom'
-                indicates that the set_point lies at the bottom of the deadband.
+                indicates that the _set_point lies at the bottom of the deadband.
             init_status: bool
                 Starting status value. This is the state of the controller. True means "on" and
                 False means "off."
             
         """
         self.direction = direction
-        self.set_point = set_point
         self.deadband = deadband
         self.deadband_justify = deadband_justify
+        self.set_point = set_point
+        
+        self.status = init_status
+        
+    @property
+    def set_point(self):
+        return self._set_point
+    
+    @set_point.setter
+    def set_point(self, new_set_point):
+        self._set_point = new_set_point
+        
         if self.deadband_justify == 'center':
-            self.upper = self.set_point + deadband / 2.0
-            self.lower = self.set_point - deadband / 2.0
+            self.upper = self._set_point + self.deadband / 2.0
+            self.lower = self._set_point - self.deadband / 2.0
         elif self.deadband_justify == 'top':
-            self.upper = self.set_point + deadband
-            self.lower = self.set_point
+            self.upper = self._set_point + self.deadband
+            self.lower = self._set_point
         elif self.deadband_justify == 'bottom':
-            self.lower = self.set_point - deadband
-            self.upper = self.set_point
+            self.lower = self._set_point - self.deadband
+            self.upper = self._set_point
         else:
             AssertionError("Center, Top, Bottom only")
-            
-        self.status = init_status
     
     def update(self, new_measurement):
         """reports the status of the control object
