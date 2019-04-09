@@ -11,7 +11,7 @@ class TestStoresCase(unittest.TestCase):
         #TODO: add test for transferring _quantity from one item to another.
         """
 
-        self.sa = StoreArray(4)
+        self.sa = StoreArray(4, unit=U.m3)
         inflow = [2.5, 7.8, 23.65, 5.23] * U.m3/U.day
         outflow = [11.0, 0.0, 2.2, 100.0] * U.m3/U.day
         self.sa.update(inflow, outflow)

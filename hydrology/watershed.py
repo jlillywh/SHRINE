@@ -3,6 +3,8 @@ from hydrology.catchment import Catchment
 from hydrology.junction import Junction
 import networkx as nx
 import matplotlib.pyplot as plt
+from inputs.constants import U
+
 
 class Watershed(Aegis):
     """ This class is used to create a watershed consisting of
@@ -72,7 +74,7 @@ class Watershed(Aegis):
         self.network.add_node(self.source_node, node_type=100)
         # self.network.add_node(self.source_node, node_type=100)
         self.sink_node = Junction('J1')
-        self.outflow = 0.0
+        self.outflow = 0.0 * U.m3/U.day
         self.network.add_node(self.sink_node.name, node_type=300)
         self.network.add_node('C1', node_type=200)
         self.network.add_edge(self.source_node, 'C1')

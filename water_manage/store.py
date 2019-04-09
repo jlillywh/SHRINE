@@ -203,5 +203,6 @@ class Store(Aegis):
     def calc_outflow(self):
         if self._quantity < 0.0 * self._quantity_units:
             self.outflow = self.request + self._quantity / U.day
+            self._quantity = 0.0 * self._quantity_units
         else:
             self.outflow = self.request

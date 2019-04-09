@@ -1,5 +1,7 @@
 from global_attributes.aegis import Aegis
 from hydrology.awbm import Awbm
+from inputs.constants import U
+
 
 class Catchment(Aegis):
     """
@@ -27,7 +29,7 @@ class Catchment(Aegis):
         updates the outflow attribute
     """
 
-    def __init__(self, name="catchment1", area=100.0):
+    def __init__(self, name="catchment1", area=100.0 * U.km**2):
         """
 
         Attributes
@@ -50,7 +52,7 @@ class Catchment(Aegis):
         self.name = name
         self.area = area
         self.runoff_method = Awbm()
-        self.outflow = 0.0
+        self.outflow = 0.0 * U.m3/U.day
 
     def update_runoff(self, precip, et):
         """calculates the runoff rate based for the catchment
@@ -68,6 +70,4 @@ class Catchment(Aegis):
             NA
         """
 
-        area_meters = self.area * 1.0e6       #convert from km2 to m2
-        outflow_meters = self.runoff_method.runoff(precip, et) * 1.0e-3
-        self.outflow = outflow_meters * area_meters
+        self.outflow = self.runoff_method.runoff(precip, et) * self.area

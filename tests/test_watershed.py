@@ -2,6 +2,7 @@ import unittest
 from hydrology.watershed import Watershed
 from hydrology.catchment import Catchment
 from data.fileman import FileManager
+from inputs.constants import U
 
 
 class TestWatershed(unittest.TestCase):
@@ -22,15 +23,15 @@ class TestWatershed(unittest.TestCase):
         
     def testOutflowLargeWatershed(self):
         """Outflow == defined value"""
-        precip = 6.54
-        et = 0.25
+        precip = 6.54 * U.mm / U.day
+        et = 0.25 * U.mm / U.day
         
         precision = 1
 
         for i in range(0, 10):
             self.w.update(precip, et)
 
-        self.assertAlmostEqual(self.w.outflow, 383432.0, precision)
+        self.assertAlmostEqual(self.w.outflow, 383432.0 * U.m3/U.day, precision)
 
     def testGettingWatershed(self):
         """Make sure you can get a node when requested."""
