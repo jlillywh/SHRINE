@@ -1,17 +1,15 @@
-from results.live_plotter import live_plotter
-import numpy as np
-import datetime
+from inputs.constants import U
+from hydrology.watershed import Watershed
+from data.fileman import FileManager
+import networkx as nx
+fm = FileManager('.\\data_external')
+fm = FileManager('..\\data_external')
+filename = 'watershed_GML_input.gml'
+fm.add_file(filename)
+w = Watershed()
+w.load_from_file(fm.file_list[filename])
+n = w.network
 
-base = datetime.datetime.today()
-size = 10
-date_list = [base - datetime.timedelta(days=x) for x in range(0, size)]
+n.adj['J1']['J2']['runoff'] = 99 * U.m3 / U.day
 
-#x_vec = np.linspace(0,1,size+1)[0:-1]
-x_vec = date_list
-y_vec = np.random.randn(len(date_list))
-line1 = []
-while True:
-    rand_val = np.random.randn(1)
-    y_vec[-1] = rand_val
-    line1 = live_plotter(x_vec,y_vec,line1)
-    y_vec = np.append(y_vec[1:],0.0)
+print(n.adj['J1']['J2']['runoff'] )

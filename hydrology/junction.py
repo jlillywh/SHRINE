@@ -1,5 +1,6 @@
 from global_attributes.aegis import Aegis
 from hydrology.catchment import  Catchment
+from inputs.constants import U
 
 class Junction(Aegis):
     def __init__(self, name="J1"):
@@ -47,7 +48,7 @@ class Junction(Aegis):
 
     @property
     def outflow(self):
-        sum = 0.0
+        sum = 0.0 * U.m3 / U.day
         for i in range(len(self.inflows)):
             sum += self.inflows[i].outflow
         return sum

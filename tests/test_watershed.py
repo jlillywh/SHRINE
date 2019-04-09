@@ -16,6 +16,8 @@ class TestWatershed(unittest.TestCase):
         
         self.w = Watershed()
         self.w.load_from_file(fm.file_list[filename])
+        self.w.network.adj['J1']['J2']['runoff'] = 9999 * U.m3 / U.day
+        self.w.network.adj['J2']['J3']['runoff'] = 9999 * U.m3 / U.day
 
     def tearDown(self):
         """Destroy the object after running tests"""
