@@ -23,10 +23,6 @@ class Watershed(Aegis):
 
         Attributes
         ----------
-            junctions : Array(Junction)
-                node_type = 300
-            catchments : Array(Catchments)
-                node_type = 200
             source_node : Atmosphere
                 node_type = 100
             sink_node : Junction
@@ -92,7 +88,6 @@ class Watershed(Aegis):
             ----------
                 precip : float
                 et : float
-                junction : Junction
         """
         for node in self.network.nodes:
             if self.network.nodes[node]['node_type'] == 200:
@@ -100,14 +95,6 @@ class Watershed(Aegis):
                 catchment.update_runoff(precip, et)
                 scr = list(self.network.successors(node))[0]
                 self.network.edges[node, scr]['runoff'] = catchment.outflow
-
-        # Calculate runoff then assign to edge one at a time
-        #runoff_c1 = self.network.nodes['C1']['node_type'].outflow
-        #self.network.edges['C1', 'J1']['runoff'] = runoff_c1
-
-        # or do it all at once using an attribute hash
-        #runoff_hash = {('C1', 'J1'): runoff_c1, ('A', 'C1'): 2.6}
-        #nx.set_edge_attributes(self.network, runoff_hash, 'runoff')
 
         # Use the max_flow algorithm to calculate the total flow from the watershed
         flow_value, flow_dict = nx.maximum_flow(self.network, self.source_node, self.sink_node.name, capacity='runoff')
