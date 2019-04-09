@@ -58,7 +58,7 @@ class Scalar(Aegis):
             self.data = self._value * self._unit
         else:
             self._unit = None
-            self.data = self._value
+            self.data = self._valuen * self._unit
         if 'description' in kwargs:
             self.description = kwargs['description']
         else:

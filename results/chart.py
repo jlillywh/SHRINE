@@ -8,9 +8,9 @@ from pandas import Series
 class Chart(Aegis):
     """Class to create a generic charting object
     """
-    def __init__(self, name):
+    def __init__(self):
         Aegis.__init__(self)
-        self.update_title(name)
+        self.update_title(self.name)
         self.ylabel = ''
         self.xlabel = ''
         self.unit = ''
@@ -21,7 +21,7 @@ class Chart(Aegis):
         self.space_bottom = 0.1
         
     def show(self):
-        self.num_outputs = len(self.values)
+        self.num_outputs = len(self.outputs)
         self.y_pos = np.arange(self.num_outputs)
         plt.ylabel(self.ylabel)
         plt.xlabel(self.xlabel)
