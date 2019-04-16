@@ -58,7 +58,7 @@ class Scalar(Aegis):
             self.data = self._value * self._unit
         else:
             self._unit = None
-            self.data = self._valuen * self._unit
+            self.data = self._value * self._unit
         if 'description' in kwargs:
             self.description = kwargs['description']
         else:
@@ -146,8 +146,10 @@ class Vector(Aegis):
         v = [0] * len(value_list)
         if unit:
             self._unit = U.parse_expression(unit)
-            for i in range(value_list.shape[0]):
+            for i in range(len(value_list)):
                 v[i] = value_list[i] * self._unit
+        else:
+            self._unit = None
     
         self.data = ArrayLabelSet.get_list(label_set)
         self.data['Values'] = pd.Series(v, index=self.data.index)
@@ -204,4 +206,30 @@ class Vector(Aegis):
             except AttributeError:
                 for i in range(len(self.magnitude)):
                     self.data.iloc[i, 1] = self.data.iloc[i, 1] * self._unit
+                break
+    
+    def random(self, min, max):
+        """Initialize the vector with random numbers ranging from min to max.
+            
+            Quick way to initialize a vector.
+            
+            Parameters
+            ----------
+            min : float
+            max : float
+            
+        """
+        row_count = len(self.magnitude)
+        self._magnitude = np.random.uniform(min, max, (row_count, 1))
+        while True:
+            try:
+                for i in range(self._magnitude.shape[0]):
+                    self.data.iloc[i, 1] = self._magnitude[i] * self._unit
+                    x = self.data.iloc[i, 1]
+                    y = copy.copy(x)
+                    self._magnitude[i] = y.magnitude
+                break
+            except TypeError:
+                for i in range(len(self.magnitude)):
+                    self.data.iloc[i, 1] = self._magnitude[i]
                 break

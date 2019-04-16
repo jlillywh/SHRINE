@@ -10,7 +10,7 @@ class Chart(Aegis):
     """
     def __init__(self):
         Aegis.__init__(self)
-        self.update_title(self.name)
+        self.update_title(self.name + ' Chart')
         self.ylabel = ''
         self.xlabel = ''
         self.unit = ''

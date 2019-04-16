@@ -18,8 +18,8 @@ class Bar(Chart):
             the bottom of the chart for rotated xaxis labels
     """
     
-    def __init__(self, name):
-        Chart.__init__(self, name)
+    def __init__(self):
+        Chart.__init__(self)
         self.values = []
         self.y_pos = [0]
 
@@ -35,7 +35,7 @@ class Bar(Chart):
             self.ylabel = "[" + str(self.outputs[0].unit) + "]"
         elif type(output) == Vector:
             self.update_title(output.name)
-            self.values = output.values
+            self.values = output._magnitude
             self.output_names = output.index
             self.xlabel = output.listSet
             self.ylabel = '[' + output.unit + ']'
