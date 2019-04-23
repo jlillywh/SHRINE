@@ -9,4 +9,5 @@ input_file = fm.file_list[filename]
 
 t = Table()
 t.load_from_excel(input_file, 'Table', 'a4')
+t.name = "Elevation-Area Table"
 t.plot()

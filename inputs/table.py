@@ -23,7 +23,7 @@ class Table(Aegis):
             Store data from excel into x and y arrays
         
     """
-    def __init__(self, x=[1, 2, 3], y=[0, 2, 1]):
+    def __init__(self, x=[1, 2, 3], y=[0, 2, 5]):
         Aegis.__init__(self)
         self.x = x
         self.x_name = 'x'
@@ -49,11 +49,14 @@ class Table(Aegis):
         index_col = ord(re.findall('^[A-Za-z]+', begin_cell)[0]) - 97
         df = pd.read_excel(filename, sheet_name=sheet, header=header_row)
         print(df)
-        self.x = df['Elevation']
-        self.y = df['Area']
+        self.x = df['Area']
+        self.y = df['Elevation']
+        self.x_name = df.columns.values[1]
+        self.y_name = df.columns.values[0]
     
     def plot(self):
         plt.scatter(self.x, self.y)
-        plt.xlabel = self.x_name
-        plt.ylabel = self.y_name
+        plt.suptitle(self.name)
+        plt.xlabel(self.x_name)
+        plt.ylabel(self.y_name)
         plt.show()
