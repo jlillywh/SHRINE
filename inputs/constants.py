@@ -30,3 +30,5 @@ nu = U.Quantity(water.Liquid.nu, 'm^2/s')
 G = 9.81 * U.m / U.sec**2
 G_english = 32.2
 
+# Default time step
+TS = 1 * U.day
