@@ -16,8 +16,8 @@ class TestWatershed(unittest.TestCase):
         
         self.w = Watershed()
         self.w.load_from_file(fm.file_list[filename])
-        self.w.network.adj['J1']['J2']['runoff'] = 9999 * U.m3 / U.day
-        self.w.network.adj['J2']['J3']['runoff'] = 9999 * U.m3 / U.day
+        self.w.network.adj['J2']['J1']['runoff'] = 9999 * U.m3 / U.day
+        self.w.network.adj['J3']['J2']['runoff'] = 9999 * U.m3 / U.day
 
     def tearDown(self):
         """Destroy the object after running tests"""
@@ -33,7 +33,7 @@ class TestWatershed(unittest.TestCase):
         for i in range(0, 10):
             self.w.update(precip, et)
 
-        self.assertAlmostEqual(self.w.outflow, 383432.0 * U.m3/U.day, precision)
+        self.assertAlmostEqual(self.w.outflow, 137809.7 * U.m3/U.day, precision)
 
     def testGettingWatershed(self):
         """Make sure you can get a node when requested."""

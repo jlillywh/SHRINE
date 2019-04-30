@@ -85,16 +85,16 @@ graph [
     ]
 
     edge [
-        source 301
-        target 302
-        label "Flow from node J1 to node J2"
+        source 302
+        target 301
+        label "Flow from node J2 to node J1"
         runoff 999999.0
     ]
 
     edge [
-        source 302
-        target 303
-        label "Flow from node J2 to node J3"
+        source 303
+        target 302
+        label "Flow from node J3 to node J1"
         runoff 999999.0
     ]
 

@@ -8,7 +8,7 @@ class TestAllocator(unittest.TestCase):
         """Set up a new object to be tested"""
         self.proportional = False
         self.supply = 60 * U.m3
-        self.requests = [10, 40, 35, 2] * U.m3 / U.day
+        self.requests = [10, 40, 35, 18] * U.m3 / U.day
         self.priorities = [2, 2, 3, 1]
         self.a1 = Allocator(self.supply, self.requests, self.priorities, self.proportional)
 
@@ -26,8 +26,18 @@ class TestAllocator(unittest.TestCase):
         self.a1.proportional = False
         self.a1.allocate()
         outflows = self.a1.outflows
-        outlfow_actual = [10, 40, 8, 2, 0] * U.m3/U.day
+        outlfow_actual = [10, 32, 0, 18, 0] * U.m3/U.day
         error = 0.0 * U.m3/U.day
         for i in range(len(outflows)):
             error += abs(outflows[i] - outlfow_actual[i])
-        self.assertAlmostEqual(error, 0.001 * U.m3/U.day, 3)
+        self.assertAlmostEqual(error, 0.0 * U.m3/U.day, 3)
+        
+    def testProportionalPriority(self):
+        self.a1.proportional = True
+        self.a1.allocate()
+        outflows = self.a1.outflows
+        outlfow_actual = [8.4, 33.6, 0, 18, 0] * U.m3/U.day
+        error = 0.0 * U.m3/U.day
+        for i in range(len(outflows)):
+            error += abs(outflows[i] - outlfow_actual[i])
+        self.assertAlmostEqual(error, 0.0 * U.m3/U.day, 3)

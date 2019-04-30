@@ -66,34 +66,31 @@ class Allocator:
                 else:
                     # There are 2 or more priority matches and insufficient amount to meet demands
                     frac_demand = [0 * self._rate_units for i in count]
-                    self.outflows = [self.outflows[i] if i == self.num_requests else 0 if prior_match[i] else self.outflow[i] for i in count]
+                    self.outflows = [self.outflows[i] if i == self.num_requests else 0 * self._rate_units if prior_match[i] else self.outflows[i] for i in range(len(self.outflows))]
                     if not self.proportional:
                         # share equally when the priorty is the same as others
-                        min_demand = 0 * self._rate_units
-                        min_dem_id = 0
-                        actual_demand = 0 * self._rate_units
                         iterate = num_matches
                         
                         # Iterate over remaining matches
-                        for match in self.demands:
-                            min_demand = min([self.demands[i] - frac_demand[i] if prior_match[i] and not allocated[i] else 1e10 for i in count])
+                        for match in range(iterate):
+                            min_demand = min([self.demands[i] - frac_demand[i] if prior_match[i] and not allocated[i] else 1e10 * self._rate_units for i in count])
                             min_dem_id = min([i if prior_match[i] and not allocated[i] and self.demands[i] - frac_demand[i] == min_demand else 1e10 for i in count])
                             actual_demand = min(remain_amount / (num_matches * TS), min_demand)
-                            for d in frac_demand:
+                            for d in count:
                                 if prior_match[d] and not allocated[d]:
                                     frac_demand[d] += actual_demand
                                     if d == min_dem_id or actual_demand < min_demand:
                                         allocated[d] = True
                                         self.outflows[d] = frac_demand[d]
-                            remain_amount -= num_matches * actual_demand
+                            remain_amount -= num_matches * actual_demand * TS
                             num_matches -= 1
-                        else: # Share proportional to demand
-                            frac_demand = [remain_amount / TS * temp_demand[i] / sum(temp_demand) for i in count]
-                            for dem in frac_demand:
-                                if prior_match[dem]:
-                                    self.outflows[dem] = frac_demand[dem]
-                                    allocated[dem] = True
-                            remain_amount = 0 * self._quantity_units
+                    else: # Share proportional to demand
+                        frac_demand = [remain_amount / TS * temp_demand[i] / sum(temp_demand) for i in count]
+                        for dem in count:
+                            if prior_match[dem]:
+                                self.outflows[dem] = frac_demand[dem]
+                                allocated[dem] = True
+                        remain_amount = 0 * self._quantity_units
         self.outflows[self.num_requests] = remain_amount / TS
                     
                     
