@@ -33,38 +33,40 @@ class Allocator:
         self.proportional = proportional
         self.remainder = 0 * self._rate_units
         self.num_requests = len(demands)
-        self.outflows = [0 * self._rate_units] * self.num_requests
+        self.outflows = [0 * self._rate_units] * (self.num_requests + 1)
         
     def allocate(self):
         """Iterate over each demand and allocate supply."""
         remain_amount = self.supply
-        ord_priorities = self.priorities.sort()
+        ord_priorities = self.priorities.copy()
+        ord_priorities.sort()
         allocated = [False] * self.num_requests
         prior_match = [False] * self.num_requests
         num_allocations = 0
-        num_demands = 0
+        count = range(self.num_requests)
         num_matches = 0
         temp_demand = [0 * self._rate_units] * self.num_requests
         current_priority = 0
         dem_index = 0
         # Calculate the allocation quantities
-        for prior in self.priorities:
+        for prior in range(len(self.priorities)):
             current_priority = ord_priorities[prior]
-            prior_match = [not allocated[i] and current_priority == self.priorities[i] for i in allocated]
-            num_matches = sum([1 if prior_match[i] else 0 for i in prior_match])
-            temp_demand = [self.demands[i] if prior_match[i] else 0 * self._rate_units for i in prior_match]
+            for i in count:
+                prior_match[i] = not allocated[i] and current_priority == self.priorities[i]
+            num_matches = sum(prior_match)
+            temp_demand = [self.demands[i] if prior_match[i] else 0 * self._rate_units for i in count]
             # Only execute if there is a match
             if num_matches > 0:
                 if num_matches == 1 or sum(temp_demand) * TS <= remain_amount:
                     # There is 1 priority match or amount is sufficient for demands with matching priority
-                    dem_index = min([i if not allocated[i] and current_priority == self.priorities[i] else 1e10 for i in allocated])
-                    self.outflows = [min(remain_amount / TS, self.demands[dem_index]) for i in self.demands]
+                    dem_index = min([i if not allocated[i] and current_priority == self.priorities[i] else 1e10 for i in count])
+                    self.outflows[dem_index] = min(remain_amount / TS, self.demands[dem_index])
                     remain_amount -= self.outflows[dem_index] * TS
                     allocated[dem_index] = True
                 else:
                     # There are 2 or more priority matches and insufficient amount to meet demands
-                    frac_demand = [0 * self._rate_units for i in self.demans]
-                    self.outflows = [self.outflows[i] if i == self.num_requests else 0 if prior_match[i] else self.outflow[i] for i in prior_match]
+                    frac_demand = [0 * self._rate_units for i in count]
+                    self.outflows = [self.outflows[i] if i == self.num_requests else 0 if prior_match[i] else self.outflow[i] for i in count]
                     if not self.proportional:
                         # share equally when the priorty is the same as others
                         min_demand = 0 * self._rate_units
@@ -74,8 +76,8 @@ class Allocator:
                         
                         # Iterate over remaining matches
                         for match in self.demands:
-                            min_demand = min([self.demands[i] - frac_demand[i] if prior_match[i] and not allocated[i] else 1e10 for i in frac_demand])
-                            min_dem_id = min([i if prior_match[i] and not allocated[i] and self.demands[i] - frac_demand[i] == min_demand else 1e10 for i in self.demands])
+                            min_demand = min([self.demands[i] - frac_demand[i] if prior_match[i] and not allocated[i] else 1e10 for i in count])
+                            min_dem_id = min([i if prior_match[i] and not allocated[i] and self.demands[i] - frac_demand[i] == min_demand else 1e10 for i in count])
                             actual_demand = min(remain_amount / (num_matches * TS), min_demand)
                             for d in frac_demand:
                                 if prior_match[d] and not allocated[d]:
@@ -86,13 +88,13 @@ class Allocator:
                             remain_amount -= num_matches * actual_demand
                             num_matches -= 1
                         else: # Share proportional to demand
-                            frac_demand = [remain_amount / TS * temp_demand[i] / sum(temp_demand) for i in frac_demand]
+                            frac_demand = [remain_amount / TS * temp_demand[i] / sum(temp_demand) for i in count]
                             for dem in frac_demand:
                                 if prior_match[dem]:
                                     self.outflows[dem] = frac_demand[dem]
                                     allocated[dem] = True
                             remain_amount = 0 * self._quantity_units
-        self.outflows[len(self.demands) + 1] = remain_amount / TS
+        self.outflows[self.num_requests] = remain_amount / TS
                     
                     
                     
