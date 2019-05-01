@@ -9,11 +9,9 @@ class Allocator:
         ----------
         supply : Quantity
             The supply that is being allocated
-        requests : dictonary of Quantity rates
+        requests : list of Request objects
             Individual requests being made on the source with each having a name associated with
-            the requested amount
-        priorities : list of int
-            Priority of each of the demands where lower values indicates higher priority
+            the requested amount along with a priority number
         proportional : bool
             Flag for proportional curtailment if sum demands > supply
             True: that curtailment of request is shared among all demands proportional to it's demand.
