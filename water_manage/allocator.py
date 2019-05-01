@@ -35,6 +35,7 @@ class Allocator:
         self.outflows = [0 * self._rate_units] * (self.num_requests + 1)
         self.remain_amount = self.supply
         self.allocated = [False] * self.num_requests
+        self.deliveries = {}
     
     def allocate(self):
         """Iterate over each demand and allocate supply."""
@@ -75,6 +76,16 @@ class Allocator:
                     else: # Share proportional to demand
                         self.share_proportional(temp_demand, prior_match)
         self.outflows[self.num_requests] = self.remain_amount / const.TS
+        self.build_delivery()
+        
+    def build_delivery(self):
+        for i in range(len(self.outflows)):
+            if i < len(self.outflows) - 1:
+                name = self.requests[i].name
+            else:
+                name = 'remainder'
+            amount = self.outflows[i]
+            self.deliveries[name] = amount
     
     def share_proportional(self, temp_demand, prior_match):
         for r in range(self.num_requests):
