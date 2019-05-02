@@ -44,7 +44,7 @@ class Reservoir(Store):
     """
     def __init__(self):
         Store.__init__(self)
-        self.elevations = [0.0,5.0,20.0] * U.m
+        self.elevations = [0.0, 5.0, 20.0] * U.m
         self.volumes = [0.0, 10000.0, 520000.0] * U.m**3
         #self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
         self.spillway_crest = 10.0 * U.m
