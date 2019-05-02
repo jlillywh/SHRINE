@@ -1,5 +1,3 @@
-import inputs.constants as const
-from water_manage.request import Request
 
 
 class Allocator:
@@ -12,13 +10,13 @@ class Allocator:
         requests : list of Request objects
             Individual requests being made on the source with each having a name associated with
             the requested amount along with a priority number
-        outflows : list of rate Quantities
-            The resulting deliveries from the source of each demand
+        deliveries : dict
+            The dictionary is a list of named deliveries
             Note that curtailment of request is shared among all demands proportional to it's demand.
-        
+
         Methods
         -------
-        outflows() : calculates the outflow for each request
+        update() : calculates the delivery to each request
         
     """
     def __init__(self, supply, requests):
@@ -26,11 +24,8 @@ class Allocator:
         self.supply = supply
         self._units = supply.units
         self.requests = sorted(requests, key=lambda x: x.priority)
-        self.remainder = 0 * self._units
         self.num_requests = len(requests)
-        self.outflows = [0 * self._units] * (self.num_requests + 1)
         self.remain_amount = self.supply
-        self.allocated = [False] * self.num_requests
         self.deliveries = {}
     
     def update(self):
@@ -48,51 +43,57 @@ class Allocator:
             
             Returns
             -------
-            outflows : list of tuples (name, amount)
+            None
         """
         i = 0
         while True:
             # Iterate over the requests until the end is hit.
-            
             if i == self.num_requests:
-                # self.allocate(cluster, first_index)
-                # self.outflows[i+1] = self.remain_amount
+                # After we iterate over all requests, add just one more for remainder
                 self.deliveries['remainder'] = self.remain_amount
                 break
                 
-            cluster_index = i
-            first_index = cluster_index
-            cluster = [self.requests[i]]
+            first_index = i
+            # Group all requests with equal priority
+            request_group = [self.requests[i]]
 
             while True:
-                # Find all subsequent requests from the current one that have the same priority
-                # The group of requests with the same priority are called a "cluster"
-                # start with the first in the cluster
-                if cluster_index == self.num_requests - 1:
+                # Find all subsequent requests that have the same priority
+                # The group of requests with the same priority are called a "request_group"
+                # Start with the first in the request_group
+                if i == self.num_requests - 1:
                     # We are looking at the last request in the list
-                    cluster_index += 1
+                    i += 1
                     break
-                this_request = self.requests[cluster_index]
-                next_request = self.requests[cluster_index + 1]
+                this_request = self.requests[i]
+                next_request = self.requests[i + 1]
                 if this_request.priority == next_request.priority:
-                    # append to cluster
-                    cluster.append(self.requests[cluster_index + 1])
+                    # append to request_group
+                    request_group.append(self.requests[i + 1])
                     # cluster_request_amount += self.requests[cluster_index + 1].amount
-                    cluster_index += 1
+                    i += 1
                 else:
                     # If the end of the list is reached, stop iterating over list of requests
-                    cluster_index += 1
+                    i += 1
                     break
-            i = cluster_index
-            self.allocate(cluster, first_index)
+            self.allocate(request_group, first_index)
             
     def allocate(self, requests, index=0):
+        """Perform allocation of the supply from all requests of the same priority.
+        
+            Parameters
+            ----------
+            requests : list of requests
+                Contains 1 or more requests of equal priority.
+            index : int
+                The index of the first request in the group.
+        """
+        
         request_amount = sum(request.amount for request in requests)
         request_count = len(requests)
         if self.remain_amount >= request_amount:
             for i in range(request_count):
                 amount = self.requests[index + i].amount
-                self.outflows[index + i] = amount
                 name = self.requests[index + i].name
                 self.deliveries[name] = amount
                 self.remain_amount -= amount
@@ -101,7 +102,6 @@ class Allocator:
             for i in range(request_count):
                 curtailment = shortage * self.requests[index + i].amount / request_amount
                 amount = self.requests[index + i].amount - curtailment
-                self.outflows[index + i] = amount
                 name = self.requests[index + i].name
                 self.deliveries[name] = amount
             self.remain_amount = 0.0 * self._units
