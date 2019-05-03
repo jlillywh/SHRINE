@@ -1,4 +1,4 @@
-
+from water_manage.request import Request
 
 class Allocator:
     """The Allocator is used to allocate multiple demands of a finite and limited source amount.
@@ -17,6 +17,7 @@ class Allocator:
         Methods
         -------
         update() : calculates the delivery to each request
+        add_request() : add new request to the list
         
     """
     def __init__(self, supply, requests):
@@ -27,6 +28,19 @@ class Allocator:
         self.num_requests = len(requests)
         self.remain_amount = self.supply
         self.deliveries = {}
+        
+    def add_request(self, name, amount, priority=1):
+        new_request = Request(name, amount, priority)
+        self.requests.append(new_request)
+        self.num_requests = len(self.requests)
+        self.requests = sorted(self.requests, key=lambda x: x.priority)
+        
+    def get_request(self, name):
+        for i in range(self.num_requests):
+            if name == self.requests[i].name:
+                request = self.requests[i]
+                break
+        return request
     
     def update(self):
         """Iterate over each demand and allocate supply.

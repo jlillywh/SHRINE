@@ -24,6 +24,13 @@ class TestAllocator(unittest.TestCase):
         del self.supply
         del self.requests
         
+    def testAddRequest(self):
+        name = 'environmental'
+        amount = 3.65 * U.m3 / U.day
+        self.a1.add_request(name, amount, 4)
+        r = self.a1.get_request(name)
+        self.assertEqual(self.a1.get_request(name).amount, amount)
+        
     def testProportionalPriority(self):
         self.a1.update()
         outflows = self.a1.deliveries
