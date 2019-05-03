@@ -1,11 +1,12 @@
 from water_manage.request import Request
 
+
 class Allocator:
     """The Allocator is used to allocate multiple demands of a finite and limited source amount.
     
         Attributes
         ----------
-        supply : rate Quantity
+        supply : Quantity
             The supply that is being allocated
         requests : list of Request objects
             Individual requests being made on the source with each having a name associated with
@@ -36,6 +37,7 @@ class Allocator:
         self.requests = sorted(self.requests, key=lambda x: x.priority)
         
     def get_request(self, name):
+        request = None
         for i in range(self.num_requests):
             if name == self.requests[i].name:
                 request = self.requests[i]
