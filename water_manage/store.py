@@ -11,14 +11,7 @@ class Store(Aegis):
 
         Attributes
         ----------
-        about_str : str
-            a formatted string to print out the store properties
-        name : str
-            the name of the store
-        quantity : pint Quantity (volume, mass, or length)
-            the amount in the store. Prefixed with underscore because
-            you should never redefine this value without using the
-            "set_quantity" method to ensure bounds are not exceeded.
+        _quantity : pint Quantity (volume, mass, or length)
         capcity : pint Quantity
             the upper bound on _quantity. This must be compatible with
             the quantity unit
