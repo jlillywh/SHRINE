@@ -57,7 +57,7 @@ class Bowl(Aegis):
 
         ax = self.geometry[['Area', 'Volume']].plot(secondary_y=['Volume'])
         ax.set_ylabel('Area [' + str(self.unit**2) + ']')
-        ax.right_ax.set_ylabel('Volume')
+        ax.right_ax.set_ylabel('Volume [' + str(self.unit**3) + ']')
         # set xticks to elev
         ax.set_xticks(self.geometry['Elevation'])
     

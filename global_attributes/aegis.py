@@ -46,7 +46,9 @@ class Aegis:
         
         if name == None:
             self.name = self.__class__.__name__
-        self.class_name = self.name
+        else:
+            self.name = name
+        #self.class_name = self.name
         self.id = next(self._ids)
         if description == None:
             self.description = "An object of " + str(self.name) + " type."
@@ -61,11 +63,11 @@ class Aegis:
             unit = self.unit
         elif type == 2:
             unit = self.unit **2
-        if type(value) == float:
+        if isinstance(value,(float,)):
             value *= unit
             value = value.to_base_units()
             return value.magnitude
-        elif type(value) == list:
+        elif isinstance(value,(list,)):
             new_list = []
             for i in range(len(value)):
                 value[i] *= unit
