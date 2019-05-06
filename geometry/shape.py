@@ -16,32 +16,13 @@ class Shape(Aegis):
         
         Attributes
         ----------
-        size : pint quantity"""
+        size : flt
+    """
     
-    def __init__(self, size=10.0):
-        Aegis.__init__(self)
-        self._size = size * U.meter
-        self.datum = Datum()
-        self.location = self.datum.location
-    
-    @property
-    def x(self):
-        # Horizontal coordinate of the Left side of the shape
-        return self.datum.location[0]
-    
-    @x.setter
-    def x(self, horizontal_position):
-        self.datum.location = (horizontal_position, self.datum.y.magnitude)
-        self.location = self.datum.location
-
-    @property
-    def y(self):
-        # Vertical coordinate of the Left side of the shape
-        return self.datum.location[1]
-
-    @y.setter
-    def y(self, vertical_position):
-        self.datum.location = (self.datum.x.magnitude, vertical_position)
+    def __init__(self, size=10.0, unit='m'):
+        Aegis.__init__(self, unit=unit)
+        self._size = self.to_base_value(size)
+        self.datum = Datum(unit=unit)
         self.location = self.datum.location
     
     def getXt(self):

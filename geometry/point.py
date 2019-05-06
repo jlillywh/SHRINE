@@ -1,5 +1,4 @@
 from global_attributes.aegis import Aegis
-from inputs.constants import U
 
 
 class Point(Aegis):
@@ -26,14 +25,19 @@ class Point(Aegis):
         Allows the user to set a new unit and value is automatically converted
         
     """
-    def __init__(self, x=0, y=0, z=0, unit='meter'):
-        self.unit = U.parse_expression(unit)
-        self.coords = {'x': x * self.unit, 'y': y * self.unit, 'z': z * self.unit}
+    def __init__(self, x=0, y=0, z=0, unit='ft'):
+        Aegis.__init__(self, unit=unit)
+        x = self.to_base_value(x)
+        y = self.to_base_value(y)
+        z = self.to_base_value(z)
+        self.coords = {'x': x, 'y': y, 'z': z}
     
     def coordinates(self):
         """Iterates over the coordinates and returns the value of each"""
         for c in self.coords:
-            print(self.coords[c].magnitude)
+            value = self.coords[c] * self.base_unit
+            value = value.to(self.unit).magnitude
+            print("%.2f" % value)
     
     @property
     def x(self):
@@ -41,7 +45,8 @@ class Point(Aegis):
     
     @x.setter
     def x(self, value):
-        self.coords['x'] = value * self.unit
+        value = self.to_base_value(value)
+        self.coords['x'] = value
     
     @property
     def y(self):
@@ -49,7 +54,8 @@ class Point(Aegis):
     
     @y.setter
     def y(self, value):
-        self.coords['y'] = value * self.unit
+        value = self.to_base_value(value)
+        self.coords['y'] = value
 
     @property
     def z(self):
@@ -57,7 +63,8 @@ class Point(Aegis):
 
     @z.setter
     def z(self, value):
-        self.coords['z'] = value * self.unit
+        value = self.to_base_value(value)
+        self.coords['z'] = value
     
     def set_unit(self, disp_unit):
         """Change the unit for the coordinates of the point.
@@ -78,9 +85,13 @@ class Point(Aegis):
         
         while True:
             try:
-                self.unit = U.parse_expression(disp_unit)
-                for coord in self.coords:
-                    self.coords[coord] = self.coords[coord].to(self.unit)
+                unit = (1 * self.base_unit).to(disp_unit).units
+                for c in self.coords:
+                    value = self.coords[c] * self.base_unit
+                    value = value.to(self.unit).magnitude
+                    value = value * unit
+                    self.coords[c] = value.to(self.base_unit).magnitude
+                self.unit = unit
                 break
     
             except ValueError:
@@ -102,4 +113,4 @@ class Point(Aegis):
                 
         """
         
-        self.coords[direction] += distance * self.unit
+        self.coords[direction] += self.to_base_value(distance)

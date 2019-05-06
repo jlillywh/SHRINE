@@ -1,11 +1,11 @@
-from inputs.constants import U
 import pandas as pd
 from matplotlib import style
 style.use('ggplot')
+from global_attributes.aegis import Aegis
 
 
 
-class Bowl:
+class Bowl(Aegis):
     """Class to create bowl objects used to represent the elevation-area-volume relationship for a reservoir.
     
         Attributes
@@ -24,12 +24,13 @@ class Bowl:
             show areas on x axis and elevations on y
         
     """
-    def __init__(self, elevations, areas):
+    def __init__(self, elevations, areas, unit='ft'):
+        Aegis.__init__(self, unit=unit)
         self.elevations_name = 'Elevation'
-        self.elevations = elevations
+        self.elevations = self.to_base_value(elevations)
         
         self.areas_name = 'Area'
-        self.areas = areas
+        self.areas = self.to_base_value(areas, 2)
         
         self.volumes_name = 'Volume'
         self.volumes = [0.0] * len(self.elevations)
@@ -55,7 +56,7 @@ class Bowl:
         #plt.figure()
 
         ax = self.geometry[['Area', 'Volume']].plot(secondary_y=['Volume'])
-        ax.set_ylabel('Area')
+        ax.set_ylabel('Area [' + str(self.unit**2) + ']')
         ax.right_ax.set_ylabel('Volume')
         # set xticks to elev
         ax.set_xticks(self.geometry['Elevation'])
