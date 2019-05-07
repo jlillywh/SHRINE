@@ -1,21 +1,19 @@
 from water_manage.store import Store
-from global_attributes.constants import U
 
 
 class StoreArray:
     """Create an array of store objects"""
 
-    def __init__(self, count=3, unit=U.mm):
+    def __init__(self, count=3, unit='mm'):
         """The default is 3 stores only because this was initially
         used in the AWBM implementation.
         """
         self.stores = []
         self.count = count
-        self.unit = unit
     
         i = 0
         while i < self.count:
-            self.stores.append(Store(0.0  * self.unit))
+            self.stores.append(Store(0.0, unit))
             i += 1
 
     def __getitem__(self, index):
@@ -54,14 +52,14 @@ class StoreArray:
 
     def total_quantity(self):
         """Return the total _quantity by adding all store quantities"""
-        sum_quantity = 0.0 * self.unit
+        sum_quantity = 0.0
         for i in range(self.count):
             sum_quantity += self.stores[i].quantity
         return sum_quantity
 
     def total_overflow(self):
         """Sum of overflows for all stores"""
-        sum_overflow = 0.0 * self.unit / U.day
+        sum_overflow = 0.0
         i = 0
         while i < self.count:
             sum_overflow += self.stores[i].overflow
@@ -70,7 +68,7 @@ class StoreArray:
 
     def total_outflow(self):
         """Sum of all outflows from the stores"""
-        sum_outflow = 0.0 * self.unit / U.day
+        sum_outflow = 0.0
         i = 0
         while i < self.count:
             sum_outflow += self.stores[i].outflow
@@ -94,8 +92,8 @@ class StoreArray:
         while i < self.count:
             if i == from_index:
                 from_store = self.stores[from_index]
-                from_store.update(0.0 * self.unit / U.day, amount)
-                self.stores[to_index].update(from_store.outflow, 0.0 * self.unit / U.day)
+                from_store.update(0.0, amount)
+                self.stores[to_index].update(from_store.outflow, 0.0)
                 break
             else:
                 i += 1

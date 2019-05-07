@@ -1,7 +1,5 @@
 from validation import errorChecks as ec
 from global_attributes.aegis import Aegis
-from global_attributes.constants import U
-from validation.error import WrongUnits
 
 
 class Store(Aegis):
@@ -135,6 +133,3 @@ class Store(Aegis):
             self._quantity = 0.0
         else:
             self._outflow = self.request
-        
-    
-    
