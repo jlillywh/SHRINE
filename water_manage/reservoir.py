@@ -1,6 +1,5 @@
 from water_manage.store import Store
 import numpy as np
-from global_attributes.constants import U
 
 
 class Reservoir(Store):
@@ -40,19 +39,19 @@ class Reservoir(Store):
     
         
     """
-    def __init__(self):
-        Store.__init__(self)
-        self.elevations = [0.0, 5.0, 20.0] * U.m
-        self.volumes = [0.0, 10000.0, 520000.0] * U.m**3
+    def __init__(self, init_vol=100.0, display_unit='m3'):
+        Store.__init__(self, quantity=init_vol, display_unit=display_unit)
+        self.elevations = [0.0, 5.0, 20.0]
+        self.volumes = [0.0, 10000.0, 520000.0]
         #self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
-        self.spillway_crest = 10.0 * U.m
-        self.spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes) * self._quantity_units
+        self.spillway_crest = 10.0
+        self.spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes)
         self.spillway_type = 'broad'
-        self.bottom = 0.0 * U.m
-        self._water_level = 0.0 * U.m
-        self.outlet_elevation = 3.75 * U.m
+        self.bottom = 0.0
+        self._water_level = 0.0
+        self.outlet_elevation = 3.75
         self.weir_coef = 3.2
-        self.weir_length = 1.0 * U.m
+        self.weir_length = 1.0
 
     @property
     def water_level(self):
@@ -61,8 +60,8 @@ class Reservoir(Store):
     @water_level.setter
     def water_level(self, new_water_level):
         self._water_level = new_water_level
-        self._quantity = np.interp(self._water_level, self.elevations, self.volumes) * U.m**3
-        self.update(0 * self._rate_units, 0 * self._rate_units)
+        self._quantity = np.interp(self._water_level, self.elevations, self.volumes)
+        self.update(0, 0)
     
     def calc_overflow(self):
         """Calculate the spillway flow based on the weir equation
@@ -81,16 +80,16 @@ class Reservoir(Store):
             v = self._quantity - self.spillway_volume
             # The Kindsvater-Carter: rectangular, sharp-crested weir (suppressed)
             # Ce * Le|ft| * He|ft|^(3/2) * 1 cfs
-            Ce = 3.28
-            l = self.weir_length.to(U.ft).magnitude
-            h = h.to(U.ft).magnitude
-    
-            self.overflow = (self.weir_coef * l * h**(3.0/2.0) *
-                             U.cfs).to(U.m3/U.day)
-            self.overflow = min(self.overflow, v/U.day)
-    
-            self._quantity -= self.overflow * U.day
+            # TODO change this to use base units
+            Ce = self.weir_coef
+            l = self.weir_length
+            
+            q = Ce * l * h**(3.0/2.0)
+            q = min(q, v)
+            
+            # TODO put "q" in terms of display units before updating reservoir
+            self.update(0.0, q)
             self.water_level = np.interp(self._quantity,
-                                         self.volumes, self.elevations) * U.m
+                                         self.volumes, self.elevations)
 
 
