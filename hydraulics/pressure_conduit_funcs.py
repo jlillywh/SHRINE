@@ -1,4 +1,4 @@
-from inputs.constants import nu, G, U
+from global_attributes.constants import nu, G, U
 import math
 
 

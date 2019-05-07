@@ -1,7 +1,7 @@
 import unittest
 from water_manage.allocator import Allocator
 from water_manage.request import Request
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class TestAllocator(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestAllocator(unittest.TestCase):
         self.requests = [r1, r2, r3, r4]
         self.a1 = Allocator(self.supply, self.requests)
 
-        # print("Test: " + str(self.s1.getInstanceCount()))
+        # print("Test: " + str(self.s1.get_instance_count()))
     
     def tearDown(self):
         """Destroy the object after running tests"""

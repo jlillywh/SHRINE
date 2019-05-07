@@ -1,6 +1,6 @@
 from validation import errorChecks as ec
 from water_manage.store import Store
-from inputs.constants import U
+from global_attributes.constants import U
 from water_manage.store_array import StoreArray
 
 
@@ -143,8 +143,8 @@ class Awbm:
         """Reset the partial area fractions used for the bucket stores
 
             These fractions are rarely changed. They must add up to 1.0"""
-        ec.checkEqualLength(self.partial_area_fraction, new_fractions)
-        ec.checkValuesAddTo1(new_fractions)
+        ec.check_equal_length(self.partial_area_fraction, new_fractions)
+        ec.check_values_add_to_1(new_fractions)
 
         # If these tests pass, reassign the array depths now
         self.partial_area_fraction = new_fractions
@@ -163,7 +163,7 @@ class Awbm:
                 Capacity for each bucket [mm]
 
             """
-        ec.checkEqualValues(self.bucket_count, len(new_capacities))
+        ec.check_equal_values(self.bucket_count, len(new_capacities))
 
         # If this test passes, reassign the array depths now
         self.depth_comp_capacity = new_capacities

@@ -32,8 +32,8 @@ class TestVector(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
         self.rn = np.random.lognormal(size=12)
-        self.v1 = Vector(self.rn, unit='in/d')
-        self.v2 = Vector(self.rn, unit='in/d')
+        self.v1 = Vector(self.rn, display_unit='in/d')
+        self.v2 = Vector(self.rn, display_unit='in/d')
         self.dec_places = 3
 
     def tearDown(self):

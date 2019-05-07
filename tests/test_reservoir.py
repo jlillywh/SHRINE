@@ -1,6 +1,6 @@
 import unittest
 from water_manage.reservoir import Reservoir
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class TestReservoir(unittest.TestCase):
@@ -10,7 +10,7 @@ class TestReservoir(unittest.TestCase):
         self.r1.water_level = 9.9 * U.m
         self.r1.spillway_crest = 10.9 * U.m
 
-        #print("Test: " + str(self.s1.getInstanceCount()))
+        #print("Test: " + str(self.s1.get_instance_count()))
 
     def tearDown(self):
         """Destroy the object after running tests"""

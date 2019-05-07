@@ -1,6 +1,6 @@
 import unittest
 from controllers.onoff import OnOff
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class TestScalar(unittest.TestCase):

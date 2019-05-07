@@ -1,5 +1,5 @@
 from water_manage.store import Store
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class StoreArray:

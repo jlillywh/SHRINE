@@ -16,7 +16,7 @@ class TimeSeries(Aegis):
         series : pandas Series
         
         """
-    def __init__(self, name='TimeSeries', unit='in', start_date='1/1/2019', periods=365, freq='D'):
+    def __init__(self, name='TimeSeries', display_unit='in', start_date='1/1/2019', periods=365, freq='D'):
         Aegis.__init__(self)
         self.name = name
         range = pd.date_range(start_date, periods=periods, freq=freq)

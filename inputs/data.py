@@ -1,6 +1,5 @@
 from global_attributes.aegis import Aegis
-from global_attributes.set_label import SetLabel
-from inputs.constants import U, ArrayLabelSet
+from global_attributes.constants import U, ArrayLabelSet
 import pandas as pd
 import numpy as np
 import copy
@@ -124,7 +123,7 @@ class Vector(Aegis):
         get_item(key name) : returns float
     """
     
-    def __init__(self, value_list=[0] * 12, unit=None, label_set='Months'):
+    def __init__(self, value_list=[0] * 12, display_unit=None, label_set='Months'):
         """Create a vector using list and array label set name
         
             The standard constructor takes a list of values and a named label set
@@ -133,7 +132,7 @@ class Vector(Aegis):
             
             Parameters
             ----------
-            unit : str (optional)
+            display_unit : str (optional)
             value_list : list
             #TODO make sure value_list length == label_set_array length
             label_set : str (default months of the year, "Months")
@@ -144,8 +143,8 @@ class Vector(Aegis):
         self.listSet = label_set
         self._magnitude = np.asarray(value_list)
         v = [0] * len(value_list)
-        if unit:
-            self._unit = U.parse_expression(unit)
+        if display_unit:
+            self._unit = U.parse_expression(display_unit)
             for i in range(len(value_list)):
                 v[i] = value_list[i] * self._unit
         else:

@@ -1,7 +1,6 @@
 from results.ts_chart import TimeHistoryChart
 from collections import deque
 import random
-from inputs.constants import U
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

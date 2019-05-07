@@ -1,5 +1,5 @@
 import unittest
-from inputs.constants import U
+from global_attributes.constants import U
 from hydrology.awbm import Awbm
 
 

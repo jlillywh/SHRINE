@@ -2,7 +2,7 @@ import unittest
 from hydrology.watershed import Watershed
 from hydrology.catchment import Catchment
 from data.fileman import FileManager
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class TestWatershed(unittest.TestCase):

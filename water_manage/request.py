@@ -1,5 +1,5 @@
 from global_attributes.aegis import Aegis
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class Request(Aegis):

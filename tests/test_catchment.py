@@ -1,6 +1,6 @@
 import unittest
 from hydrology.catchment import Catchment
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class TestCatchment(unittest.TestCase):

@@ -1,8 +1,6 @@
 from water_manage.store import Store
 import numpy as np
-import math
-from inputs.constants import WATER_DENSITY, G
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class Reservoir(Store):

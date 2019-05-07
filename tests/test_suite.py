@@ -1,6 +1,7 @@
 import unittest
 
 # Import all tests here
+import test_aegis
 import test_store
 import test_reservoir
 import test_allocator
@@ -19,6 +20,7 @@ loader = unittest.TestLoader()
 suite = unittest.TestSuite()
 
 # Add test to the test suite
+suite.addTests(loader.loadTestsFromModule(test_aegis))
 suite.addTests(loader.loadTestsFromModule(test_store))
 suite.addTests(loader.loadTestsFromModule(test_awbm))
 suite.addTests(loader.loadTestsFromModule(test_stores_array))

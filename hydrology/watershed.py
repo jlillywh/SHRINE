@@ -3,7 +3,7 @@ from hydrology.catchment import Catchment
 from hydrology.junction import Junction
 import networkx as nx
 import matplotlib.pyplot as plt
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class Watershed(Aegis):

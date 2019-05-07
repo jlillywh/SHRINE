@@ -25,8 +25,8 @@ class Point(Aegis):
         Allows the user to set a new unit and value is automatically converted
         
     """
-    def __init__(self, x=0, y=0, z=0, unit='ft'):
-        Aegis.__init__(self, unit=unit)
+    def __init__(self, x=0, y=0, z=0, display_unit='ft'):
+        Aegis.__init__(self, display_unit=display_unit)
         x = self.to_base_value(x)
         y = self.to_base_value(y)
         z = self.to_base_value(z)

@@ -1,6 +1,6 @@
 import unittest
 from water_manage.store_array import StoreArray
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 

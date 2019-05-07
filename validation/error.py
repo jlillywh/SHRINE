@@ -5,11 +5,13 @@ class Error(Exception):
     
     pass
 
+
 class WrongUnits(Error):
     def __init__(self, m):
         self.message = m
     
     pass
+
 
 class NodeNotFound(Error):
     """Node is not found when searching a list
@@ -17,12 +19,14 @@ class NodeNotFound(Error):
     
     pass
 
+
 class NodeAlreadyExists(Error):
     """Node already exists and you are looking to create a
     unique one.
     """
     
     pass
+
 
 def exception_handler(exception_type, exception, traceback):
     # All your trace are belong to us!

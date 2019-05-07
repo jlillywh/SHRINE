@@ -3,3 +3,5 @@ cfs = cu_ft / second
 sec = second = s
 m3 = m^3
 m2 = m^2
+af = acre*foot
+ft3 = foot^3

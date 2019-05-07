@@ -1,10 +1,9 @@
-import pandas as pd
 from matplotlib import style
 style.use('ggplot')
 
 import unittest
 from geometry.bowl import Bowl
-from inputs.constants import U
+from global_attributes.constants import U
 
 class TestBowl(unittest.TestCase):
     def setUp(self):

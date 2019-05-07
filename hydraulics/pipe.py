@@ -1,8 +1,7 @@
 from global_attributes.aegis import Aegis
 from math import pi
-from inputs.constants import G, nu, U
+from global_attributes.constants import G, U
 from numerical.root_zero import Root
-import math
 from hydraulics.pressure_conduit_funcs import friction_loss
 from validation.error import WrongUnits
 

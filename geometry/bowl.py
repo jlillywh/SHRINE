@@ -24,8 +24,8 @@ class Bowl(Aegis):
             show areas on x axis and elevations on y
         
     """
-    def __init__(self, elevations, areas, unit='ft'):
-        Aegis.__init__(self, unit=unit)
+    def __init__(self, elevations, areas, display_unit='ft'):
+        Aegis.__init__(self, display_unit=display_unit)
         self.elevations_name = 'Elevation'
         self.elevations = self.to_base_value(elevations)
         

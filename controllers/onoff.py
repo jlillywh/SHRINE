@@ -1,4 +1,4 @@
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 

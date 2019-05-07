@@ -1,7 +1,7 @@
-from inputs.constants import U
+from global_attributes.constants import U
 from hydrology.watershed import Watershed
 from data.fileman import FileManager
-import networkx as nx
+
 fm = FileManager('.\\data_external')
 fm = FileManager('..\\data_external')
 filename = 'watershed_GML_input.gml'

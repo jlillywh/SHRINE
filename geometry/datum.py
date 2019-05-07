@@ -6,8 +6,8 @@ class Datum(Point):
         
         A datum is a reference point that has a location
         in space along with an elevation based on a geodetic datum """
-    def __init__(self, elevation=0, unit='ft'):
-        Point.__init__(self, unit=unit)
+    def __init__(self, elevation=0, display_unit='ft'):
+        Point.__init__(self, display_unit=display_unit)
         self._location = (self.x, self.y)
         self.z = self.to_base_value(elevation)
 

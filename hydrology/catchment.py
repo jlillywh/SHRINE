@@ -1,6 +1,6 @@
 from global_attributes.aegis import Aegis
 from hydrology.awbm import Awbm
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class Catchment(Aegis):

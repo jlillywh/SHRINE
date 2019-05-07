@@ -12,7 +12,7 @@ class TestReservoir(unittest.TestCase):
         self.if_true = "Hi"
         self.if_false = "shit!"
 
-        #print("Test: " + str(self.s1.getInstanceCount()))
+        #print("Test: " + str(self.s1.get_instance_count()))
 
     def tearDown(self):
         """Destroy the object after running tests"""

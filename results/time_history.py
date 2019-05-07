@@ -20,10 +20,10 @@ class TimeHistory(Aegis):
 
         """
     
-    def __init__(self, name='TimeHistory', unit='in', clock=Clock()):
+    def __init__(self, name='TimeHistory', display_unit='in', clock=Clock()):
         Aegis.__init__(self)
         self.name = name
-        self.unit = unit
+        self.unit = display_unit
         range = pd.date_range(clock.start_date, clock.range.size, clock.time_step.days)
         """range : pandas DatetimeIndex
             Represents the date range for the time series

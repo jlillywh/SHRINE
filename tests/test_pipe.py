@@ -1,6 +1,6 @@
 import unittest
 from hydraulics.pipe import Pipe
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class TestPipe(unittest.TestCase):

@@ -5,7 +5,7 @@ Created on Thu Nov 15 19:47:42 2012
 """
 from geometry.datum import Datum
 from global_attributes.aegis import Aegis
-from inputs.constants import U
+from global_attributes.constants import U
 
 
 class Shape(Aegis):
@@ -19,10 +19,10 @@ class Shape(Aegis):
         size : flt
     """
     
-    def __init__(self, size=10.0, unit='m'):
-        Aegis.__init__(self, unit=unit)
+    def __init__(self, size=10.0, display_unit='m'):
+        Aegis.__init__(self, display_unit=display_unit)
         self._size = self.to_base_value(size)
-        self.datum = Datum(unit=unit)
+        self.datum = Datum(display_unit=display_unit)
         self.location = self.datum.location
     
     def getXt(self):
