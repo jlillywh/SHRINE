@@ -1,11 +1,10 @@
-from global_attributes.aegis import Aegis
 from global_attributes.constants import U, ArrayLabelSet
 import pandas as pd
 import numpy as np
 import copy
 
 
-class Scalar(Aegis):
+class Scalar:
     """Class for creating constant data for a model.
         
         These objects are intended to be defined at run time
@@ -41,16 +40,14 @@ class Scalar(Aegis):
         value : float
             Default is 0.0
         unit : str
-        description : str
-            What the object represents.
         
         """
-        
-        Aegis.__init__(self)
+
         self._value = value
         self.display_unit = self.parse_unit(unit)
         self.data = value * self.display_unit
-        self.base_unit = ((1 * self.display_unit).to_base_units()).units
+        temp_value = (1 * self.display_unit).to_base_units()
+        self.base_unit = temp_value.units
 
     def to_base_value(self):
         return self.data.to_base_units().magnitude
@@ -95,7 +92,7 @@ class Scalar(Aegis):
         self._value = self.data.magnitude
         
     
-class Vector(Aegis):
+class Vector:
     """Class used to create objects that allow you to store
         constant data in a 1 dimensional array.
         
@@ -132,7 +129,6 @@ class Vector(Aegis):
                 Name of the label set used for the index
         """
         
-        Aegis.__init__(self)
         self.listSet = label_set
         self._magnitude = np.asarray(value_list)
         v = [0] * len(value_list)

@@ -1,7 +1,6 @@
-from global_attributes.aegis import Aegis
 
 
-class Point(Aegis):
+class Point:
     """A class to create a new point in a 3-dimensional space.
     
         This point has x, y, z coordinates in terms of length magnitude
@@ -25,78 +24,59 @@ class Point(Aegis):
         Allows the user to set a new unit and value is automatically converted
         
     """
-    def __init__(self, x=0, y=0, z=0, display_unit='ft'):
-        Aegis.__init__(self, display_unit=display_unit)
-        x = self.to_base_value(x)
-        y = self.to_base_value(y)
-        z = self.to_base_value(z)
-        self.coords = {'x': x, 'y': y, 'z': z}
+    def __init__(self, x_value, y_value, z_value, unit='ft'):
+        self.display_unit = unit
+        self._x = x_value
+        self._y = y_value
+        self._z = z_value
+        self.coords = {'x': self._x, 'y': self._y, 'z': self._z}
     
     def coordinates(self):
         """Iterates over the coordinates and returns the value of each"""
-        for c in self.coords:
-            value = self.coords[c] * self.base_unit
-            value = value.to(self.unit).magnitude
-            print("%.2f" % value)
+        for c in self.coords.values():
+            print("%.2f" % c.value)
     
     @property
     def x(self):
-        return self.coords['x']
+        return self._x
     
     @x.setter
-    def x(self, value):
-        value = self.to_base_value(value)
-        self.coords['x'] = value
+    def x(self, new_value):
+        self._x = new_value
+        self.coords['x'] = new_value
     
     @property
     def y(self):
-        return self.coords['y']
+        return self._y
     
     @y.setter
-    def y(self, value):
-        value = self.to_base_value(value)
-        self.coords['y'] = value
+    def y(self, new_value):
+        self._y = new_value
+        self.coords['y'] = new_value
 
     @property
     def z(self):
-        return self.coords['z']
+        return self._z
 
     @z.setter
-    def z(self, value):
-        value = self.to_base_value(value)
-        self.coords['z'] = value
+    def z(self, new_value):
+        self._z = new_value
+        self.coords['z'] = new_value
     
-    def set_unit(self, disp_unit):
+    def set_unit(self, new_unit):
         """Change the unit for the coordinates of the point.
         
             After you change the unit, the values are automatically updated
             
             Parameters
             ----------
-            disp_unit : str
+            new_unit : str
                 The new unit. This name must exist in the Pint library!
             
-            Exceptions
-            ----------
-            ValueError
-                If the unit name is not found, an error is printed and the
-                values/unit remain unchanged
             """
-        
-        while True:
-            try:
-                unit = (1 * self.base_unit).to(disp_unit).units
-                for c in self.coords:
-                    value = self.coords[c] * self.base_unit
-                    value = value.to(self.unit).magnitude
-                    value = value * unit
-                    self.coords[c] = value.to(self.base_unit).magnitude
-                self.unit = unit
-                break
-    
-            except ValueError:
-                print("Oops!  That was no valid unit.  Try again...")
-                break
+        self.display_unit = new_unit
+        for c in self.coords.values():
+            c.unit = new_unit
 
     def move(self, distance, direction):
         """Move the point by a distance in a direction
@@ -112,5 +92,8 @@ class Point(Aegis):
                 for z, positive = away from you, negative = toward you
                 
         """
-        
-        self.coords[direction] += self.to_base_value(distance)
+        old_location = self.coords[direction]
+        self.coords[direction] = old_location + distance
+        self.x = self.coords['x']
+        self.y = self.coords['y']
+        self.z = self.coords['z']

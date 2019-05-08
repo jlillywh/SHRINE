@@ -22,7 +22,7 @@ class Shape(Aegis):
     def __init__(self, size=10.0, display_unit='m'):
         Aegis.__init__(self, display_unit=display_unit)
         self._size = self.to_base_value(size)
-        self.datum = Datum(display_unit=display_unit)
+        self.datum = Datum(unit=display_unit)
         self.location = self.datum.location
     
     def getXt(self):
