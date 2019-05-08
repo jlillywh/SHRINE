@@ -33,7 +33,7 @@ class Scalar(Aegis):
         Prints the value followed by the unit as a string
     """
     
-    def __init__(self, value=0.0, **kwargs):
+    def __init__(self, value=0.0, unit='m'):
         """ Initialize the constant with zero data
         
         Parameters
@@ -48,58 +48,51 @@ class Scalar(Aegis):
         
         Aegis.__init__(self)
         self._value = value
-        if 'name' in kwargs:
-            self.name = kwargs['name']
-        else:
-            self.name = self.class_name + " " + str(self.id)
-        if 'unit' in kwargs:
-            self._unit = U.parse_expression(kwargs['unit'])
-            self.data = self._value * self._unit
-        else:
-            self._unit = None
-            self.data = self._value * self._unit
-        if 'description' in kwargs:
-            self.description = kwargs['description']
-        else:
-            self.description = self.about
+        self.display_unit = self.parse_unit(unit)
+        self.data = value * self.display_unit
+        self.base_unit = ((1 * self.display_unit).to_base_units()).units
 
+    def to_base_value(self):
+        return self.data.to_base_units().magnitude
+
+    @property
+    def value(self):
+        return self._value
+    
+    @value.setter
+    def value(self, new_value):
+        self._value = new_value
+        self.data = self._value * self.display_unit
+    
     def show(self):
         print(self.data)
 
-    @property
-    def magnitude(self):
-        return self._value
-
-    @magnitude.setter
-    def magnitude(self, new_magnitude):
-        self._value = new_magnitude
-        self.data = self._value * self._unit
-
-    @property
-    def unit(self):
-        return self._unit
-
-    @unit.setter
-    def unit(self, new_unit):
+    @staticmethod
+    def parse_unit(new_unit):
+        unit = None
         while True:
             try:
-                self._unit = U.parse_expression(new_unit)
+                if type(new_unit) == str:
+                    unit = U.parse_expression(new_unit).units
+                elif type(new_unit) == U.Unit:
+                    unit = new_unit
+                else:
+                    raise ValueError
                 break
             except ValueError:
                 print("Oops!  That was no valid unit.  Try again...")
                 break
-        
-        while True:
-            try:
-                self.data = self.data.to(self._unit)
-                self._value = self.data.magnitude
-                break
-            except AttributeError:
-                self.data = self.data * self._unit
-                break
+        return unit
     
-    def __mult__(self, other):
-        new_data = (self.data * other.data).to_base_units()
+    @property
+    def unit(self):
+        return self.display_unit
+
+    @unit.setter
+    def unit(self, new_unit):
+        self.display_unit = self.parse_unit(new_unit)
+        self.data = self.data.to(self.display_unit)
+        self._value = self.data.magnitude
         
     
 class Vector(Aegis):

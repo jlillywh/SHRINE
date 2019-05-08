@@ -34,7 +34,7 @@ class Aegis:
 
     _ids = count(1)
 
-    def __init__(self, name=None, description=None, display_unit='m^3'):
+    def __init__(self, name=None, description=None):
         """
         Parameters
         ----------
@@ -56,42 +56,7 @@ class Aegis:
         else:
             self.description = description
         self.created_on = datetime.today()
-        if type(display_unit) == str:
-            self.display_unit = U.parse_expression(display_unit).units
-        elif type(display_unit) == U.Unit:
-            self.display_unit = (1.0 * display_unit).unit
-        else:
-            self.display_unit = U.Unit('m')
-        self.base_unit = ((1 * self.display_unit).to_base_units()).units
-        r = 4
-        
-    def to_base_value(self, value, type=1):
-        if type == 1:
-            unit = self.display_unit
-        elif type == 2:
-            unit = self.display_unit ** 2
-        else:
-            unit = self.display_unit
-            assert ValueError('Display unit type not recognized')
-        if isinstance(value,(float, int,)):
-            ec.check_positive(value)
-            value *= unit
-            value = value.to_base_units()
-            return value.magnitude
-        elif isinstance(value,(list,)):
-            ec.check_all_items_positive(value)
-            new_list = []
-            for i in range(len(value)):
-                value[i] *= unit
-                value[i] = value[i].to_base_units()
-                new_list.append(value[i].magnitude)
-            return new_list
-
-    def value_at_unit(self, value):
-        value *= self.base_unit
-        value = value.to(self.display_unit)
-        return value.magnitude
-        
+      
     def get_instance_count(self):
         """Get the bucket_count of objects created by this class
         :return:
