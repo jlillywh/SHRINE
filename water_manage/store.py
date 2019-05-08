@@ -1,4 +1,4 @@
-from validation import errorChecks as ec
+from validation import error_checks as ec
 from global_attributes.aegis import Aegis
 
 

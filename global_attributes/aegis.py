@@ -2,6 +2,7 @@ from itertools import count
 from pprint import pprint
 from datetime import datetime
 from global_attributes.constants import U
+from validation import error_checks as ec
 
 
 class Aegis:
@@ -49,14 +50,20 @@ class Aegis:
         if name:
             self.name = name
         else:
-            self.name = self.__class__.__name__ + str(self.id)
+            self.name = self.__class__.__name__
         if not description:
             self.description = "An object of " + str(self.name) + " type."
         else:
             self.description = description
         self.created_on = datetime.today()
-        self.display_unit = U.parse_expression(display_unit).units
+        if type(display_unit) == str:
+            self.display_unit = U.parse_expression(display_unit).units
+        elif type(display_unit) == U.Unit:
+            self.display_unit = (1.0 * display_unit).unit
+        else:
+            self.display_unit = U.Unit('m')
         self.base_unit = ((1 * self.display_unit).to_base_units()).units
+        r = 4
         
     def to_base_value(self, value, type=1):
         if type == 1:
@@ -67,10 +74,12 @@ class Aegis:
             unit = self.display_unit
             assert ValueError('Display unit type not recognized')
         if isinstance(value,(float, int,)):
+            ec.check_positive(value)
             value *= unit
             value = value.to_base_units()
             return value.magnitude
         elif isinstance(value,(list,)):
+            ec.check_all_items_positive(value)
             new_list = []
             for i in range(len(value)):
                 value[i] *= unit

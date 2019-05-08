@@ -1,6 +1,7 @@
 from unittest import TestCase
 from global_attributes.aegis import Aegis
-from global_attributes.constants import U
+import numpy as np
+
 
 
 class TestAegis(TestCase):
@@ -17,10 +18,15 @@ class TestAegis(TestCase):
         value_si = value * U.m
         value_unit = self.a.value_at_unit(value)
         self.assertEqual(value_unit, value_si.to('ft').magnitude)
-
+    
     def test_to_base_value(self):
         value_display = 3.41
         value_display_units = value_display * self.a.display_unit
         value_base = self.a.to_base_value(value_display)
         self.assertEqual(value_base, value_display_units.to(self.a.base_unit).magnitude)
-        
+
+    def test_list_to_base_value(self):
+        value_display = [3.41, 3.41, 2.2, 100.0, 999, 0]
+        value_display_units = value_display * self.a.display_unit
+        value_base = self.a.to_base_value(value_display)
+        np.testing.assert_almost_equal(value_base, value_display_units.to(self.a.base_unit).magnitude)

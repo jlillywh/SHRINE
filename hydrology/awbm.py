@@ -1,6 +1,5 @@
-from validation import errorChecks as ec
+from validation import error_checks as ec
 from water_manage.store import Store
-from global_attributes.constants import U
 from water_manage.store_array import StoreArray
 
 
@@ -19,8 +18,6 @@ class Awbm:
 
         Attributes
         ----------
-        name : str
-            the name of the store
         baseflow_index : float
             the fraction of total bucket overflow that
         surface_recession : float
@@ -48,23 +45,23 @@ class Awbm:
             reset the capacity depths for each bucket [mm]
     """
 
-    def __init__(self):
+    def __init__(self, display_unit='mm'):
         self.partial_area_fraction = [0.134, 0.433, 0.433]
 
-        self.depth_comp_capacity = [37.44, 324.4, 146.6] * U.mm
+        self.depth_comp_capacity = self.to_base_value([37.44, 324.4, 146.6])
         self.baseflow_index = 0.658
         self.surface_recession = 0.869
-        self.surface = Store(0.0 * U.mm)
+        self.surface = Store(0.0, self.display_unit)
         self.baseflow_recession = 0.309
-        self.base = Store(0.0 * U.mm)
+        self.base = Store(0.0, self.display_unit)
 
         self.bucket_count = 3
-        bucket_capacities = [0.0 * U.mm] * self.bucket_count
+        bucket_capacities = [0.0] * self.bucket_count
         for i in range(self.bucket_count):
             bucket_capacities[i] = self.partial_area_fraction[i] * self.depth_comp_capacity[i]
 
-        self.buckets = StoreArray(self.bucket_count)
-        self.buckets.set_quantities([0.0, 0.0, 0.0] * U.mm)
+        self.buckets = StoreArray(self.bucket_count, self.display_unit)
+        self.buckets.set_quantities([0.0, 0.0, 0.0])
         self.buckets.set_capacity(bucket_capacities)
 
     def _bucket_overflow(self, inflow, outflow):
@@ -85,7 +82,12 @@ class Awbm:
             sum_overflow : float
                 the sum of overflows from all the buckets
         """
-        sum_overflow = 0.0 * U.mm/U.day
+        ec.check_all_items_positive(inflow)
+        ec.check_all_items_positive(outflow)
+
+        inflow = self.to_base_value(inflow)
+        outflow = self.to_base_value(outflow)
+        sum_overflow = 0.0
         for i in range(len(self.buckets)):
             self.buckets[i].update(inflow[i], outflow[i])
             sum_overflow += self.buckets[i].overflow
@@ -121,6 +123,10 @@ class Awbm:
                 .....
             """
         # Distribute precip and et over each bucket
+
+        precip = self.to_base_value(precip)
+        et = self.to_base_value(et)
+        
         precip_a = [a * precip for a in self.partial_area_fraction]
         et_a = [a * et for a in self.partial_area_fraction]
         self.buckets.update(precip_a, et_a)
@@ -131,10 +137,10 @@ class Awbm:
         to_surface = overflow * (1.0 - self.baseflow_index)
 
         # Surface outflow solved using recession outflow
-        self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface.quantity / U.day)
+        self.surface.update(to_surface, (1.0 - self.surface_recession))
 
         # Baseflow outflow solved using recession outflow
-        self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base.quantity / U.day)
+        self.base.update(to_baseflow, (1.0 - self.baseflow_recession))
 
         # Sum surface and baseflow
         return self.surface.outflow + self.base.outflow
@@ -148,7 +154,7 @@ class Awbm:
 
         # If these tests pass, reassign the array depths now
         self.partial_area_fraction = new_fractions
-        bucket_capacities = [0.0 * U.mm] * self.bucket_count
+        bucket_capacities = [0.0] * self.bucket_count
         for i in range(self.bucket_count):
             bucket_capacities[i] = new_fractions[i] * self.depth_comp_capacity
         self.buckets.set_capacity(bucket_capacities)
@@ -167,7 +173,7 @@ class Awbm:
 
         # If this test passes, reassign the array depths now
         self.depth_comp_capacity = new_capacities
-        bucket_capacities = [0.0 * U.mm] * self.bucket_count
+        bucket_capacities = [0.0] * self.bucket_count
         for i in range(self.bucket_count):
             bucket_capacities[i] = new_capacities[i] * self.partial_area_fraction[i]
         self.buckets.set_capacity(bucket_capacities)

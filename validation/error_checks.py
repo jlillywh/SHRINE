@@ -1,18 +1,18 @@
 from validation.error import WrongUnits
 
 
-def check_positive(my_value, my_variable_name):
+def check_all_items_positive(my_list):
+    for i in range(len(my_list)):
+        check_positive(my_list[i])
+
+
+def check_positive(my_value, my_variable_name='var1'):
     """Checks the value to see if it's negative
     :param my_value : float
     :param my_variable_name : str
     :return: valueError
     """
-    try:
-        my_value_unit = my_value.units
-    except AttributeError:
-        my_value_unit = 1.0
-        
-    if my_value < 0.0 * my_value_unit:
+    if my_value < 0.0:
         neg_value_error = ValueError(my_variable_name + ' should be a positive')
         raise neg_value_error
 
