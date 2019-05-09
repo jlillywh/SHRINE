@@ -1,9 +1,6 @@
-from matplotlib import style
-style.use('ggplot')
-
 import unittest
 from geometry.bowl import Bowl
-from global_attributes.constants import U
+
 
 class TestBowl(unittest.TestCase):
     def setUp(self):
@@ -20,6 +17,6 @@ class TestBowl(unittest.TestCase):
         """Head loss should be correct"""
         
         self.b.plot_elevation_volume()
-        q = 7.47 * U.cfs
+        q = 7.47
         
         
