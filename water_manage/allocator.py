@@ -30,8 +30,8 @@ class Allocator:
         self.remain_amount = self.supply
         self.deliveries = {}
         
-    def add_request(self, name, amount, priority=1):
-        new_request = Request(name, amount, priority)
+    def add_request(self, amount, priority=1):
+        new_request = Request(amount, priority)
         self.requests.append(new_request)
         self.num_requests = len(self.requests)
         self.requests = sorted(self.requests, key=lambda x: x.priority)
