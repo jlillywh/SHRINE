@@ -3,7 +3,7 @@ from controllers.onoff import OnOff
 from global_attributes.constants import U
 
 
-class TestScalar(unittest.TestCase):
+class TestController(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
         direction = 'UP'

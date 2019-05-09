@@ -17,6 +17,4 @@ class TestBowl(unittest.TestCase):
         """Head loss should be correct"""
         
         self.b.plot_elevation_volume()
-        q = 7.47
-        
-        
+ 

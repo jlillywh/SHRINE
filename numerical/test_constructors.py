@@ -2,7 +2,8 @@ import unittest
 from numerical.constructors import vector
 import numpy as np
 
-class TestReservoir(unittest.TestCase):
+
+class TestConstructor(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
         self.old_vector = [5, 4, 3, 2, 1]
@@ -12,11 +13,8 @@ class TestReservoir(unittest.TestCase):
         self.if_true = "Hi"
         self.if_false = "shit!"
 
-        #print("Test: " + str(self.s1.get_instance_count()))
-
     def tearDown(self):
         """Destroy the object after running tests"""
-        #print("Tear down " + type(self.s1).__name__)
         del self.old_vector
         del self.v1
         del self.v2
