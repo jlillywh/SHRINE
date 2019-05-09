@@ -4,7 +4,7 @@ from water_manage.store import Store
 class StoreArray:
     """Create an array of store objects"""
 
-    def __init__(self, count=3, unit='mm'):
+    def __init__(self, count=3):
         """The default is 3 stores only because this was initially
         used in the AWBM implementation.
         """
@@ -13,7 +13,7 @@ class StoreArray:
     
         i = 0
         while i < self.count:
-            self.stores.append(Store(0.0, unit))
+            self.stores.append(Store(0.0))
             i += 1
 
     def __getitem__(self, index):
@@ -43,7 +43,8 @@ class StoreArray:
 
         Parameters
         ----------
-        inflow, outflow : array
+        inflow, outflow : list(float)
+
         """
         i = 0
         while i < self.count:

@@ -9,7 +9,7 @@ class TestStoresCase(TestCase):
         #TODO: add test for transferring _quantity from one item to another.
         """
 
-        self.sa = StoreArray(4, unit='gal')
+        self.sa = StoreArray(4)
         inflow = [2.5, 7.8, 23.65, 5.23]
         outflow = [11.0, 0.0, 2.2, 100.0]
         self.sa.update(inflow, outflow)
