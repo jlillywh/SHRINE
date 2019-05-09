@@ -1,4 +1,5 @@
 from water_manage.store import Store
+from utils.attr_setter import AttrMap
 import numpy as np
 
 
@@ -39,11 +40,13 @@ class Reservoir(Store):
     
         
     """
-    def __init__(self, init_vol=100.0, display_unit='m3'):
-        Store.__init__(self, quantity=init_vol, display_unit=display_unit)
+    volume = AttrMap('quantity')
+    
+    def __init__(self, init_vol=100.0):
+        Store.__init__(self, quantity=init_vol)
         self.elevations = [0.0, 5.0, 20.0]
         self.volumes = [0.0, 10000.0, 520000.0]
-        #self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
+        # TODO stage-storage as dataframe: self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
         self.spillway_crest = 10.0
         self.spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes)
         self.spillway_type = 'broad'
@@ -60,7 +63,7 @@ class Reservoir(Store):
     @water_level.setter
     def water_level(self, new_water_level):
         self._water_level = new_water_level
-        self._quantity = np.interp(self._water_level, self.elevations, self.volumes)
+        self.volume = np.interp(self._water_level, self.elevations, self.volumes)
         self.update(0, 0)
     
     def calc_overflow(self):
@@ -77,7 +80,7 @@ class Reservoir(Store):
         if self._water_level > self.spillway_crest:
             
             h = self._water_level - self.spillway_crest
-            v = self._quantity - self.spillway_volume
+            v = self.volume - self.spillway_volume
             # The Kindsvater-Carter: rectangular, sharp-crested weir (suppressed)
             # Ce * Le|ft| * He|ft|^(3/2) * 1 cfs
             # TODO change this to use base units
@@ -89,7 +92,7 @@ class Reservoir(Store):
             
             # TODO put "q" in terms of display units before updating reservoir
             self.update(0.0, q)
-            self.water_level = np.interp(self._quantity,
+            self.water_level = np.interp(self.volume,
                                          self.volumes, self.elevations)
 
 

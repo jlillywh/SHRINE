@@ -18,4 +18,4 @@ class TestReservoir(unittest.TestCase):
         for i in range(10):
             self.r1.update(inflow, 0.0)
             
-        self.assertAlmostEqual(self.r1.quantity, 176700, 1)
+        self.assertAlmostEqual(self.r1.volume, 176700, 1)

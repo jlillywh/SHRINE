@@ -4,17 +4,16 @@ from validation import error_checks as ec
 class Store:
     """A class used to represent a storage element
 
-        ...
+        All attributes are in terms of SI units
 
         Attributes
         ----------
-        All attributes are in terms of SI units
         _quantity : float
             The amount in the store
         _capacity : float
-            The upper bound on _quantity
+            The upper bound on quantity
         overflow : float
-            Amount in excess of _capacity after applying inflow and outflow
+            Amount in excess of capacity after applying inflow and outflow
         outflow : float
             requested outflow until store is empty
 
