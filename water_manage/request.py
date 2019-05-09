@@ -5,6 +5,8 @@ class Request:
     
         Attributes
         ----------
+        name : str
+            Name of the request
         amount : float
             This is the amount being requested, which is typically in terms of a flow rate
         priority : int
@@ -12,7 +14,8 @@ class Request:
             The lowest possible priority is 1
         TODO add a delivery attribute that is changed after allocation
     """
-    def __init__(self, amount=10, priority=1):
+    def __init__(self, name, amount=10, priority=1):
+        self.name = name
         self.amount = amount
         self.priority = priority
         self.delivery = amount

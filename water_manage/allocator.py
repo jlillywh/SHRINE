@@ -6,7 +6,7 @@ class Allocator:
     
         Attributes
         ----------
-        supply : Quantity
+        supply : float
             The supply that is being allocated
         requests : list of Request objects
             Individual requests being made on the source with each having a name associated with
@@ -24,14 +24,13 @@ class Allocator:
     def __init__(self, supply, requests):
         """Initialize the amount and a list of requests with associated priorities for allocation"""
         self.supply = supply
-        self._units = supply.units
         self.requests = sorted(requests, key=lambda x: x.priority)
         self.num_requests = len(requests)
         self.remain_amount = self.supply
         self.deliveries = {}
         
-    def add_request(self, amount, priority=1):
-        new_request = Request(amount, priority)
+    def add_request(self, name, amount, priority=1):
+        new_request = Request(name, amount, priority)
         self.requests.append(new_request)
         self.num_requests = len(self.requests)
         self.requests = sorted(self.requests, key=lambda x: x.priority)
@@ -120,4 +119,4 @@ class Allocator:
                 amount = self.requests[index + i].amount - curtailment
                 name = self.requests[index + i].name
                 self.deliveries[name] = amount
-            self.remain_amount = 0.0 * self._units
+            self.remain_amount = 0.0
