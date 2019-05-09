@@ -6,9 +6,8 @@ class TestOutflowsCase(TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
         init_quantity = 10.0
-        unit = 'af'
         self.capacity = 15.0
-        self.s1 = Store(init_quantity, unit)
+        self.s1 = Store(init_quantity)
         self.s1.capacity = self.capacity
         self.precision = 4
     
@@ -73,12 +72,12 @@ class TestOutflowsCase(TestCase):
 
     def test_quantity(self):
         init_vol = 32.54
-        s1 = Store(init_vol, 'gallon')
+        s1 = Store(init_vol)
         self.assertEqual(s1.quantity, init_vol)
         del s1
     
     def test_quantity_setter(self):
-        s1 = Store(display_unit='ft3')
+        s1 = Store()
         new_vol = 132.54
         s1.quantity = new_vol
         self.assertEqual(s1.quantity, new_vol)
