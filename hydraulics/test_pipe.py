@@ -18,20 +18,20 @@ class TestPipe(unittest.TestCase):
     def testHeadLoss(self):
         """Head loss should be correct"""
         q = 0.211386
-        self.assertAlmostEqual(self.p1.head_loss(q, 'HW'), 9.13776, 2)
+        self.assertAlmostEqual(self.p1.head_loss(q, 'HW'), 9.13776, 3)
         self.p1.material = 'concrete'
         q = 0.199
-        self.assertAlmostEqual(self.p1.head_loss(q, 'DW'), 9.18614, 1)
+        self.assertAlmostEqual(self.p1.head_loss(q, 'DW'), 9.18614, 3)
         
     def testMinorLoss(self):
         """Friction loss should be correct"""
         q = 0.212
-        self.assertAlmostEqual(self.p1.minor_loss(q), 2.4, 1)
+        self.assertAlmostEqual(self.p1.minor_loss(q), 0.73169, 3)
         
     def testGravityFlow(self):
         """Friction loss should be correct"""
-        dz = 30.0
-        self.assertAlmostEqual(self.p1.gravity_flow(dz), 7.47, 2)
+        dz = 9.144
+        self.assertAlmostEqual(self.p1.gravity_flow(dz), 0.2115, 3)
         self.p1.material = 'concrete'
-        self.assertAlmostEqual(self.p1.gravity_flow(dz, 'DW'), 7.01, 2)
+        self.assertAlmostEqual(self.p1.gravity_flow(dz, 'DW'), 0.1985, 3)
 
