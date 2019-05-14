@@ -1,12 +1,10 @@
-from global_attributes.aegis import Aegis
 from math import pi
-from global_attributes.constants import G, U
 from numerical.root_zero import Root
 from hydraulics.pressure_conduit_funcs import friction_loss
-from validation.error import WrongUnits
+import scipy.constants as const
 
 
-class Pipe(Aegis):
+class Pipe:
     """Class for creating pipe segments
     
         Attributes
@@ -43,13 +41,15 @@ class Pipe(Aegis):
         
     """
     
-    def __init__(self, length=1000.0 * U.m, diameter=1.0 * U.m, material='concrete', k=1.7):
+    def __init__(self, length=1000.0, diameter=1.0, material='concrete', k=1.7):
         """Input length, diameter, material as optional
         
             Parameters
             ----------
-            length : pint Quantity of length
-            diameter : pint Quantity of length
+            length : float
+                Length of pipe section, in meters
+            diameter : float
+                Inside diameter of the pipe, in meters
             material : str
                 Choice of concrete, steel, plastic
                 #TODO add more material options perhaps from a table in a file
@@ -57,13 +57,12 @@ class Pipe(Aegis):
                 Minor loss coefficient
             
         """
-        
-        Aegis.__init__(self)
+
         self.length = length
-        self._diameter = diameter
+        self.diameter = diameter
         self._material = material
         self.hazen_williams = 125
-        self.roughness = 0.0006562 * U.ft
+        self.roughness = 0.2 / 1000    # units: m
         self.assign_roughness(material)
         self.k = k
         self.f = 0.02
@@ -71,41 +70,16 @@ class Pipe(Aegis):
     def assign_roughness(self, material):
         if material == 'concrete':
             self.hazen_williams = 130
-            self.roughness = 0.00164 * U.ft
+            self.roughness = 0.5 / 1000    # m
         elif material == 'steel':
             self.hazen_williams = 120
-            self.roughness = 0.0003281 * U.ft
+            self.roughness = 0.1 / 1000    # m
         elif material == 'plastic':
             self.hazen_williams = 140
-            self.roughness = 3.28e-5 * U.ft
+            self.roughness = 0.01 / 1000   # m
         else:
             self.hazen_williams = 125
-            self.roughness = 0.0006562 * U.ft
-    
-    @property
-    def diameter(self):
-        return self._diameter
-    
-    @diameter.setter
-    def diameter(self, new_diameter):
-        """Set the diameter
-            Parameters
-            ----------
-            new_diameter : pint Quantity in length
-                Set the new diameter in terms of length units
-        """
-        while True:
-            try:
-                if new_diameter.check('[length]'):
-                    self._diameter = new_diameter
-                    break
-                else:
-                    m = "Wrong dimension. Should be in terms of length."
-                    raise WrongUnits(m)
-                    break
-            except AttributeError:
-                self._diameter = new_diameter * self._diameter.units
-                break
+            self.roughness = 0.2 / 1000    # m
     
     @property
     def material(self):
@@ -115,6 +89,7 @@ class Pipe(Aegis):
     def material(self, new_material):
         self._material = new_material
         self.assign_roughness(new_material)
+        
     @property
     def area(self):
         return pi * self.diameter ** 2 / 4.0
@@ -139,8 +114,7 @@ class Pipe(Aegis):
         """
         
         velocity = flow_rate / self.area
-        hm = self.k * (velocity ** 2 / (2.0 * G))
-        return hm.to(U.ft)
+        return self.k * (velocity ** 2 / (2.0 * const.g))
     
     def head_loss(self, flow_rate, method='HW'):
         """Calculates the total head loss in the pipe section
@@ -158,7 +132,7 @@ class Pipe(Aegis):
         """
         
         ml = self.minor_loss(flow_rate)
-        fl = friction_loss(self, flow_rate, method).to(U.ft)
+        fl = friction_loss(self, flow_rate, method)
         ht = ml + fl
         return ht
     
@@ -168,7 +142,10 @@ class Pipe(Aegis):
             
             Parameters
             ----------
-                delta_elevation : pint Quantity in length
+                delta_elevation : float
+                    Difference in elevation
+                q : float
+                    Flow rate
         """
         return self.head_loss(q) > delta_elevation
     
@@ -178,13 +155,14 @@ class Pipe(Aegis):
             Parameters
             ----------
             delta_elevation : pint Quantity as a length
+            method : str
             
             Returns
             -------
             flow rate in terms of pint Quantity of 'cfs'
         """
         
-        f = lambda q: self.head_loss(q * U.cfs, method) > delta_elevation
+        f = lambda q: self.head_loss(q, method) > delta_elevation
         func = Root()
-        return func.binary_search(f) * U.cfs
+        return func.binary_search(f)
 
