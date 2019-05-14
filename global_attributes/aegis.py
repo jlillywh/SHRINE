@@ -1,8 +1,6 @@
 from itertools import count
 from pprint import pprint
 from datetime import datetime
-from global_attributes.constants import U
-from validation import error_checks as ec
 
 
 class Aegis:
@@ -16,10 +14,6 @@ class Aegis:
             the name of the object
         description : str
             what does this object represent?
-        display_unit : pint Quantity
-            This is the base display_unit for any Aegis object
-        base_unit : str
-            The name of the base display_unit, which should be SI
 
         Methods
         -------
@@ -42,8 +36,6 @@ class Aegis:
             the name of the store
         description : str
             what does this object represent?
-        display_unit : str
-            The name of the display_unit for this object
         """
     
         self.id = next(self._ids)
