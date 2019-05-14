@@ -17,7 +17,6 @@ from hydrology.test_wgen import TestWGEN
 from inputs.test_data import TestScalar, TestVector
 # TODO add test for: from inputs.test_table import _______
 # TODO - add new test for: from inputs.test_timeseries import _______
-from numerical.test_constructors import TestConstructor
 from water_manage.test_allocator import TestAllocator
 # TODO add test for: from water_manage.test_network import _______
 from water_manage.test_reservoir import TestReservoir
@@ -38,12 +37,13 @@ def suite():
     test_suite.addTest(unittest.makeSuite(TestCircle))
     test_suite.addTest(unittest.makeSuite(TestPoint))
     test_suite.addTest(unittest.makeSuite(TestPipe))
-    test_suite.addTest(unittest.makeSuite(TestBucketCase, TestSurfaceStore))
+    test_suite.addTest(unittest.makeSuite(TestBucketCase))
+    test_suite.addTest(unittest.makeSuite(TestSurfaceStore))
     test_suite.addTest(unittest.makeSuite(TestCatchment))
     test_suite.addTest(unittest.makeSuite(TestWatershed))
     test_suite.addTest(unittest.makeSuite(TestWGEN))
-    test_suite.addTest(unittest.makeSuite(TestScalar, TestVector))
-    test_suite.addTest(unittest.makeSuite(TestConstructor))
+    test_suite.addTest(unittest.makeSuite(TestScalar))
+    test_suite.addTest(unittest.makeSuite(TestVector))
     test_suite.addTest(unittest.makeSuite(TestReservoir))
     test_suite.addTest(unittest.makeSuite(TestStoresCase))
     test_suite.addTest(unittest.makeSuite(TestOutflowsCase))
