@@ -1,30 +1,43 @@
 import pandas as pd
-from global_attributes.aegis import Aegis
 import numpy as np
+from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
-class TimeSeries(Aegis):
+class TimeSeries:
     """Object to store time series data sets
     
         Attributes
         ----------
-        name : str
         start_date : str
             Use mm/dd/yyyy format for the dates
         periods : int
         freq : str
-        series : pandas Series
+        data : numpy.ndarray
         
         """
-    def __init__(self, name='TimeSeries', display_unit='in', start_date='1/1/2019', periods=365, freq='D'):
-        Aegis.__init__(self)
-        self.name = name
-        range = pd.date_range(start_date, periods=periods, freq=freq)
-        """range : pandas DatetimeIndex
+    def __init__(self, values_name='values', start_date='1/1/19', periods=365):
+        """Initialize with values of zero for the duration and frequency.
+        
+            Parameters
+            ----------
+            date_range : pandas DatetimeIndex
             Represents the date range for the time series
             Must be used to provide the index list for the values"""
-        self.series = pd.Series(np.zeros(len(range)), index=range)
-
+        _start_date = datetime.strptime(start_date, '%x').date()
+        self.values_name = values_name
+        self.df = pd.DataFrame(
+            {'date': [_start_date + timedelta(days=x) for x in range(periods)],
+             self.values_name: pd.Series(np.random.randn(periods))})
+        self.df = self.df.set_index('date')
+        
+        # self.date_range = pd.date_range(start_date, periods=periods, freq=freq)
+        # np.random.seed(seed=1111)
+        # self.data = np.random.randint(1, high=100, size=len(self.date_range))
+        # self.df = pd.DataFrame({'Date': self.date_range, 'Values': self.data})
+        # self.df.set_index('Date')
+    
     def set_value(self, at_date, value):
         """Find a value in the time series and replace it.
         
@@ -36,8 +49,8 @@ class TimeSeries(Aegis):
                 the type must match that of other values
                 already in the series.
         """
-        self.series[at_date] = value
-
+        self.data_frame[at_date] = value
+    
     def load_csv(self, file_path):
         """Replaces the time series with data from csv file
         
@@ -46,5 +59,46 @@ class TimeSeries(Aegis):
             file_path : str
                 full or relative path to the file
         """
-        self.series = pd.read_csv(file_path)
+        self.df = pd.read_csv(file_path)
     
+    def num_of_records(self):
+        """ The number of time-value records (or rows in the time series).
+        
+        Returns:
+            int: the return value
+        """
+        return len(self.df.index)
+    
+    def start_date(self):
+        """ The calendar time of the *first* datetime or etime of the time series.
+        
+        Returns:
+            datetime.date: the return value
+        """
+        return self.df.index.min()
+    
+    def end_date(self):
+        """ The calendar time of the *last* datetime or etime of the time series.
+        
+        Returns:
+            datetime.date: the return value
+        """
+        return self.df.index.max()
+    
+    def duration(self):
+        """ The duration between the start and end time of the index.
+            1 day is added for the last day of the time series,
+        Returns:
+            timedelta: the return value
+        """
+        return self.end_date() - self.start_date() + timedelta(days=1)
+
+    def date_at_value(self, value):
+        date_list = self.df.loc[self.df[self.values_name] == value]
+        return date_list.index.min()
+    
+    def plot(self):
+        sns.set(rc={'figure.figsize': (11, 4)})
+        axis = self.df[self.values_name].plot(linewidth=1)
+        axis.set_ylabel(self.values_name)
+        # self.df.plot()
