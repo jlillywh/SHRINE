@@ -2,7 +2,6 @@ import unittest
 from hydrology.watershed import Watershed
 from hydrology.catchment import Catchment
 from data.fileman import FileManager
-from global_attributes.constants import U
 
 
 class TestWatershed(unittest.TestCase):
@@ -10,30 +9,28 @@ class TestWatershed(unittest.TestCase):
         """Set up a new object to be tested"""
         self.precision = 2
         
-        fm = FileManager('..\\data_external')
+        fm = FileManager('..\hydrology\\test_data')
         filename = 'watershed_GML_input.gml'
         fm.add_file(filename)
         
         self.w = Watershed()
         self.w.load_from_file(fm.file_list[filename])
-        self.w.network.adj['J2']['J1']['runoff'] = 9999 * U.m3 / U.day
-        self.w.network.adj['J3']['J2']['runoff'] = 9999 * U.m3 / U.day
-
+       
     def tearDown(self):
         """Destroy the object after running tests"""
         del self.w
         
     def testOutflowLargeWatershed(self):
         """Outflow == defined value"""
-        precip = 6.54 * U.mm / U.day
-        et = 0.25 * U.mm / U.day
+        precip = 0.00654
+        et = 0.00025
         
         precision = 1
 
-        for i in range(0, 10):
+        for i in range(0, 11):
             self.w.update(precip, et)
 
-        self.assertAlmostEqual(self.w.outflow, 137809.7 * U.m3/U.day, precision)
+        self.assertAlmostEqual(self.w.outflow, 368.4, precision)
 
     def testGettingWatershed(self):
         """Make sure you can get a node when requested."""

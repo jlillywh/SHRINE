@@ -1,12 +1,10 @@
-from global_attributes.aegis import Aegis
 from hydrology.catchment import Catchment
 from hydrology.junction import Junction
 import networkx as nx
 import matplotlib.pyplot as plt
-from global_attributes.constants import U
 
 
-class Watershed(Aegis):
+class Watershed:
     """ This class is used to create a watershed consisting of
         catchments and junctions.
         
@@ -64,17 +62,16 @@ class Watershed(Aegis):
     """
 
     def __init__(self):
-        Aegis.__init__(self)
         self.network = nx.DiGraph()
         self.source_node = 'A'
         self.network.add_node(self.source_node, node_type=100)
         # self.network.add_node(self.source_node, node_type=100)
         self.sink_node = Junction('J1')
-        self.outflow = 0.0 * U.m3/U.day
+        self.outflow = 0.0
         self.network.add_node(self.sink_node.name, node_type=300)
         self.network.add_node('C1', node_type=200)
         self.network.add_edge(self.source_node, 'C1')
-        self.network.add_edge('C1', 'J1', runoff=99.0 * U.m3/U.day)
+        self.network.add_edge('C1', 'J1', runoff=99.0)
 
     def update(self, precip, et):
         """Calculates runoff from all catchments and routes it down
@@ -131,7 +128,7 @@ class Watershed(Aegis):
         """
 
         self.network.add_node(catchment_name, type=Catchment(catchment_name))
-        self.network.add_edge(catchment_name, receiving_junction, runoff=99.0 * U.m3 / U.day)
+        self.network.add_edge(catchment_name, receiving_junction, runoff=99.0)
         self.network.add_node(self.source_node, type=self.source_node)
         self.network.add_edge(self.source_node, catchment_name)
 
