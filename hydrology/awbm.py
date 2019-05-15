@@ -45,22 +45,28 @@ class Awbm:
             reset the capacity depths for each bucket [mm]
     """
 
-    def __init__(self, display_unit='mm'):
+    def __init__(self, depth_capacity=[0.04, 0.15, 0.3]):
+        """Initialize the watershed with the depth capacities of the buckets.
+            Parameters
+            ----------
+            depth_capacity : list of float
+                The capacity (depth) of each bucket. Units are meters.
+        """
         self.partial_area_fraction = [0.134, 0.433, 0.433]
 
-        self.depth_comp_capacity = self.to_base_value([37.44, 324.4, 146.6])
+        self.depth_comp_capacity = depth_capacity
         self.baseflow_index = 0.658
         self.surface_recession = 0.869
-        self.surface = Store(0.0, self.display_unit)
+        self.surface = Store(0.0)
         self.baseflow_recession = 0.309
-        self.base = Store(0.0, self.display_unit)
+        self.base = Store(0.0)
 
-        self.bucket_count = 3
+        self.bucket_count = len(self.depth_comp_capacity)
         bucket_capacities = [0.0] * self.bucket_count
         for i in range(self.bucket_count):
             bucket_capacities[i] = self.partial_area_fraction[i] * self.depth_comp_capacity[i]
 
-        self.buckets = StoreArray(self.bucket_count, self.display_unit)
+        self.buckets = StoreArray(self.bucket_count)
         self.buckets.set_quantities([0.0, 0.0, 0.0])
         self.buckets.set_capacity(bucket_capacities)
 
@@ -85,10 +91,8 @@ class Awbm:
         ec.check_all_items_positive(inflow)
         ec.check_all_items_positive(outflow)
 
-        inflow = self.to_base_value(inflow)
-        outflow = self.to_base_value(outflow)
         sum_overflow = 0.0
-        for i in range(len(self.buckets)):
+        for i in range(self.bucket_count):
             self.buckets[i].update(inflow[i], outflow[i])
             sum_overflow += self.buckets[i].overflow
         return sum_overflow
@@ -108,14 +112,14 @@ class Awbm:
             Parameters
             ----------
             precip : float
-                Daily precipitation [mm]
+                Daily precipitation [m]
             et : float
-                effective evapotranspiration [mm]
+                effective evapotranspiration [m]
 
             Returns
             -------
             outflow : float
-                outflow from the catchment [mm] on a per unit area basis
+                outflow from the catchment [m] on a per unit area basis
 
             Raises
             ------
@@ -123,9 +127,6 @@ class Awbm:
                 .....
             """
         # Distribute precip and et over each bucket
-
-        precip = self.to_base_value(precip)
-        et = self.to_base_value(et)
         
         precip_a = [a * precip for a in self.partial_area_fraction]
         et_a = [a * et for a in self.partial_area_fraction]
@@ -137,10 +138,10 @@ class Awbm:
         to_surface = overflow * (1.0 - self.baseflow_index)
 
         # Surface outflow solved using recession outflow
-        self.surface.update(to_surface, (1.0 - self.surface_recession))
+        self.surface.update(to_surface, (1.0 - self.surface_recession) * self.surface.quantity)
 
         # Baseflow outflow solved using recession outflow
-        self.base.update(to_baseflow, (1.0 - self.baseflow_recession))
+        self.base.update(to_baseflow, (1.0 - self.baseflow_recession) * self.base.quantity)
 
         # Sum surface and baseflow
         return self.surface.outflow + self.base.outflow
@@ -165,7 +166,7 @@ class Awbm:
 
             Parameters
             ----------
-            new_capacities : array of floats
+            new_capacities : list of floats
                 Capacity for each bucket [mm]
 
             """

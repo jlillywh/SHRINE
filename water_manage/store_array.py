@@ -2,7 +2,17 @@ from water_manage.store import Store
 
 
 class StoreArray:
-    """Create an array of store objects"""
+    """Create an array of store objects
+    
+        Attributes
+        ----------
+        
+        Methods
+        -------
+        update()
+        set_quantities()
+        set_capacity()
+    """
 
     def __init__(self, count=3):
         """The default is 3 stores only because this was initially
