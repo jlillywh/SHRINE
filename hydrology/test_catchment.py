@@ -1,31 +1,30 @@
 import unittest
 from hydrology.catchment import Catchment
-from global_attributes.constants import U
 
 
 class TestCatchment(unittest.TestCase):
     def setUp(self):
-        """Set up a new object to be tested"""
-        self.catchment_name = "C1"
-        self.area = 12.6 * U.km**2
-        self.c1 = Catchment(self.catchment_name, self.area)
-        self.c1.name = self.catchment_name
+        """Set up a new object to be tested
+            
+            Compare results to Catchment Verification.gsm
+        """
+        self.area = 12600000.0
+        self.c1 = Catchment(self.area)
         self.precision = 1
 
     def tearDown(self):
         """Destroy the object after running tests"""
-        #print("Tear down " + type(self.c1).__name__)
         del self.c1
 
     def testOutflow(self):
         """Outflow == defined value"""
-        precip = 6.54 * U.mm/U.day
-        et = 0.25 * U.mm/U.day
+        precip = 0.00654
+        et = 0.00025
 
-        for i in range(0,10):
+        for i in range(0, 11):
             self.c1.update_runoff(precip, et)
 
-        self.assertAlmostEqual(self.c1.outflow, 8052.1 * U.m3/U.day, self.precision)
+        self.assertAlmostEqual(self.c1.outflow, 8321.71, self.precision)
 
 
 if __name__ == '__main__':

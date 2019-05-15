@@ -1,9 +1,7 @@
-from global_attributes.aegis import Aegis
 from hydrology.awbm import Awbm
-from global_attributes.constants import U
 
 
-class Catchment(Aegis):
+class Catchment:
     """
     A class used to create watershed catchment objects.
 
@@ -29,16 +27,14 @@ class Catchment(Aegis):
         updates the outflow attribute
     """
 
-    def __init__(self, name="catchment1", area=100.0 * U.km**2):
+    def __init__(self, area=100000.0):
         """
 
         Attributes
         ----------
-        name : str
-            The name of the catchment must start with 'C' or 'c'
         area : float
-            Area of the catchment in km2
-        runoff_method : Aegis
+            Area of the catchment in m2
+        runoff_method : Awbm
         outflow : float
             Runoff outflow from the catchment in terms of m3/d
             
@@ -48,11 +44,9 @@ class Catchment(Aegis):
         
         """
 
-        Aegis.__init__(self)
-        self.name = name
         self.area = area
         self.runoff_method = Awbm()
-        self.outflow = 0.0 * U.m3/U.day
+        self.outflow = 0.0
 
     def update_runoff(self, precip, et):
         """calculates the runoff rate based for the catchment
