@@ -6,10 +6,14 @@ from data.fileman import FileManager
 
 class TestWatershed(unittest.TestCase):
     def setUp(self):
-        """Set up a new object to be tested"""
+        """Set up a new object to be tested
+        
+            Note the model used for verification is called:
+            Watershed Verification large.gsm
+        """
         self.precision = 2
         
-        fm = FileManager('..\hydrology\\test_data')
+        fm = FileManager('..\\hydrology\\test_data')
         filename = 'watershed_GML_input.gml'
         fm.add_file(filename)
         
@@ -30,7 +34,7 @@ class TestWatershed(unittest.TestCase):
         for i in range(0, 11):
             self.w.update(precip, et)
 
-        self.assertAlmostEqual(self.w.outflow, 368.4, precision)
+        self.assertAlmostEqual(self.w.outflow, 396.272, precision)
 
     def testGettingWatershed(self):
         """Make sure you can get a node when requested."""

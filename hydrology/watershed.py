@@ -71,7 +71,7 @@ class Watershed:
         self.network.add_node(self.sink_node.name, node_type=300)
         self.network.add_node('C1', node_type=200)
         self.network.add_edge(self.source_node, 'C1')
-        self.network.add_edge('C1', 'J1', runoff=99.0)
+        self.network.add_edge('C1', 'J1', runoff=9.0e9)
 
     def update(self, precip, et):
         """Calculates runoff from all catchments and routes it down
@@ -128,7 +128,7 @@ class Watershed:
         """
 
         self.network.add_node(catchment_name, type=Catchment(catchment_name))
-        self.network.add_edge(catchment_name, receiving_junction, runoff=99.0)
+        self.network.add_edge(catchment_name, receiving_junction, runoff=9.0e9)
         self.network.add_node(self.source_node, type=self.source_node)
         self.network.add_edge(self.source_node, catchment_name)
 
