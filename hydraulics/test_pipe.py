@@ -35,3 +35,6 @@ class TestPipe(unittest.TestCase):
         self.p1.material = 'concrete'
         self.assertAlmostEqual(self.p1.gravity_flow(dz, 'DW'), 0.1985, 3)
 
+
+if __name__ == '__main__':
+    unittest.main()

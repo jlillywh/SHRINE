@@ -1,6 +1,5 @@
 from unittest import TestCase
 from global_attributes.aegis import Aegis
-import numpy as np
 
 
 class TestAegis(TestCase):

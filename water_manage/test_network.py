@@ -1,17 +1,31 @@
-import networkx as nx
-import matplotlib.pyplot as plt
+import unittest
+from water_manage.flow_network import Network
 
-G = nx.DiGraph()
 
-G.add_node('a', demand=-5)
-G.add_node('d', demand=5)
-G.add_edge('a', 'b', weight=3, capacity=4)
-G.add_edge('a', 'c', weight=6, capacity=10)
-G.add_edge('b', 'd', weight=1, capacity=9)
-G.add_edge('c', 'd', weight=2, capacity=5)
-flowCost, flowDict = nx.network_simplex(G)
+class TestMyNetwork(unittest.TestCase):
+    def setUp(self):
+        """Set up a new object to be tested"""
+        self.n1 = Network()
+        
+    def tearDown(self):
+        """Destroy the object after running tests"""
+        del self.n1
+        
+    def testFlowCapacity(self):
+        capacity = 4.0
+        self.n1.add_source('C1', capacity)
+        discharge = self.n1.outflow()
+        self.assertEqual(discharge, capacity)
+        
+    def testAddNodeFlow(self):
+        """Add 2 nodes that both flow to the sink"""
+        capacity = 4.0
+        self.n1.add_source('C1', capacity)
+        self.n1.add_source('C2', capacity, 'Sink')
+        # self.n1.draw()
+        discharge = self.n1.outflow()
+        self.assertEqual(discharge, capacity * 2)
 
-print(flowDict)
 
-nx.draw(G, with_labels=True)
-plt.show()
+if __name__ == '__main__':
+    unittest.main()
