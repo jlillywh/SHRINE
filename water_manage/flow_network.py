@@ -30,9 +30,12 @@ class Network:
         self.dg.add_edge('Source', node_name, capacity=capacity)
         self.dg.add_edge(node_name, downstream, capacity=capacity)
         
+    def add_junction(self, node_name, downstream):
+        self.dg.add_edge(node_name, downstream, capacity=9e99)
+        
     def draw(self):
         network_copy = self.dg.copy()
-        # network_copy.remove_node(self.source)
+        network_copy.remove_node(self.source)
         plt.subplot()
         nx.draw(network_copy, with_labels=True)
         plt.show()

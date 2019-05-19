@@ -1,5 +1,6 @@
 import unittest
 from water_manage.flow_network import Network
+import numpy as np
 
 
 class TestMyNetwork(unittest.TestCase):
@@ -12,17 +13,27 @@ class TestMyNetwork(unittest.TestCase):
         del self.n1
         
     def testFlowCapacity(self):
-        capacity = 4.0
+        capacity = np.random.random()
         self.n1.add_source('C1', capacity)
         discharge = self.n1.outflow()
         self.assertEqual(discharge, capacity)
         
     def testAddNodeFlow(self):
         """Add 2 nodes that both flow to the sink"""
-        capacity = 4.0
+        capacity = np.random.random()
         self.n1.add_source('C1', capacity)
         self.n1.add_source('C2', capacity, 'Sink')
         # self.n1.draw()
+        discharge = self.n1.outflow()
+        self.assertEqual(discharge, capacity * 2)
+        
+    def testAddJunction(self):
+        """Add a junction that joins 2 source nodes"""
+        capacity = np.random.random()
+        self.n1.add_junction('J1', 'Sink')
+        self.n1.add_source('C1', capacity, 'J1')
+        self.n1.add_source('C2', capacity, 'J1')
+        self.n1.draw()
         discharge = self.n1.outflow()
         self.assertEqual(discharge, capacity * 2)
 
