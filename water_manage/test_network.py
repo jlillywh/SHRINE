@@ -1,6 +1,7 @@
 import unittest
 from water_manage.flow_network import Network
 import numpy as np
+import os
 
 
 class TestMyNetwork(unittest.TestCase):
@@ -53,6 +54,15 @@ class TestMyNetwork(unittest.TestCase):
         # self.n1.draw()
         discharge = self.n1.outflow()
         self.assertEqual(discharge, expected_sum)
+
+    def testReadFromGML(self):
+        cwd = os.getcwd()
+        filename = cwd + '\\test_data\\network_GML_input.gml'
+        self.n1.load_from_file(filename)
+        
+        # self.n1.draw()
+        discharge = 4 * 4
+        self.assertEqual(self.n1.outflow(), discharge)
 
 
 if __name__ == '__main__':
