@@ -65,7 +65,7 @@ class TestMyNetwork(unittest.TestCase):
         filename = cwd + '\\test_data\\network_GML_input.gml'
         self.n1.load_from_file(filename)
         
-        self.n1.draw()
+        # self.n1.draw()
         discharge = 6337.5 * 4
         self.n1.update(self.precip, self.et)
         self.assertEqual(self.n1.outflow, discharge)

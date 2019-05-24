@@ -24,25 +24,5 @@ class TestWatershed(unittest.TestCase):
         """Destroy the object after running tests"""
         del self.w
         
-    def testOutflowLargeWatershed(self):
-        """Outflow == defined value"""
-        precip = 0.00654
-        et = 0.00025
-        
-        precision = 1
-
-        for i in range(0, 11):
-            self.w.update(precip, et)
-
-        self.assertAlmostEqual(self.w.outflow, 396.272, precision)
-
-    def testGettingWatershed(self):
-        """Make sure you can get a node when requested."""
-        
-        node = self.w.get_node('C1')
-        
-        self.assertTrue(type(node), Catchment)
-
-
 if __name__ == '__main__':
     unittest.main()

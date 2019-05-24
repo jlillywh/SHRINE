@@ -9,7 +9,7 @@ class TestCatchment(unittest.TestCase):
             Compare results to Catchment Verification.gsm
         """
         self.area = 12600000.0
-        self.c1 = Catchment(self.area)
+        self.c1 = Catchment(self.area, runoff_method='AWBM')
         self.precision = 1
 
     def tearDown(self):
