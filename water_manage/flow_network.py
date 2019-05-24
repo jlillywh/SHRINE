@@ -27,6 +27,7 @@ class Network:
         self.dg.add_node('Sink')
         self.source = 'Source'
         self.sink = 'Sink'
+        self.outflow = 0.0
         
     def add_source(self, node_name, downstream_name='Sink'):
         self.dg.add_edge('Source', node_name)
@@ -45,7 +46,7 @@ class Network:
         nx.draw(network_copy, with_labels=True)
         plt.show()
         
-    def outflow(self):
+    def update(self, precip=0.0, et=0.0):
         """This function will first walk over all nodes in the graph and call their respective
             update() function.
             
@@ -62,20 +63,25 @@ class Network:
 
         for u, v, a in self.dg.edges(data=True):
             try:
-                if a['capacity'] < 9e9:
+                if a['capacity'] < float('inf'):
                     catchment = self.dg.nodes[u]['node_type']
-                    catchment.update_runoff(10.0, 0.25)
+                    catchment.update_runoff(precip, et)
                     a['capacity'] = catchment.outflow
             except KeyError:
                 pass
 
         flow_value, flow_dict = nx.maximum_flow(self.dg, self.source, self.sink, capacity='capacity')
-        return flow_value
+        self.outflow = flow_value
     
     def load_from_file(self, filename):
         self.dg = nx.read_gml(filename)
-        # catchments = [x for x, y in self.dg.nodes(data=True) if y['capacity'] > 0]
-        for n in self.dg.copy():
-            # self.dg.nodes[c]['catchment'] = Catchment()
-            if 'C' in n:
-                self.dg.add_edge(self.source, n)
+        # Convert catchment labels to Catchment objects
+        for node in self.dg.copy().nodes():
+            try:
+                if self.dg.nodes[node]['node_type'] == 'Catchment':
+                    self.dg.nodes[node]['node_type'] = Catchment()
+                    self.dg.add_edge(self.source, node)
+            except KeyError:
+                pass
+                
+

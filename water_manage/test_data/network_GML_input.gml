@@ -7,27 +7,32 @@ graph [
     node [
         id 1
         label "C1"
-        node_type 'Catchment'
+        node_type "Catchment"
     ]
     node [
         id 2
         label "C2"
+        node_type "Catchment"
     ]
     node [
         id 3
         label "C3"
+        node_type "Catchment"
     ]
     node [
         id 4
         label "C4"
+        node_type "Catchment"
     ]
     node [
         id 5
         label "J1"
+        node_type "Junction"
     ]
     node [
         id 6
         label "J2"
+        node_type "Junction"
     ]
     node [
         id 7
@@ -36,25 +41,25 @@ graph [
     edge [
         source 1
         target 5
-        capacity 4
+        capacity 0.0
         label "Flow from node C1 to node J1"
     ]
     edge [
         source 2
         target 5
-        capacity 4
+        capacity 0.0
         label "Flow from node C2 to node J1"
     ]
     edge [
         source 3
         target 6
-        capacity 4
+        capacity 0.0
         label "Flow from node C3 to node J2"
     ]
     edge [
         source 4
         target 6
-        capacity 4
+        capacity 0.0
         label "Flow from node C4 to node J2"
     ]
     edge [
