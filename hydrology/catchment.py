@@ -27,7 +27,7 @@ class Catchment:
         updates the outflow attribute
     """
 
-    def __init__(self, area=100000.0):
+    def __init__(self, area=1000.0, runoff_method='simple'):
         """
 
         Attributes
@@ -45,7 +45,10 @@ class Catchment:
         """
 
         self.area = area
-        self.runoff_method = Awbm()
+        if runoff_method == 'simple':
+            self.runoff_method = Rational()
+        else:
+            self.runoff_method = Awbm()
         self.outflow = 0.0
 
     def update_runoff(self, precip, et):
@@ -65,3 +68,13 @@ class Catchment:
         """
 
         self.outflow = self.runoff_method.runoff(precip, et) * self.area
+
+
+class Rational:
+    """A class used to represent a simple mass balance of inflow and outflow"""
+    def __init__(self):
+        self.loss = 0.35
+    
+    def runoff(self, precip, et):
+        precip_excess = precip - et
+        return precip_excess * (1 - self.loss)

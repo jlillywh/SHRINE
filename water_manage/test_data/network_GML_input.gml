@@ -7,6 +7,7 @@ graph [
     node [
         id 1
         label "C1"
+        node_type 'Catchment'
     ]
     node [
         id 2

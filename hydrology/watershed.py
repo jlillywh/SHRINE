@@ -88,10 +88,9 @@ class Watershed:
         """
         for node in self.network.nodes:
             if self.network.nodes[node]['node_type'] == 200:
-                catchment = self.network.nodes[node]['catchment']
-                catchment.update_runoff(precip, et)
+                self.network.nodes[node]['catchment'].update_runoff(precip, et)
                 scr = list(self.network.successors(node))[0]
-                self.network.edges[node, scr]['runoff'] = catchment.outflow
+                self.network.edges[node, scr]['runoff'] = self.network.nodes[node]['catchment'].outflow
 
         # Use the max_flow algorithm to calculate the total flow from the watershed
         flow_value, flow_dict = nx.maximum_flow(self.network, self.source_node, self.sink_node.name, capacity='runoff')

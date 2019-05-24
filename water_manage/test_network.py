@@ -14,8 +14,9 @@ class TestMyNetwork(unittest.TestCase):
         del self.n1
         
     def testFlowCapacity(self):
-        capacity = np.random.random()
-        self.n1.add_source('C1', capacity)
+        capacity = 6337.5
+        self.n1.add_source('C1')
+        self.n1.draw()
         discharge = self.n1.outflow()
         self.assertEqual(discharge, capacity)
         
