@@ -18,7 +18,7 @@ from inputs.test_data import TestScalar, TestVector
 # TODO add test for: from inputs.test_table import _______
 # TODO - add new test for: from inputs.test_timeseries import _______
 from water_manage.test_allocator import TestAllocator
-# TODO add test for: from water_manage.test_network import _______
+from water_manage.test_network import TestMyNetwork
 from water_manage.test_reservoir import TestReservoir
 from water_manage.test_store import TestOutflowsCase
 from water_manage.test_stores_array import TestStoresCase
@@ -48,6 +48,7 @@ def suite():
     test_suite.addTest(unittest.makeSuite(TestStoresCase))
     test_suite.addTest(unittest.makeSuite(TestOutflowsCase))
     test_suite.addTest(unittest.makeSuite(TestAllocator))
+    test_suite.addTest(unittest.makeSuite(TestMyNetwork))
     return test_suite
 
 

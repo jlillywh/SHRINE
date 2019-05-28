@@ -5,7 +5,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
-class Watershed:
+class Watershed(Network):
     """ This class is used to create a watershed consisting of
         catchments and junctions.
         
@@ -63,11 +63,16 @@ class Watershed:
     """
 
     def __init__(self):
-        n = Network()
-        self.network = n.dg
-        self.outflow = 0.0
+        Network.__init__(self)
+        self.catchments = {}
 
-    def update(self, precip, et):
+    def link_catchment(self, name, downstream_name='Sink'):
+        """Link a Catchment object with the network node"""
+        self.add_catchment(name, downstream_name)
+        c = Catchment()
+        self.catchments[name] = c
+    
+    def discharge(self, precip, et):
         """Calculates runoff from all catchments and routes it down
                 through the demand network until the junction specified.
                 
@@ -80,53 +85,59 @@ class Watershed:
                 precip : float
                 et : float
         """
-        for u, v, a in self.network.edges(data=True):
-            try:
-                if a['capacity'] < float('inf'):
-                    catchment = self.network.nodes[u]['node_type']
-                    catchment.update_runoff(precip, et)
-                    a['capacity'] = catchment.outflow
-            except KeyError:
-                pass
-            
-        # Use the max_flow algorithm to calculate the total flow from the watershed
-        flow_value, flow_dict = nx.maximum_flow(self.network, self.source_node, self.sink_node.name, capacity='runoff')
-        self.outflow = flow_value
-    
-    def add_junction(self, junct_name, receiving_junction):
-        """Adds a new junction to the watershed.
-            
-            Build a new junction object by name. This junction can be
-            added to the demand network later.
         
-            Parameters
-            ----------
-            junct_name : str
-                Name of the new junction
-            receiving_junction : str
-                Name of the receiving junction
-        """
-        self.network.add_node(junct_name, type='Junction')
-        self.network.add_edge(junct_name, receiving_junction)
+        for name, catchment in self.catchments.items():
+            self.update_capacity(name, catchment.outflow(precip, et))
+        
+        return self.outflow()
+        
+        # for u, v, a in self.network.edges(data=True):
+        #     try:
+        #         if a['capacity'] < float('inf'):
+        #             catchment = self.network.nodes[u]['node_type']
+        #             catchment.outflow(precip, et)
+        #             a['capacity'] = catchment.outflow
+        #     except KeyError:
+        #         pass
+        #
+        # # Use the max_flow algorithm to calculate the total flow from the watershed
+        # flow_value, flow_dict = nx.maximum_flow(self.network, self.source_node, self.sink_node.name, capacity='runoff')
+        # self.outflow = flow_value
+    
+    # def add_junction(self, junct_name, receiving_junction):
+    #     """Adds a new junction to the watershed.
+    #
+    #         Build a new junction object by name. This junction can be
+    #         added to the demand network later.
+    #
+    #         Parameters
+    #         ----------
+    #         junct_name : str
+    #             Name of the new junction
+    #         receiving_junction : str
+    #             Name of the receiving junction
+    #     """
+    #     self.network.add_node(junct_name, type='Junction')
+    #     self.network.add_edge(junct_name, receiving_junction)
             
-    def link_catchment(self, catchment_name, receiving_junction):
-        """Adds a new catchment to the watershed.
-
-            Build a new junction object by name. This junction can be
-            added to the demand network later.
-
-            Parameters
-            ----------
-            catchment_name : str
-                Name of the new catchment
-            receiving_junction : str
-                Name of the receiving junction
-        """
-
-        self.network.add_node(catchment_name, type=Catchment(catchment_name))
-        self.network.add_edge(catchment_name, receiving_junction, runoff=9.0e9)
-        self.network.add_node(self.source_node, type=self.source_node)
-        self.network.add_edge(self.source_node, catchment_name)
+    # def link_catchment(self, catchment_name, receiving_junction):
+    #     """Adds a new catchment to the watershed.
+    #
+    #         Build a new junction object by name. This junction can be
+    #         added to the demand network later.
+    #
+    #         Parameters
+    #         ----------
+    #         catchment_name : str
+    #             Name of the new catchment
+    #         receiving_junction : str
+    #             Name of the receiving junction
+    #     """
+    #
+    #     self.network.add_node(catchment_name, type=Catchment(catchment_name))
+    #     self.network.add_edge(catchment_name, receiving_junction, runoff=9.0e9)
+    #     self.network.add_node(self.source_node, type=self.source_node)
+    #     self.network.add_edge(self.source_node, catchment_name)
 
     def delete_node(self, node_name):
         sub = nx.bfs_tree(self.network, source=node_name, reverse=True)
@@ -169,29 +180,29 @@ class Watershed:
         except KeyError:
             print("The node " + node_name + " does not exist!")
 
-    def draw(self):
-        network_copy = self.network.copy()
-        network_copy.remove_node(self.source_node)
-        plt.subplot()
-        nx.draw(network_copy, with_labels=True)
-        plt.show()
+    # def draw(self):
+    #     network_copy = self.network.copy()
+    #     network_copy.remove_node(self.source_node)
+    #     plt.subplot()
+    #     nx.draw(network_copy, with_labels=True)
+    #     plt.show()
         
-    def load_from_file(self, filename):
-        self.network = nx.read_gml(filename)
-        catchments = [x for x, y in self.network.nodes(data=True) if y['node_type'] == 200]
-        self.network.add_node('A', node_type=100)
-        self.source_node = 'A'
-        self.sink_node = Junction('J3')
-
-        for c in catchments:
-            self.network.nodes[c]['catchment'] = Catchment()
-            self.network.add_edge(self.source_node, c)
-            
-        # Change labels of catchment to catchment objects
-        for node in self.network.copy().nodes():
-            try:
-                if self.network.nodes[node]['node_type'] == 'Catchment':
-                    self.network.nodes[node]['node_type'] = Catchment()
-                    #self.network.add_edge(self.network.source, node)
-            except KeyError:
-                pass
+    # def load_from_file(self, filename):
+    #     self.network = nx.read_gml(filename)
+    #     catchments = [x for x, y in self.network.nodes(data=True) if y['node_type'] == 200]
+    #     self.network.add_node('A', node_type=100)
+    #     self.source_node = 'A'
+    #     self.sink_node = Junction('J3')
+    #
+    #     for c in catchments:
+    #         self.network.nodes[c]['catchment'] = Catchment()
+    #         self.network.add_edge(self.source_node, c)
+    #
+    #     # Change labels of catchment to catchment objects
+    #     for node in self.network.copy().nodes():
+    #         try:
+    #             if self.network.nodes[node]['node_type'] == 'Catchment':
+    #                 self.network.nodes[node]['node_type'] = Catchment()
+    #                 #self.network.add_edge(self.network.source, node)
+    #         except KeyError:
+    #             pass

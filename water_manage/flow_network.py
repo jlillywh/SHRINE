@@ -33,7 +33,7 @@ class Network:
         self.dg.add_edge(self.source, node_name)
         self.dg.add_edge(node_name, downstream_name, capacity=0.0)
     
-    def add_junction(self, name, downstream_name):
+    def add_junction(self, name, downstream_name='Sink'):
         self.dg.add_node(name, node_type='Junction')
         self.dg.add_edge(name, downstream_name)
            
@@ -49,7 +49,12 @@ class Network:
         self.dg[node_name][succ]['capacity'] = capacity
         
     def update_all(self, capacity_dict):
-        nx.set_edge_attributes(self.dg, capacity_dict)
+        """Change this so the parameter is a simple dict of node: flow values
+            Ex. capacity_dict = {'C1': 5.4, 'C2': 2.65, 'C3': 0.44}"""
+        # build the edge tuples from the nodes
+        for node_name, capacity in capacity_dict.items():
+            self.update_capacity(node_name, capacity)
+        # nx.set_edge_attributes(self.dg, capacity_dict)
     
     def outflow(self):
         """This function will first walk over all nodes in the graph and call their respective

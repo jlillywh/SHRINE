@@ -1,6 +1,4 @@
 import unittest
-from unittest import TestCase
-
 from water_manage.flow_network import Network
 import numpy as np
 import os
@@ -12,12 +10,14 @@ class TestMyNetwork(unittest.TestCase):
         self.n1 = Network()
         self.precip = 10.0
         self.et = 0.25
+        self.precision = 5
     
     def tearDown(self):
         """Destroy the object after running tests"""
         del self.n1
         del self.precip
         del self.et
+        del self.precision
     
     def testFlowCapacity(self):
         flow = np.random.random()
@@ -84,17 +84,14 @@ class TestMyNetwork(unittest.TestCase):
         self.n1.add_catchment('C3', 'J2')
         self.n1.add_catchment('C4', 'J2')
         
-        capacity = {('C1', 'J1'): {'capacity': flow1},
-                    ('C2', 'J1'): {'capacity': flow2},
-                    ('C3', 'J2'): {'capacity': flow3},
-                    ('C4', 'J2'): {'capacity': flow4}}
+        # capacity = {('C1', 'J1'): {'capacity': flow1}, ('C2', 'J1'): {'capacity': flow2}, ('C3', 'J2'): {'capacity': flow3}, ('C4', 'J2'): {'capacity': flow4}}
+        capacity = {'C1': flow1, 'C2': flow2, 'C3': flow3, 'C4': flow4}
         
         self.n1.update_all(capacity)
-        self.assertEqual(self.n1.outflow(), expected_sum)
+        self.assertAlmostEqual(self.n1.outflow(), expected_sum, self.precision)
         
     def testReadFromGML(self):
-        cwd = os.getcwd()
-        filename = cwd + '\\test_data\\network_GML_input.gml'
+        filename = "C:\\Users\\jlillywhite\\PyCharmProjects\\AegisProject\\water_manage\\test_data\\network_GML_input.gml"
         self.n1.load_from_file(filename)
         
         # self.n1.draw()
@@ -103,12 +100,11 @@ class TestMyNetwork(unittest.TestCase):
         flow3 = np.random.uniform(1, 100)
         flow4 = np.random.uniform(1, 100)
         expected_sum = flow1 + flow2 + flow3 + flow4
-        capacity = {('C1', 'J1'): {'capacity': flow1}, ('C2', 'J1'): {'capacity': flow2},
-                    ('C3', 'J2'): {'capacity': flow3}, ('C4', 'J2'): {'capacity': flow4}}
+        capacity = {'C1': flow1, 'C2': flow2, 'C3': flow3, 'C4': flow4}
 
         self.n1.update_all(capacity)
         self.n1.outflow()
-        self.assertEqual(self.n1.outflow(), expected_sum)
+        self.assertAlmostEqual(self.n1.outflow(), expected_sum, self.precision)
 
 
 if __name__ == '__main__':

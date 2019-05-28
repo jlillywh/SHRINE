@@ -49,9 +49,8 @@ class Catchment:
             self.runoff_method = Rational()
         else:
             self.runoff_method = Awbm()
-        self.outflow = 0.0
 
-    def update_runoff(self, precip, et):
+    def outflow(self, precip, et):
         """calculates the runoff rate based for the catchment
         updates the outflow attribute
 
@@ -64,10 +63,10 @@ class Catchment:
 
         Returns
         -------
-            NA
+            outflow
         """
 
-        self.outflow = self.runoff_method.runoff(precip, et) * self.area
+        return self.runoff_method.runoff(precip, et) * self.area
 
 
 class Rational:

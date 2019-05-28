@@ -20,11 +20,12 @@ class TestCatchment(unittest.TestCase):
         """Outflow == defined value"""
         precip = 0.00654
         et = 0.00025
+        q = 0
 
         for i in range(0, 11):
-            self.c1.update_runoff(precip, et)
+            q = self.c1.outflow(precip, et)
 
-        self.assertAlmostEqual(self.c1.outflow, 8321.71, self.precision)
+        self.assertAlmostEqual(q, 8321.71, self.precision)
 
 
 if __name__ == '__main__':

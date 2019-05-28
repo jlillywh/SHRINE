@@ -41,25 +41,21 @@ graph [
     edge [
         source 1
         target 5
-        capacity 0.0
         label "Flow from node C1 to node J1"
     ]
     edge [
         source 2
         target 5
-        capacity 0.0
         label "Flow from node C2 to node J1"
     ]
     edge [
         source 3
         target 6
-        capacity 0.0
         label "Flow from node C3 to node J2"
     ]
     edge [
         source 4
         target 6
-        capacity 0.0
         label "Flow from node C4 to node J2"
     ]
     edge [
