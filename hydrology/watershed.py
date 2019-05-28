@@ -1,3 +1,4 @@
+from water_manage.flow_network import Network
 from hydrology.catchment import Catchment
 from hydrology.junction import Junction
 import networkx as nx
@@ -62,16 +63,9 @@ class Watershed:
     """
 
     def __init__(self):
-        self.network = nx.DiGraph()
-        self.source_node = 'A'
-        self.network.add_node(self.source_node, node_type=100)
-        # self.network.add_node(self.source_node, node_type=100)
-        self.sink_node = Junction('J1')
+        n = Network()
+        self.network = n.dg
         self.outflow = 0.0
-        self.network.add_node(self.sink_node.name, node_type=300)
-        self.network.add_node('C1', node_type=200)
-        self.network.add_edge(self.source_node, 'C1')
-        self.network.add_edge('C1', 'J1', runoff=9.0e9)
 
     def update(self, precip, et):
         """Calculates runoff from all catchments and routes it down
@@ -86,12 +80,15 @@ class Watershed:
                 precip : float
                 et : float
         """
-        for node in self.network.nodes:
-            if self.network.nodes[node]['node_type'] == 200:
-                self.network.nodes[node]['catchment'].update_runoff(precip, et)
-                scr = list(self.network.successors(node))[0]
-                self.network.edges[node, scr]['runoff'] = self.network.nodes[node]['catchment'].outflow
-
+        for u, v, a in self.network.edges(data=True):
+            try:
+                if a['capacity'] < float('inf'):
+                    catchment = self.network.nodes[u]['node_type']
+                    catchment.update_runoff(precip, et)
+                    a['capacity'] = catchment.outflow
+            except KeyError:
+                pass
+            
         # Use the max_flow algorithm to calculate the total flow from the watershed
         flow_value, flow_dict = nx.maximum_flow(self.network, self.source_node, self.sink_node.name, capacity='runoff')
         self.outflow = flow_value
@@ -189,3 +186,12 @@ class Watershed:
         for c in catchments:
             self.network.nodes[c]['catchment'] = Catchment()
             self.network.add_edge(self.source_node, c)
+            
+        # Change labels of catchment to catchment objects
+        for node in self.network.copy().nodes():
+            try:
+                if self.network.nodes[node]['node_type'] == 'Catchment':
+                    self.network.nodes[node]['node_type'] = Catchment()
+                    #self.network.add_edge(self.network.source, node)
+            except KeyError:
+                pass
