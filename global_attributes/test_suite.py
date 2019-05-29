@@ -3,7 +3,6 @@ import unittest   # second test
 # Import all tests here
 from global_attributes.test_aegis import TestAegis
 from global_attributes.test_clock import TestClockCase
-# TODO add test for model: from global_attributes.test_model import ________
 from controllers.test_controller import TestController
 from geometry.test_shape import TestShape, TestPoint
 from geometry.test_bowl import TestBowl

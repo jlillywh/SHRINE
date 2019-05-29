@@ -13,7 +13,7 @@ class TestWatershed(unittest.TestCase):
             Watershed Verification large.gsm
         """
         self.w = Watershed()
-        self.w.add_junction('J1', 'Sink')
+        self.w.add_junction('J1', 'sink')
         self.w.link_catchment('C1', 'J1')
         self.w.link_catchment('C2', 'J1')
         self.precision = 3

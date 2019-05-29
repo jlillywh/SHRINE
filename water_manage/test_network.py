@@ -34,7 +34,7 @@ class TestMyNetwork(unittest.TestCase):
         self.n1.add_catchment('C2')
         self.n1.update_capacity('C1', flow1)
         self.n1.update_capacity('C2', flow2)
-        # capacity = {('C1', 'Sink'): flow1, ('C2', 'Sink'): flow2}
+        # capacity = {('C1', 'sink'): flow1, ('C2', 'sink'): flow2}
         # self.n1.draw()
         self.assertEqual(self.n1.outflow(), flow1 + flow2)
     
@@ -42,7 +42,7 @@ class TestMyNetwork(unittest.TestCase):
         """Add a junction that joins 2 source nodes"""
         flow1 = np.random.random()
         flow2 = np.random.random()
-        self.n1.add_junction('J1', 'Sink')
+        self.n1.add_junction('J1', 'sink')
         self.n1.add_catchment('C1', 'J1')
         self.n1.add_catchment('C2', 'J1')
         self.n1.update_capacity('C1', flow1)
@@ -57,7 +57,7 @@ class TestMyNetwork(unittest.TestCase):
         flow3 = np.random.uniform(1, 100)
         flow4 = np.random.uniform(1, 100)
         expected_sum = flow1 + flow2 + flow3 + flow4
-        self.n1.add_junction('J1', 'Sink')
+        self.n1.add_junction('J1', 'sink')
         self.n1.add_junction('J2', 'J1')
         self.n1.add_catchment('C1', 'J1')
         self.n1.add_catchment('C2', 'J1')
@@ -77,7 +77,7 @@ class TestMyNetwork(unittest.TestCase):
         flow4 = np.random.uniform(1, 100)
         expected_sum = flow1 + flow2 + flow3 + flow4
 
-        self.n1.add_junction('J1', 'Sink')
+        self.n1.add_junction('J1', 'sink')
         self.n1.add_junction('J2', 'J1')
         self.n1.add_catchment('C1', 'J1')
         self.n1.add_catchment('C2', 'J1')

@@ -36,7 +36,7 @@ graph [
     ]
     node [
         id 7
-        label "Sink"
+        label "sink"
     ]
     edge [
         source 1

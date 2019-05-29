@@ -23,17 +23,17 @@ class Network:
     """
     def __init__(self):
         self.dg = nx.DiGraph()
-        self.dg.add_node('Source')
-        self.dg.add_node('Sink')
-        self.source = 'Source'
-        self.sink = 'Sink'
+        self.dg.add_node('source')
+        self.dg.add_node('sink')
+        self.source = 'source'
+        self.sink = 'sink'
         
-    def add_catchment(self, node_name, downstream_name='Sink'):
+    def add_catchment(self, node_name, downstream_name='sink'):
         self.dg.add_node(node_name, node_type='Catchment')
         self.dg.add_edge(self.source, node_name)
         self.dg.add_edge(node_name, downstream_name, capacity=0.0)
     
-    def add_junction(self, name, downstream_name='Sink'):
+    def add_junction(self, name, downstream_name='sink'):
         self.dg.add_node(name, node_type='Junction')
         self.dg.add_edge(name, downstream_name)
            
@@ -48,6 +48,8 @@ class Network:
         succ = list(self.dg.successors(node_name))[0]
         self.dg[node_name][succ]['capacity'] = capacity
         
+    
+    
     def update_all(self, capacity_dict):
         """Change this so the parameter is a simple dict of node: flow values
             Ex. capacity_dict = {'C1': 5.4, 'C2': 2.65, 'C3': 0.44}"""

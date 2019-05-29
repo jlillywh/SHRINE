@@ -66,7 +66,7 @@ class Watershed(Network):
         Network.__init__(self)
         self.catchments = {}
 
-    def link_catchment(self, name, downstream_name='Sink'):
+    def link_catchment(self, name, downstream_name='sink'):
         """Link a Catchment object with the network node"""
         self.add_catchment(name, downstream_name)
         c = Catchment()
