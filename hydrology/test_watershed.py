@@ -27,18 +27,21 @@ class TestWatershed(unittest.TestCase):
         et = np.random.uniform(0, 2)
         
         c = Catchment()
-        
         expected_ouflow = c.outflow(precip, et) * 2
         
         self.assertAlmostEqual(self.w.discharge(precip, et), expected_ouflow, self.precision)
         
-    # def testLoadFile(self):
-    #     fm = FileManager('..\\hydrology\\test_data')
-    #     filename = 'watershed_GML_input.gml'
-    #     fm.add_file(filename)
-    #
-    #     self.w = Watershed()
-    #     self.w.load_from_file(fm.file_list[filename])
+    def testLoadFile(self):
+        precip = np.random.uniform(0, 15)
+        et = np.random.uniform(0, 2)
+        c = Catchment()
+        expected_ouflow = c.outflow(precip, et) * 4
+        
+        filename = "C:\\Users\\jlillywhite\\PyCharmProjects\\AegisProject\\hydrology\\test_data\\watershed_GML_input.gml"
+
+        self.w = Watershed()
+        self.w.load_from_file(filename)
+        self.assertAlmostEqual(self.w.discharge(precip, et), expected_ouflow, self.precision)
 
         
 if __name__ == '__main__':

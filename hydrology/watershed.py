@@ -186,7 +186,19 @@ class Watershed(Network):
     #     plt.subplot()
     #     nx.draw(network_copy, with_labels=True)
     #     plt.show()
-        
+    
+    def load_from_file(self, filename):
+        self.dg = nx.read_gml(filename)
+        # Convert catchment labels to Catchment objects
+        for node in self.dg.copy().nodes():
+            try:
+                if self.dg.nodes[node]['node_type'] == 'Catchment':
+                    self.dg.add_edge(self.source, node)
+                    c = Catchment()
+                    self.catchments[node] = c
+            except KeyError:
+                pass
+            
     # def load_from_file(self, filename):
     #     self.network = nx.read_gml(filename)
     #     catchments = [x for x, y in self.network.nodes(data=True) if y['node_type'] == 200]

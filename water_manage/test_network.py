@@ -68,7 +68,7 @@ class TestMyNetwork(unittest.TestCase):
         self.n1.update_capacity('C2', flow2)
         self.n1.update_capacity('C3', flow3)
         self.n1.update_capacity('C4', flow4)
-        self.assertEqual(self.n1.outflow(), expected_sum)
+        self.assertAlmostEqual(self.n1.outflow(), expected_sum, self.precision)
     
     def test_update_all(self):
         flow1 = np.random.uniform(1, 100)
