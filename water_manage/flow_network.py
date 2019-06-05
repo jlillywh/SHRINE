@@ -27,6 +27,7 @@ class Network:
         self.dg.add_node('sink')
         self.source = 'source'
         self.sink = 'sink'
+        self.calc_method = 'max'
         
     def add_catchment(self, node_name, downstream_name='sink'):
         self.dg.add_node(node_name, node_type='Catchment')
@@ -36,6 +37,25 @@ class Network:
     def add_junction(self, name, downstream_name='sink'):
         self.dg.add_node(name, node_type='Junction')
         self.dg.add_edge(name, downstream_name)
+        
+    def add_supply(self, name, downstream_name, capacity=0.0):
+        self.dg.add_edge(name, downstream_name, capacity=capacity)
+        
+    def add_splitter(self, name, downstream_nodes, source='source'):
+        """ Adds a node that distributes what it receives to multiple downstream nodes
+        
+            Parameters
+            ----------
+            downstream_nodes : list of str
+                This list includes the names of all downstream nodes to connect to."""
+        self.dg.add_edge(source, name)
+        for i in range(len(downstream_nodes)):
+            self.dg.add_edge(name, downstream_nodes[i])
+        
+    def add_demand(self, name, source='source', sink='sink', demand=None, cost=None):
+        self.dg.add_edge(source, name, capacity=demand, weight=cost)
+        self.dg.add_edge(name, sink)
+        
            
     def draw(self):
         network_copy = self.dg.copy()
@@ -48,7 +68,8 @@ class Network:
         succ = list(self.dg.successors(node_name))[0]
         self.dg[node_name][succ]['capacity'] = capacity
         
-    
+    def link_capacity(self, upstream_name, downstream_name, capacity):
+        self.dg[upstream_name][downstream_name]['capacity'] = capacity
     
     def update_all(self, capacity_dict):
         """Change this so the parameter is a simple dict of node: flow values
@@ -73,16 +94,32 @@ class Network:
             Flow (calculated using the Maximum_Flow algorithm of Networkx)
         """
         
-        #nx.set_edge_attributes(self.dg, flow_dict, 'capacity')
-        # for u, v, a in self.dg.edges(data=True):
-        #     try:
-        #         if a['capacity'] < float('inf'):
-        #             a['capacity'] = flow
-        #     except KeyError:
-        #         pass
-
-        flow_value, flow_dict = nx.maximum_flow(self.dg, self.source, self.sink, capacity='capacity')
-        return flow_value
+        flow_dict = self.calc_flows()
+        pred_list = list(self.dg.predecessors('sink'))
+        pred = 0.0
+        for i in pred_list:
+            pred += flow_dict[i]['sink']
+        return pred
+    
+    def calc_flows(self):
+        """ Uses the method of choice to calculate the flows at all nodes.
+        
+            Returns
+            -------
+            flow dictionary
+        """
+        flow_dict = {}
+        if self.calc_method == 'max':
+            flow_value, flow_dict = nx.maximum_flow(self.dg, self.source, self.sink, capacity='capacity')
+        elif self.calc_method == 'min_cost':
+            flow_cost, flow_dict = nx.network_simplex(self.dg)
+            
+        return flow_dict
+    
+    def outflow_at_node(self, node_name):
+        succ = list(self.dg.successors(node_name))[0]
+        flow_dict = self.calc_flows()
+        return flow_dict[node_name][succ]
     
     def load_from_file(self, filename):
         self.dg = nx.read_gml(filename)

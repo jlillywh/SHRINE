@@ -56,6 +56,9 @@ class Reservoir(Store):
         self.weir_coef = 3.2
         self.weir_length = 1.0
 
+    def __repr__(self):
+        return 'Reservoir(initial_volume=%s)' % (self.volume)
+
     @property
     def water_level(self):
         return self._water_level
