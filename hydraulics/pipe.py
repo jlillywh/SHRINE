@@ -40,32 +40,35 @@ class Pipe:
             and zero velocity upstream
         
     """
-    
-    def __init__(self, length=1000.0, diameter=1.0, material='concrete', k=1.7):
-        """Input length, diameter, material as optional
-        
-            Parameters
-            ----------
-            length : float
-                Length of pipe section, in meters
-            diameter : float
-                Inside diameter of the pipe, in meters
-            material : str
-                Choice of concrete, steel, plastic
-                #TODO add more material options perhaps from a table in a file
-            k : float
-                Minor loss coefficient
-            
-        """
-
+    def __init__(self, length=1000.0, diameter=1.0, material='concrete', minor_loss=1.7):
         self.length = length
         self.diameter = diameter
         self._material = material
-        self.hazen_williams = 125
-        self.roughness = 0.2 / 1000    # units: m
-        self.assign_roughness(material)
-        self.k = k
+        self.hazen_williams = 120
+        self.roughness = 0.2 / 1000.0
+        self.k = minor_loss
         self.f = 0.02
+    
+    @property
+    def material(self) -> str:
+        return self._material
+     
+    @material.setter
+    def material(self, new_material: str):
+        self._material = new_material
+        self.assign_roughness(new_material)
+        
+    @property
+    def area(self) -> {'type': float, 'units': 'm2'}:
+        return pi * self.diameter ** 2 / 4.0
+    
+    @property
+    def wet_perim(self) -> {'type': float, 'units': 'm'}:
+        return pi * self.diameter
+        
+    @property
+    def hyd_radius(self) -> {'type': float, 'units': 'm'}:
+        return self.area / self.wet_perim
     
     def assign_roughness(self, material):
         if material == 'concrete':
@@ -81,28 +84,7 @@ class Pipe:
             self.hazen_williams = 125
             self.roughness = 0.2 / 1000    # m
     
-    @property
-    def material(self):
-        return self._material
-     
-    @material.setter
-    def material(self, new_material):
-        self._material = new_material
-        self.assign_roughness(new_material)
-        
-    @property
-    def area(self):
-        return pi * self.diameter ** 2 / 4.0
-    
-    @property
-    def wet_perim(self):
-        return pi * self.diameter
-        
-    @property
-    def hyd_radius(self):
-        return self.area / self.wet_perim
-    
-    def minor_loss(self, flow_rate):
+    def minor_loss(self, flow_rate) -> {'type': float, 'units': 'm'}:
         """Calculate the minor loss in head loss
             Parameters
             ----------
@@ -116,7 +98,7 @@ class Pipe:
         velocity = flow_rate / self.area
         return self.k * (velocity ** 2 / (2.0 * const.g))
     
-    def head_loss(self, flow_rate, method='HW'):
+    def head_loss(self, flow_rate, method='HW') -> {'type': float, 'units': 'm'}:
         """Calculates the total head loss in the pipe section
         
             Parameters
@@ -149,7 +131,7 @@ class Pipe:
         """
         return self.head_loss(q) > delta_elevation
     
-    def gravity_flow(self, delta_elevation, method='HW'):
+    def gravity_flow(self, delta_elevation, method='HW') -> {'type': float, 'units': 'm3/d'}:
         """Calculates the flow rate given the known delta elevation
             
             Parameters
