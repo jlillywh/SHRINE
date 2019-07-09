@@ -1,25 +1,23 @@
 from global_attributes.aegis import Aegis
 from global_attributes.clock import Clock
-from hydrology.watershed import Watershed
-from hydrology.catchment import Catchment
-from hydrology.wgen import Wgen
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 class Simulator(Aegis):
-    def __init__(self):
+    """Class for creating a new simulation.
+    
+        Attributes
+        ----------
+        time_basis : str
+            Select between static, elapsed time, or calendar time basis for the simulation
+            
+    """
+    def __init__(self, time_basis='elapsed time', duration=100, time_step='1 days'):
         Aegis.__init__(self)
-        
+        self.time_basis = time_basis
         self.c = Clock()
-        self.w = Watershed()
-        self.w.link_catchment(Catchment('C1'), 'J1')
-        self.w.link_catchment(Catchment('C3'), 'J1')
-        self.w.add_junction('J5', 'J1')
-        self.w.link_catchment(Catchment('C4'), 'J5')
-        self.w.link_catchment(Catchment('C2'), 'J5')
-        self.r = Wgen()
         self.ts = pd.Series(0, index=pd.date_range(self.c.start_date, periods=365, freq='D'))
     
     def run(self):
