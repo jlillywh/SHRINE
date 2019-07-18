@@ -1,45 +1,41 @@
 import unittest
 from hydrology.sacramento import Sacramento
-
+import numpy as np
 
 class TestSacramento(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested
 
             Compare results to GoldSim model: AWBM Verification.gsm"""
-        init_states = {'uztwc': 0.0,
-                       'uzfwc':0.0,
-                       'lztwc':20.0,
-                       'lzfsc': 10.0,
-                       'lzfpc': 10.0,
-                       'adimc':0.0
+        init_states = {'uztwc': 60.0,
+                       'uzfwc': 0.5,
+                       'lztwc': 100.0,
+                       'lzfsc': 11.0,
+                       'lzfpc': 47.0,
+                       'adimc': 160.0
                        }
         
-        params = {'uztwm': 50.0,
-                  'uzfwm': 40.0,
-                  'lztwm': 130.0,
-                  'lzfpm': 60.0,
-                  'lzfsm': 25.0,
-                  'uzk': 0.3,
-                  'lzpk': 0.01,
-                  'lzsk': 0.05,
-                  'zperc': 40.0,
-                  'rexp': 1.0,
-                  'pfree': 0.06,
-                  'pctim': 0.01,
-                  'adimp': 0.0,
-                  'riva': 0.4,
-                  'side': 0.0,
-                  'saved': 1.0,
-                  'rserv': 0.3
+        params = {'uztwm': 40.0,    #default
+                  'uzfwm': 30.0,    #default
+                  'lztwm': 330.0,   #default
+                  'lzfpm': 40.0,    #default
+                  'lzfsm': 15.0,    #default
+                  'uzk': 0.4,       #default
+                  'lzpk': 0.005,    #default
+                  'lzsk': 0.1,      #default
+                  'zperc': 150.0,   #default
+                  'rexp': 2.0,      #default
+                  'pfree': 0.1,     #default
+                  'pctim': 0.0,     #default
+                  'adimp': 0.0,     #default
+                  'riva': 0.01,     #default
+                  'side': 0.0,      #default
+                  'rserv': 0.3      #default
                   }
         
-        globals = {'kint': 1,
-                   'pxv': 1.0,
-                   'pcti': 1.0,
-                   'simpvt': 1.0,
-                   'dt': 1.0,
-                   'ifrze': 0.0
+        globals = {'pxv': 2.5,
+                   'isc': 1.0,
+                   'aesc': 1.0
                    }
         self.s1 = Sacramento(init_states, params, globals)
         self.precision = 2
@@ -49,10 +45,9 @@ class TestSacramento(unittest.TestCase):
         del self.s1
         del self.precision
     
-    def testUpdateCompCapacity(self):
-        """New bucket capacity == user defined array"""
-        new_buckets = [0.05743, 0.14333, 0.29849]
-        self.a1.set_comp_capacity(new_buckets)
-        for i in range(len(new_buckets)):
-            self.assertEqual(self.a1.buckets.stores[i].capacity, new_buckets[i] * self.a1.partial_area_fraction[i])
-
+    def testET(self):
+        p = [0,2,4,8,16,32,0,0,0,0,0,0,0]
+        et = 1.5
+        for i in range(10):
+            self.s1.update(p[i], et)
+        self.assertAlmostEqual(self.s1.tci, 0.152, self.precision)
