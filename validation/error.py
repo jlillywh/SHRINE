@@ -16,7 +16,6 @@ class WrongUnits(Error):
 class NodeNotFound(Error):
     """Node is not found when searching a list
     """
-    
     pass
 
 

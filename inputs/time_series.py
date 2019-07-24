@@ -26,11 +26,15 @@ class TimeSeries:
             Represents the date range for the time series
             Must be used to provide the index list for the values"""
         _start_date = datetime.strptime(start_date, '%x').date()
+        self.date_rng = pd.date_range(start=start_date, periods=periods)
         self.values_name = values_name
-        self.df = pd.DataFrame(
-            {'date': [_start_date + timedelta(days=x) for x in range(periods)],
-             self.values_name: pd.Series(np.random.randn(periods))})
-        self.df = self.df.set_index('date')
+        # self.df = pd.DataFrame({date': [_start_date + timedelta(days=x) for x in range(periods)], self.values_name: pd.Series(np.random.randn(periods))})
+        # self.df = self.df.set_index('date')
+        self.df = pd.DataFrame(self.date_rng, columns=['date'])
+        self.df[values_name] = np.random.randint(0, 100, size=len(self.date_rng))
+        self.df['datetime'] = pd.to_datetime(self.df['date'])
+        self.df = self.df.set_index('datetime')
+        self.df.drop(['date'], axis=1, inplace=True)
         
         # self.date_range = pd.date_range(start_date, periods=periods, freq=freq)
         # np.random.seed(seed=1111)
@@ -49,7 +53,7 @@ class TimeSeries:
                 the type must match that of other values
                 already in the series.
         """
-        self.data_frame[at_date] = value
+        self.df[at_date] = value
     
     def load_csv(self, file_path):
         """Replaces the time series with data from csv file
@@ -59,7 +63,7 @@ class TimeSeries:
             file_path : str
                 full or relative path to the file
         """
-        self.df = pd.read_csv(file_path)
+        self.df = pd.read_csv(file_path, skiprows=2)
     
     def num_of_records(self):
         """ The number of time-value records (or rows in the time series).

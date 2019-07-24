@@ -7,7 +7,7 @@ fm = FileManager('..\\data_external')
 filename = 'watershed_GML_input.gml'
 fm.add_file(filename)
 w = Watershed()
-w.load_from_file(fm.file_list[filename])
+w.load_from_file(fm.files[filename])
 n = w.network
 
 n.adj['J1']['J2']['runoff'] = 99 * U.m3 / U.day

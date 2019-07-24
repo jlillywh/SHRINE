@@ -2,6 +2,8 @@ from unittest import TestCase
 from inputs.time_series import TimeSeries
 import datetime
 from datetime import timedelta
+from data.fileman import FileManager
+import pandas as pd
 
 
 # dir_path = '..\data_external'
@@ -40,12 +42,16 @@ from datetime import timedelta
 class TestTimeSeries(TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
+        fileman = FileManager('data_external')
+        fileman.add_file("WGEN PAR Input Time Series.xlsx")
+        xls_file = pd.ExcelFile(fileman.get_file("WGEN PAR Input Time Series.xlsx"))
         self.ts = TimeSeries('1/1/19', periods=365)
         self.dec_places = 3
     
     def tearDown(self):
         """Destroy the object after running tests"""
         del self.ts
+    
     
     def test_num_of_records(self):
         nr = 365
