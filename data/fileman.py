@@ -1,5 +1,5 @@
 import os.path
-from dataclasses import make_dataclass
+from data.file import File
 from pathlib import Path
 
 
@@ -29,17 +29,12 @@ class FileManager:
         Prints out a list of all the files in the manager
     is_empty
         Returns true if there are no files in the manager
+    validate_path
+            make sure the path entered exists and is valid. If not, throw error
     """
-    def __init__(self, dir_name=''):
+    def __init__(self, dir_name='.'):
         # Check to make sure the directory exists
-        new_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..\\' + dir_name + '\\'))
-        if os.path.isdir(new_path):
-            self._directory = new_path
-        else:
-            print('The directory {} does not exist.'.format(dir_name))
-            self._directory = os.path.dirname(os.path.abspath(__file__))
-            print("Directory set to " + self._directory)
-        self.File = make_dataclass('File', ['id', 'name', 'path'])
+        self.directory = dir_name
         self.files = []
         
     @property
@@ -53,39 +48,30 @@ class FileManager:
             ----------
             new_directory: str
                 name of the new directory. This is relative to the project path"""
-        new_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..\\' + new_directory + '\\'))
-        if os.path.isdir(new_path):
-            self._directory = new_path
-        else:
-            print('The directory {} does not exist.'.format(new_directory))
-            self._directory = os.path.abspath(__file__ + "/../../")
-            print("Directory set to " + self._directory)
+        self._directory = self.validate_directory(new_directory)
         
-    def add_file(self, name):
+    def add_file(self, file_name):
         """ Adds an existing file to the list of files
             File must be existing. If not, throw error.
             TODO: prevent adding duplicates
         
             Parameters
             ----------
-            name : str
+            file_name : str
                 Must include the suffix of the file name
         """
-        file_id = len(self.files)
-        file_name = name
-        path = self._directory + file_name
-        # check if the file exists
-        if os.path.exists(path):
-            file = self.File(file_id, file_name, path)
-            self.files.append(file)
-            return file.name
+        if file_name not in self.files and self.validate_file(file_name):
+            self.files.append(File(file_name))
+            return True
         else:
-            raise FileNotFoundError('The file, {} does not exist!'.format(file_name))
+            return False
         
-    def get_file(self, file):
+    def get_file(self, file_name):
         # first see if the file exists in the list
-        if file in self.files:
-            return self.files[file]
+
+        for file in self.files:
+            if file.name == file_name:
+                return self._directory + '\\' + file.name
         else:
             raise KeyError('Not in list!')
         
@@ -102,3 +88,23 @@ class FileManager:
     def print_files(self):
         for file in self.files:
             print(file)
+
+    @staticmethod
+    def validate_directory(new_directory):
+        if os.path.exists(new_directory):
+            if new_directory == '.':
+                return os.path.abspath(__file__ + "/../")
+            elif new_directory == '..':
+                return os.path.abspath(__file__ + "/../../")
+            else:
+                return new_directory
+        else:
+            raise Exception('The directory {} does not exist.'.format(new_directory))
+            # return new_directory
+
+    def validate_file(self, existing_file):
+        if os.path.exists(self._directory + '\\' + existing_file):
+            f = self._directory + '\\' + existing_file
+            return True
+        else:
+            return False
