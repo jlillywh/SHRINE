@@ -68,12 +68,18 @@ class FileManager:
         
     def get_file(self, file_name):
         # first see if the file exists in the list
-
-        for file in self.files:
-            if file.name == file_name:
+        if type(file_name) == str:
+            for file in self.files:
+                if file.name == file_name:
+                    return self._directory + '\\' + file.name
+            else:
+                raise KeyError('Not in list!')
+        elif type(file_name) == int:
+            try:
+                file = self.files[file_name]
                 return self._directory + '\\' + file.name
-        else:
-            raise KeyError('Not in list!')
+            except IndexError:
+                print('Not in list!')
         
     def drop_file(self, file):
         if file in self.files:
@@ -91,6 +97,7 @@ class FileManager:
 
     @staticmethod
     def validate_directory(new_directory):
+        p = os.getcwd()
         if os.path.exists(new_directory):
             if new_directory == '.':
                 return os.path.abspath(__file__ + "/../")
