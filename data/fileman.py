@@ -34,6 +34,7 @@ class FileManager:
     """
     def __init__(self, dir_name='.'):
         # Check to make sure the directory exists
+        self.available_files = []
         self.directory = dir_name
         self.files = []
         
@@ -49,6 +50,7 @@ class FileManager:
             new_directory: str
                 name of the new directory. This is relative to the project path"""
         self._directory = self.validate_directory(new_directory)
+        self.available_files = os.listdir(self._directory)
         
     def add_file(self, file_name):
         """ Adds an existing file to the list of files
