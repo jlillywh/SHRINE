@@ -30,9 +30,10 @@ class Clock(Aegis):
 
         ## Dynamic time variables
         self.current_date = self.start_date
+        self.jday = self.current_date.timetuple().tm_yday
         self.remaining_time = self.duration
         self.running = True
-        
+     
     def reset(self):
         """Reset the clock settings back to their original state.
         

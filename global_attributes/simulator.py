@@ -22,7 +22,7 @@ class Simulator(Aegis):
     
     def run(self):
         while self.c.running:
-            self.r.update(self.c.current_date)
+            self.c.update(self.c.current_date)
             precip = self.r.rain * 25.4
             et = np.random.uniform()
             self.w.update(precip, et, self.w.sink_node)
