@@ -11,10 +11,14 @@ class Clock(Aegis):
             start_date : pandas Timestamp
             duration :
             periods : int
+            current_date : Timestamp
+            day_of_year: int
+                Day of year starting with Jan 1 = 1
 
         Methods
         -------
-            set_current_date
+            current_date
+                setter function
             reset
             advance
         """
@@ -30,7 +34,7 @@ class Clock(Aegis):
 
         ## Dynamic time variables
         self.current_date = self.start_date
-        self.jday = self.current_date.timetuple().tm_yday
+        #self.jday = self.current_date.timetuple().tm_yday
         self.remaining_time = self.duration
         self.running = True
      
@@ -74,7 +78,12 @@ class Clock(Aegis):
         self.running = True
         self.range = pd.date_range(start=self.start_date, end=self.end_date)
         
-    def set_current_date(self, new_date):
+    @property
+    def current_date(self):
+        return self._current_date
+    
+    @current_date.setter
+    def current_date(self, new_date):
         """Set the current date of the clock.
         
             This is useful if you want to force the clock time to a known
@@ -83,14 +92,15 @@ class Clock(Aegis):
             Parameters : str
                 new_date
         """
-        self.current_date = pd.Timestamp(new_date, freq=self.time_step)
-        if self.current_date >= self.end_date:
+        self._current_date = pd.Timestamp(new_date, freq=self.time_step)
+        if self._current_date >= self.end_date:
             self.running = False
             self.duration = pd.Timedelta('0 days')
         else:
-            self.duration = self.end_date - self.current_date
+            self.duration = self.end_date - self._current_date
 
         self.remaining_time = self.duration
+        self.day_of_year = self._current_date.dayofyear
 
     def set_duration(self, new_duration):
         """Change the duration and update the end_date.
