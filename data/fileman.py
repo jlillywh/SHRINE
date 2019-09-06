@@ -23,6 +23,9 @@ class FileManager:
     create_file
         Creates a new file and adds it to the list
         TODO: add this function
+    generate_list
+        Generates a new file list from the files within the current dir
+        TODO: add this function
     drop_file
         Removes a file from the manager
     print_files
@@ -37,6 +40,7 @@ class FileManager:
         self.available_files = []
         self.directory = dir_name
         self.files = []
+        self.extensions = ['xlsx', 'xls', 'xlsm', 'csv', 'txt']
         
     @property
     def directory(self):
@@ -62,11 +66,15 @@ class FileManager:
             file_name : str
                 Must include the suffix of the file name
         """
-        if file_name not in self.files and self.validate_file(file_name):
-            self.files.append(File(file_name))
-            return True
+        if file_name not in self.files:
+            if self.validate_file(file_name):
+                new_file = File(file_name).save()
+                self.files.append(new_file)
+                print('New file created.')
+            else:
+                raise('File type is not valid.')
         else:
-            return False
+            raise('File already in list.')
         
     def get_file(self, file_name):
         # first see if the file exists in the list
@@ -82,6 +90,19 @@ class FileManager:
                 return self._directory + '\\' + file.name
             except IndexError:
                 print('Not in list!')
+    
+    def create_file(self, file_name):
+        """ Creates a new file and adds it to the files list.
+        
+            Parameters
+            ----------
+            file_name: str
+                The name of the file, including file extension.
+        """
+        
+        new_file = File(file_name).save()
+        self.add_file(file_name)
+        
         
     def drop_file(self, file):
         if file in self.files:
@@ -110,7 +131,7 @@ class FileManager:
         else:
             raise Exception('The directory {} does not exist.'.format(new_directory))
             # return new_directory
-
+    
     def validate_file(self, existing_file):
         if os.path.exists(self._directory + '\\' + existing_file):
             f = self._directory + '\\' + existing_file
