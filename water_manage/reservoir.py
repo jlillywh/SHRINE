@@ -28,11 +28,15 @@ class Reservoir(Store):
         bottom : float
             Elevation of the bottom of the reservoir
             
+            
         _water_level : float
             Elevation of the water surface
         
         Methods
         -------
+        volume()
+            Returns the quantity of the reservoir
+            
         spillway_flow()
             Calculate the spillway flow based on the depth of
             water above the spillway crest
@@ -66,7 +70,7 @@ class Reservoir(Store):
     @water_level.setter
     def water_level(self, new_water_level):
         self._water_level = new_water_level
-        self.volume = np.interp(self._water_level, self.elevations, self.volumes)
+        self.quantity = np.interp(self._water_level, self.elevations, self.volumes)
         self.update(0, 0)
     
     def calc_overflow(self):
@@ -98,4 +102,6 @@ class Reservoir(Store):
             self.water_level = np.interp(self.volume,
                                          self.volumes, self.elevations)
 
-
+    @property
+    def volume(self):
+        return self.quantity

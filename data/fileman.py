@@ -20,9 +20,6 @@ class FileManager:
         Add an existing file to the manager
     get_file(file_path or nickname)
         Find and retrieve an existing file from the manager
-    create_file
-        Creates a new file and adds it to the list
-        TODO: add this function
     generate_list
         Generates a new file list from the files within the current dir
         TODO: add this function

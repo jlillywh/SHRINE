@@ -12,6 +12,9 @@ class TestReservoir(unittest.TestCase):
     def tearDown(self):
         """Destroy the object after running tests"""
         del self.r1
+        
+    def testVolumeEqualQuantity(self):
+        self.assertEqual(self.r1.volume, self.r1.quantity)
 
     def testReducedOutflow(self):
         inflow = 10
