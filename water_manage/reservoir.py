@@ -8,6 +8,9 @@ class Reservoir(Store):
     
         Attributes
         ----------
+        volume : float
+            The quantity of water in the reservoir
+            
         geometry : DataFrame (pandas)
             A lookup table to relate water depth to volume
         
@@ -27,7 +30,6 @@ class Reservoir(Store):
         
         bottom : float
             Elevation of the bottom of the reservoir
-            
             
         _water_level : float
             Elevation of the water surface
@@ -101,7 +103,3 @@ class Reservoir(Store):
             self.update(0.0, q)
             self.water_level = np.interp(self.volume,
                                          self.volumes, self.elevations)
-
-    @property
-    def volume(self):
-        return self.quantity
