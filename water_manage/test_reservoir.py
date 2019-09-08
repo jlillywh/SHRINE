@@ -22,7 +22,7 @@ class TestReservoir(unittest.TestCase):
         for i in range(10):
             self.r1.update(inflow, 0.0)
             
-        self.assertAlmostEqual(self.r1.volume, 176700, 1)
+        self.assertAlmostEqual(self.r1.volume, 274.24, 2)
 
     def testChangeCapacityOverflow(self):
         """Test that volume == capacity when updated capacity is
@@ -40,3 +40,13 @@ class TestReservoir(unittest.TestCase):
         self.r1.update(0, np.random.random() + 2.0)
         self.r1.update(5.0 + np.random.random(), 0.0)
         self.assertEqual(self.r1.volume, self.r1.capacity)
+        
+    def testLevelOutput(self):
+        """Test that correct water level is reported."""
+        self.r1.water_level = 12.52
+        self.assertEqual(self.r1.water_level, 12.52)
+        
+    def testUpdateLevel(self):
+        """Test that correct volume is reported after updating level."""
+        self.r1.water_level = 3.4
+        self.assertAlmostEqual(self.r1.volume, 59.84, 2)

@@ -50,14 +50,13 @@ class Reservoir(Store):
     
     def __init__(self, init_vol=100.0):
         Store.__init__(self, quantity=init_vol)
-        self.elevations = [0.0, 5.0, 20.0]
-        self.volumes = [0.0, 10000.0, 520000.0]
+        self.elevations = [0.0, 10.0, 20.0]
+        self.volumes = [0.0, 176.0, 300.0]
         # TODO stage-storage as dataframe: self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
         self.spillway_crest = 10.0
         self.spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes)
         self.spillway_type = 'broad'
         self.bottom = 0.0
-        self._water_level = 0.0
         self.outlet_elevation = 3.75
         self.weir_coef = 3.2
         self.weir_length = 1.0
@@ -67,12 +66,12 @@ class Reservoir(Store):
 
     @property
     def water_level(self):
-        return self._water_level
+        return np.interp(self.volume, self.volumes, self.elevations)
 
     @water_level.setter
     def water_level(self, new_water_level):
-        self._water_level = new_water_level
-        self.quantity = np.interp(self._water_level, self.elevations, self.volumes)
+        #self._water_level = new_water_level
+        self.quantity = np.interp(new_water_level, self.elevations, self.volumes)
         self.update(0, 0)
     
     def calc_overflow(self):
