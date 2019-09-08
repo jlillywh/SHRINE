@@ -1,5 +1,6 @@
 import unittest
 from water_manage.reservoir import Reservoir
+import numpy as np
 
 
 class TestReservoir(unittest.TestCase):
@@ -22,3 +23,20 @@ class TestReservoir(unittest.TestCase):
             self.r1.update(inflow, 0.0)
             
         self.assertAlmostEqual(self.r1.volume, 176700, 1)
+
+    def testChangeCapacityOverflow(self):
+        """Test that volume == capacity when updated capacity is
+                changed to be less than the current volume
+        """
+        updated_capacity = 25.0
+        self.r1.capacity = updated_capacity
+        self.assertEqual(self.r1.capacity, updated_capacity)
+    
+    def testExcessInflowOverflow(self):
+        """Test that volume == capacity after update when:
+                - inflow + outflow + initial volume > capacity
+        """
+        self.r1.capacity = 25.0
+        self.r1.update(0, np.random.random() + 2.0)
+        self.r1.update(5.0 + np.random.random(), 0.0)
+        self.assertEqual(self.r1.volume, self.r1.capacity)
