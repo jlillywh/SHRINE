@@ -76,7 +76,8 @@ class Reservoir(Store):
         self.update(0, 0)
     
     @property
-    def area(self):
+    def area(self) -> float:
+        """Water surface area of the reservoir."""
         return np.interp(self.volume, self.volumes, self.areas)
     
     def calc_overflow(self):
@@ -107,3 +108,20 @@ class Reservoir(Store):
             self.update(0.0, q)
             self.water_level = np.interp(self.volume,
                                          self.volumes, self.elevations)
+
+    def evaporation(self, evap_rate) -> float:
+        """Calculates the outflow due to evaporation rate being applied to
+            the pool's water surface area.
+            
+            Parameters
+            ----------
+            evap_rate: float
+                Evaporation rate in terms of length
+                
+            Returns
+            -------
+            float: evaporation outflow in terms of Length^3
+            """
+        evaporation = evap_rate * self.area
+        self.request += evaporation
+        return evaporation

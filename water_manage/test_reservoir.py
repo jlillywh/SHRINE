@@ -56,3 +56,8 @@ class TestReservoir(unittest.TestCase):
         self.r1.water_level = 12.52
         self.assertAlmostEqual(self.r1.area, 38.276, 2)
 
+    def testEvaporation(self):
+        """Check the evaporation outflow rate."""
+        evap_rate = 0.0155  # m/day
+        expected_evap = 0.537
+        self.assertAlmostEqual(self.r1.evaporation(evap_rate), expected_evap, 3)
