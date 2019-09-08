@@ -51,7 +51,8 @@ class Reservoir(Store):
     def __init__(self, init_vol=100.0):
         Store.__init__(self, quantity=init_vol)
         self.elevations = [0.0, 10.0, 20.0]
-        self.volumes = [0.0, 176.0, 300.0]
+        self.areas = [0.0, 35.0, 48.0]
+        self.volumes = [0.0, 176.0, 590.0]
         # TODO stage-storage as dataframe: self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
         self.spillway_crest = 10.0
         self.spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes)
