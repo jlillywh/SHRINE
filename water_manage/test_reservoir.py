@@ -50,3 +50,9 @@ class TestReservoir(unittest.TestCase):
         """Test that correct volume is reported after updating level."""
         self.r1.water_level = 3.4
         self.assertAlmostEqual(self.r1.volume, 59.84, 2)
+
+    def testAreaOutput(self):
+        """Test that correct pool area is reported."""
+        self.r1.water_level = 12.52
+        self.assertAlmostEqual(self.r1.area, 38.276, 2)
+

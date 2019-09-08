@@ -75,6 +75,10 @@ class Reservoir(Store):
         self.quantity = np.interp(new_water_level, self.elevations, self.volumes)
         self.update(0, 0)
     
+    @property
+    def area(self):
+        return np.interp(self.volume, self.volumes, self.areas)
+    
     def calc_overflow(self):
         """Calculate the spillway flow based on the weir equation
         
@@ -86,9 +90,9 @@ class Reservoir(Store):
             
         """
         
-        if self._water_level > self.spillway_crest:
+        if self.water_level > self.spillway_crest:
             
-            h = self._water_level - self.spillway_crest
+            h = self.water_level - self.spillway_crest
             v = self.volume - self.spillway_volume
             # The Kindsvater-Carter: rectangular, sharp-crested weir (suppressed)
             # Ce * Le|ft| * He|ft|^(3/2) * 1 cfs
