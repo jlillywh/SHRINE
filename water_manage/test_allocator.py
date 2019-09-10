@@ -72,3 +72,9 @@ class TestAllocator(unittest.TestCase):
                           'mine': 5,
                           'remainder': 4.329999999999998}
         self.assertDictEqual(outflows, outlfow_actual)
+
+    def testDefaultRequests(self):
+        """Make sure the default request is zero."""
+        a2 = Allocator()
+        self.assertEqual(a2.total_deliveries(), 0.0)
+        self.assertEqual(a2.requests[0].name, 'outflow1')

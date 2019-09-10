@@ -14,7 +14,7 @@ class Request:
             The lowest possible priority is 1
         TODO add a delivery attribute that is changed after allocation
     """
-    def __init__(self, name, amount=10, priority=1):
+    def __init__(self, name, amount=0.0, priority=1):
         self.name = name
         self.amount = amount
         self.priority = priority

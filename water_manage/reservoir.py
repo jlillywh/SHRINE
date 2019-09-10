@@ -1,4 +1,6 @@
 from water_manage.store import Store
+from water_manage.allocator import Allocator
+from water_manage.request import Request
 from utils.attr_setter import AttrMap
 import numpy as np
 
@@ -8,32 +10,35 @@ class Reservoir(Store):
     
         Attributes
         ----------
-        volume : float
+        volume: float
             The quantity of water in the reservoir
             
-        geometry : DataFrame (pandas)
+        geometry: DataFrame (pandas)
             A lookup table to relate water depth to volume
         
-        outlet_elevation : float
+        outlet_elevation: float
             Elevation of the outlet intake (water level
             above this will cause outflow to occur. If
             water is below this elevation, then no discharge
             through the outlet is possible.
             
-        spillway_crest : float
+        spillway_crest: float
             Elevation of the spillway crest. When the
             water level rises above this, overflow begins
             
-        spillway_type : str
+        spillway_type: str
             Describes the type of spillway from a list:
             broad, sharp, ogee (default is broad)
         
-        bottom : float
+        bottom: float
             Elevation of the bottom of the reservoir
             
-        _water_level : float
+        _water_level: float
             Elevation of the water surface
         
+        requests: Allocator
+            Allocator object used to prioritize requests and calculate outflows
+            
         Methods
         -------
         volume()
@@ -42,9 +47,6 @@ class Reservoir(Store):
         spillway_flow()
             Calculate the spillway flow based on the depth of
             water above the spillway crest
-            
-    
-        
     """
     volume = AttrMap('quantity')
     
@@ -61,6 +63,11 @@ class Reservoir(Store):
         self.outlet_elevation = 3.75
         self.weir_coef = 3.2
         self.weir_length = 1.0
+        self.allocator = Allocator(0.0,
+                                   [Request('evaporation'),
+                                   Request('flood'),
+                                   Request('spillway')])
+        self.requests = self.allocator.requests
 
     def __repr__(self):
         return 'Reservoir(initial_volume=%s)' % (self.volume)
@@ -123,5 +130,5 @@ class Reservoir(Store):
             float: evaporation outflow in terms of Length^3
             """
         evaporation = evap_rate * self.area
-        self.request += evaporation
+        self.allocator.get_request('evaporation').amount = evaporation
         return evaporation
