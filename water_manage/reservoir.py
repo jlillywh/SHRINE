@@ -54,7 +54,7 @@ class Reservoir(Store):
         Store.__init__(self, quantity=init_vol)
         self.elevations = [0.0, 10.0, 20.0]
         self.areas = [0.0, 35.0, 48.0]
-        self.volumes = [0.0, 176.0, 590.0]
+        self.volumes = [0.0, 175.0, 590.0]
         # TODO stage-storage as dataframe: self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
         self.spillway_crest = 10.0
         self.spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes)
@@ -116,6 +116,11 @@ class Reservoir(Store):
             self.water_level = np.interp(self.volume,
                                          self.volumes, self.elevations)
 
+    @property
+    def evaporation(self):
+        return self.allocator.get_request('evaporation').amount
+        
+    @evaporation.setter
     def evaporation(self, evap_rate) -> float:
         """Calculates the outflow due to evaporation rate being applied to
             the pool's water surface area.

@@ -22,7 +22,7 @@ class TestReservoir(unittest.TestCase):
         for i in range(10):
             self.r1.update(inflow, 0.0)
             
-        self.assertAlmostEqual(self.r1.volume, 274.24, 2)
+        self.assertAlmostEqual(self.r1.volume, 273.25, 2)
 
     def testChangeCapacityOverflow(self):
         """Test that volume == capacity when updated capacity is
@@ -49,7 +49,7 @@ class TestReservoir(unittest.TestCase):
     def testUpdateLevel(self):
         """Test that correct volume is reported after updating level."""
         self.r1.water_level = 3.4
-        self.assertAlmostEqual(self.r1.volume, 59.84, 2)
+        self.assertAlmostEqual(self.r1.volume, 59.5, 2)
 
     def testAreaOutput(self):
         """Test that correct pool area is reported."""
@@ -58,6 +58,12 @@ class TestReservoir(unittest.TestCase):
 
     def testEvaporation(self):
         """Check the evaporation outflow rate."""
-        evap_rate = 0.0155  # m/day
-        expected_evap = 0.537
-        self.assertAlmostEqual(self.r1.evaporation(evap_rate), expected_evap, 3)
+        evap_rate = 0.0155      # m/day
+        wl = self.r1.water_level
+        v = self.r1.volume
+        a = self.r1.area
+        expected_evap = 0.537   # m3/day
+        expected_volume = 172.71   # m3
+        self.r1.evaporation = evap_rate
+        self.r1.update(0.0, self.r1.evaporation)
+        self.assertAlmostEqual(self.r1.volume, expected_volume, 2)
