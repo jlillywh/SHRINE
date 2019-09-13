@@ -19,10 +19,10 @@ class TestOutflowsCase(TestCase):
     
     def testReducedOutflow(self):
         """Outflow < request when _quantity reaches lower bound"""
-        inflow = 0.43
-        request = 15.0
-        self.s1.update(inflow, request)
-        self.assertTrue(self, self.s1.outflow < request)
+        self.s1.inflow = 0.43
+        self.s1.request = 15.0
+        self.s1.update()
+        self.assertTrue(self, self.s1.outflow < self.s1.request)
     
     def testName(self):
         """Check to make sure the name is correct"""
@@ -34,16 +34,16 @@ class TestOutflowsCase(TestCase):
     
     def testUpper(self):
         """Store _quantity == capacity when inflow causes overflow"""
-        inflow = 7.43
-        outflow = 0.03
-        self.s1.update(inflow, outflow)
+        self.s1.inflow = 7.43
+        self.s1.outflow = 0.03
+        self.s1.update()
         self.assertAlmostEqual(self.s1.quantity, self.capacity, self.precision)
     
     def testLower(self):
         """Store _quantity == 0.0 when outflow causes empty"""
-        inflow = 0.43
-        outflow = 10.438
-        self.s1.update(inflow, outflow)
+        self.s1.inflow = 0.43
+        self.s1.request = 10.438
+        self.s1.update()
         self.assertAlmostEqual(self.s1.quantity, 0.0, self.precision)
     
     def testSettingQuantity(self):
@@ -62,10 +62,10 @@ class TestOutflowsCase(TestCase):
     def testOverflow(self):
         """Make sure the store returns the correct overflow rate.
         """
-        inflow = 0.6295
+        self.s1.inflow = 0.6295
         cumulative_overflow = 0.0
         for i in range(0, 10):
-            self.s1.update(inflow, 0)
+            self.s1.update()
             cumulative_overflow += self.s1.overflow
         
         self.assertAlmostEqual(cumulative_overflow, 1.295, self.precision)
@@ -83,3 +83,9 @@ class TestOutflowsCase(TestCase):
         self.assertEqual(s1.quantity, new_vol)
         del s1
 
+    def testOutflowUpdate(self):
+        self.s1.inflow = 0.13
+        self.s1.request = 1.43
+        self.s1.update()
+        expected_quantity = 10.0 + 0.13 - 1.43
+        self.assertAlmostEqual(self.s1.quantity, expected_quantity, self.precision)

@@ -3,7 +3,11 @@ from water_manage.request import Request
 
 class Allocator:
     """The Allocator is used to allocate multiple demands of a finite and limited source amount.
-    
+        
+        This object does not carry state so the update function
+        can be called immediately each time any of the requests
+        or supply is updated.
+        
         Attributes
         ----------
         supply: float
@@ -25,20 +29,35 @@ class Allocator:
     """
     def __init__(self, supply=0.0, requests=None):
         """Initialize the amount and a list of requests with associated priorities for allocation"""
-        self.supply = supply
+        self._supply = supply
         if requests:
-            self.requests = sorted(requests, key=lambda x: x.priority)
+            self.requests = requests
         else:
             self.requests = [Request('outflow1', 0.0, 1)]
         self.num_requests = len(self.requests)
-        self.remain_amount = self.supply
+        self.remain_amount = self._supply
         self.deliveries = {}
+        self.update_counter = 0
+        self.update()
+
+    @property
+    def supply(self):
+        return self._supply
+    
+    @supply.setter
+    def supply(self, amount):
+        self._supply = amount
+        self.update()
         
-    def add_request(self, name, amount, priority=1):
-        new_request = Request(name, amount, priority)
+    # def add_request(self, name, amount, priority=1):
+    #     new_request = Request(name, amount, priority)
+    #     self.requests.append(new_request)
+    #     self.update()
+        
+    def add_request(self, new_request):
+        """Add a request to the allocator and update the list."""
         self.requests.append(new_request)
-        self.num_requests = len(self.requests)
-        self.requests = sorted(self.requests, key=lambda x: x.priority)
+        self.update()
         
     def get_request(self, name):
         request = None
@@ -65,6 +84,9 @@ class Allocator:
             -------
             None
         """
+        self.remain_amount = self._supply
+        self.num_requests = len(self.requests)
+        self.sort_requests()
         i = 0
         while True:
             # Iterate over the requests until the end is hit.
@@ -128,3 +150,12 @@ class Allocator:
 
     def total_deliveries(self):
         return sum(self.deliveries.values())
+    
+    def total_requests(self):
+        total = 0.0
+        for req in self.requests:
+            total += req.amount
+        return total
+    
+    def sort_requests(self):
+        self.requests = sorted(self.requests, key=lambda x: x.priority)

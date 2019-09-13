@@ -18,4 +18,4 @@ class Request:
         self.name = name
         self.amount = amount
         self.priority = priority
-        self.delivery = amount
+        #self.delivery = amount

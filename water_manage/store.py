@@ -31,6 +31,11 @@ class Store:
         ----------
         quantity : float
             the amount in the store
+        inflow : float
+            Inflowing material to the store assumed
+        request : float
+            Request to discharge from the store (if available)
+            if available, then the request becomes outflow
         
         """
         self._quantity = quantity
@@ -55,7 +60,7 @@ class Store:
         
         ec.check_positive(amount, "quantity")
         self._quantity = amount
-        self.update(0, 0)
+        self.update()
 
     @property
     def capacity(self):
@@ -81,32 +86,18 @@ class Store:
             self.overflow = 0.0
             self._capacity = new_capacity
 
-    def update(self, inflow, request):
+    def update(self):
         """Updates the _quantity given inflow and request being applied
 
         If _quantity ends up out of bounds (upper or lower) then it is
         set to the bound and overflow or outflow is updated
-
-        Parameters
-        ----------
-        inflow : float
-            Inflowing material to the store assumed
-        request : float
-            Request to discharge from the store (if available)
-            if available, then the request becomes outflow
 
         Raises
         ------
         NotImplementedError
             Raise if either value is negative
         """
-
-        ec.check_positive(inflow, "inflow")
-        ec.check_positive(request, "request")
         
-        self.inflow = inflow
-        self.request = request
-
         self._quantity += (self.inflow - self.request)
 
         if self._quantity > self._capacity:
