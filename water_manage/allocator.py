@@ -15,7 +15,7 @@ class Allocator:
         requests: list of Request objects
             Individual requests being made on the source with each having a name associated with
             the requested amount along with a priority number
-        deliveries: dict
+        _deliveries: dict
             The dictionary is a list of named deliveries
             Note that curtailment of request is shared among all demands proportional to it's demand.
         total_delivery: float
@@ -36,7 +36,7 @@ class Allocator:
             self.requests = [Request('outflow1', 0.0, 1)]
         self.num_requests = len(self.requests)
         self.remain_amount = self._supply
-        self.deliveries = {}
+        self._deliveries = {}
         self.update_counter = 0
         self.update()
 
@@ -47,6 +47,15 @@ class Allocator:
     @supply.setter
     def supply(self, amount):
         self._supply = amount
+        self.update()
+        
+    @property
+    def deliveries(self):
+        self.update()
+        return self._deliveries
+    
+    def edit_priority(self, request_name, new_priority):
+        self.get_request(request_name).priority = new_priority
         self.update()
         
     # def add_request(self, name, amount, priority=1):
@@ -74,6 +83,8 @@ class Allocator:
             the supply and continue down the list by providing the remainder supply until
             remainder is zero.
             
+            TODO: skip over functions here if supply > sum(requests)
+            
             If 1 or more requests have equal priority, then add all these up and allocate
             as one entity then divide amount supplied in proportion to each request amount.
             
@@ -92,7 +103,7 @@ class Allocator:
             # Iterate over the requests until the end is hit.
             if i == self.num_requests:
                 # After we iterate over all requests, add just one more for remainder
-                self.deliveries['remainder'] = self.remain_amount
+                self._deliveries['remainder'] = self.remain_amount
                 break
                 
             first_index = i
@@ -137,7 +148,7 @@ class Allocator:
             for i in range(request_count):
                 amount = self.requests[index + i].amount
                 name = self.requests[index + i].name
-                self.deliveries[name] = amount
+                self._deliveries[name] = amount
                 self.remain_amount -= amount
         else:
             shortage = request_amount - self.remain_amount
@@ -145,11 +156,11 @@ class Allocator:
                 curtailment = shortage * self.requests[index + i].amount / request_amount
                 amount = self.requests[index + i].amount - curtailment
                 name = self.requests[index + i].name
-                self.deliveries[name] = amount
+                self._deliveries[name] = amount
             self.remain_amount = 0.0
 
     def total_deliveries(self):
-        return sum(self.deliveries.values())
+        return sum(self._deliveries.values())
     
     def total_requests(self):
         total = 0.0

@@ -22,7 +22,7 @@ class TestAllocator(unittest.TestCase):
         del self.a1
         del self.supply
         del self.requests
-
+        
     def testPriorityOrder(self):
         expected_first_request = 'evaporation'
         self.assertEqual(self.a1.requests[0].name, expected_first_request)
@@ -30,7 +30,8 @@ class TestAllocator(unittest.TestCase):
         self.assertEqual(self.a1.requests[-1].name, expected_last_request)
         
     def testChangePriority(self):
-        self.a1.get_request('evaporation').priority = 10
+        self.a1.edit_priority('evaporation', 10)
+        #self.a1.get_request('evaporation').priority = 10
         new_request = Request('seepage', 300.0, 1)
         self.a1.add_request(new_request)
         expected_first_request = 'seepage'
@@ -51,7 +52,6 @@ class TestAllocator(unittest.TestCase):
         self.assertEqual(r.amount, amount)
         
     def testProportionalPriority(self):
-        #self.a1.update()
         outflows = self.a1.deliveries
         outflow_actual = {'pumping': 10,
                           'evaporation': 18,
@@ -62,12 +62,8 @@ class TestAllocator(unittest.TestCase):
         self.assertDictEqual(outflows, outflow_actual)
 
     def testAllEqualPriorities(self):
-        r1 = Request('pumping', 20, 2)
-        r2 = Request('farm', 18, 2)
-        r3 = Request('mine', 35, 2)
-        r4 = Request('evaporation', 18, 1)
-        self.requests = [r1, r2, r3, r4]
-        self.a1 = Allocator(self.supply, self.requests)
+        self.a1.get_request('pumping').amount = 20
+        self.a1.get_request('mine').priority = 2
         outflows = self.a1.deliveries
         outflow_actual = {'pumping': 11.506849315068493,
                           'evaporation': 18,
@@ -77,12 +73,9 @@ class TestAllocator(unittest.TestCase):
         self.assertDictEqual(outflows, outflow_actual)
         
     def testRemainder(self):
-        r1 = Request('pumping', 14.67, 2)
-        r2 = Request('farm', 18, 2)
-        r3 = Request('mine', 5, 2)
-        r4 = Request('evaporation', 18, 1)
-        self.requests = [r1, r2, r3, r4]
-        self.a1 = Allocator(self.supply, self.requests)
+        self.a1.get_request('pumping').amount = 14.67
+        self.a1.get_request('mine').amount = 5
+        self.a1.get_request('mine').priority = 2
         outflows = self.a1.deliveries
         outlfow_actual = {'pumping': 14.67,
                           'evaporation': 18,
@@ -96,4 +89,10 @@ class TestAllocator(unittest.TestCase):
         a2 = Allocator()
         self.assertEqual(a2.total_deliveries(), 0.0)
         self.assertEqual(a2.requests[0].name, 'outflow1')
+        
+    def testChangeRequest(self):
+        """Change a request amount and make sure allocation is
+            as expected."""
+        pumping = self.a1.requests[0]
+        pumping.amount = 17.43
         
