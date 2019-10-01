@@ -1,6 +1,7 @@
 import unittest
 from water_manage.reservoir import Reservoir
 import numpy as np
+#TODO - fix reservoir tests!
 
 
 class TestReservoir(unittest.TestCase):
@@ -18,9 +19,9 @@ class TestReservoir(unittest.TestCase):
         self.assertEqual(self.r1.volume, self.r1.quantity)
 
     def testReducedOutflow(self):
-        inflow = 10
+        self.r1.inflow = 10
         for i in range(10):
-            self.r1.update(inflow, 0.0)
+            self.r1.update()
             
         self.assertAlmostEqual(self.r1.volume, 273.25, 2)
 
@@ -37,8 +38,10 @@ class TestReservoir(unittest.TestCase):
                 - inflow + outflow + initial volume > capacity
         """
         self.r1.capacity = 25.0
-        self.r1.update(0, np.random.random() + 2.0)
-        self.r1.update(5.0 + np.random.random(), 0.0)
+        self.r1.requests[0].amount = np.random.random() + 2.0
+        self.r1.update()
+        self.r1.inflow = 5.0 + np.random.random()
+        self.r1.update()
         self.assertEqual(self.r1.volume, self.r1.capacity)
         
     def testLevelOutput(self):
@@ -61,11 +64,7 @@ class TestReservoir(unittest.TestCase):
     def testEvaporation(self):
         """Check the evaporation outflow rate."""
         evap_rate = 0.0155      # m/day
-        wl = self.r1.water_level
-        v = self.r1.volume
-        a = self.r1.area
-        expected_evap = 0.537   # m3/day
         expected_volume = 172.71   # m3
         self.r1.evaporation = evap_rate
-        self.r1.update(0.0, self.r1.evaporation)
+        self.r1.update()
         self.assertAlmostEqual(self.r1.volume, expected_volume, 2)

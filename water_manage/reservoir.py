@@ -141,4 +141,5 @@ class Reservoir(Store):
             """
         evaporation = evap_rate * self.area
         self.allocator.get_request('evaporation').amount = evaporation
+        self.request = self.allocator.total_requests()
         return evaporation
