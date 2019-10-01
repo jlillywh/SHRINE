@@ -43,13 +43,15 @@ class TestReservoir(unittest.TestCase):
         
     def testLevelOutput(self):
         """Test that correct water level is reported."""
-        self.r1.water_level = 12.52
-        self.assertEqual(self.r1.water_level, 12.52)
+        water_level_expected = 9.9
+        self.assertEqual(water_level_expected, self.r1.water_level)
         
     def testUpdateLevel(self):
         """Test that correct volume is reported after updating level."""
-        self.r1.water_level = 3.4
-        self.assertAlmostEqual(self.r1.volume, 59.5, 2)
+        new_water_level = 3.4
+        self.r1.water_level = new_water_level
+        volume_expected = 59.5
+        self.assertAlmostEqual(volume_expected, self.r1.volume, 2)
 
     def testAreaOutput(self):
         """Test that correct pool area is reported."""

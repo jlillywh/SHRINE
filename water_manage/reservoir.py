@@ -3,6 +3,7 @@ from water_manage.allocator import Allocator
 from water_manage.request import Request
 from utils.attr_setter import AttrMap
 import numpy as np
+from inputs.table import Table
 
 
 class Reservoir(Store):
@@ -54,7 +55,9 @@ class Reservoir(Store):
         Store.__init__(self, quantity=init_vol)
         self.elevations = [0.0, 10.0, 20.0]
         self.areas = [0.0, 35.0, 48.0]
+        self.elev_area = Table([0.0, 10.0, 20.0], [0.0, 35.0, 48.0])
         self.volumes = [0.0, 175.0, 590.0]
+        self.elev_volume = Table([0.0, 10.0, 20.0], [0.0, 175.0, 590.0])
         # TODO stage-storage as dataframe: self.geometry = pd.DataFrame([0.0,5.0,10.0], [0.0, 100.0, 120.0])
         self.spillway_crest = 10.0
         self.spillway_volume = np.interp(self.spillway_crest, self.elevations, self.volumes)
@@ -74,13 +77,15 @@ class Reservoir(Store):
 
     @property
     def water_level(self):
-        return np.interp(self.volume, self.volumes, self.elevations)
+        return self.elev_volume.lookup_x(self.volume)
+        #return np.interp(self.volume, self.volumes, self.elevations)
 
     @water_level.setter
     def water_level(self, new_water_level):
         #self._water_level = new_water_level
-        self.quantity = np.interp(new_water_level, self.elevations, self.volumes)
-        self.update(0, 0)
+        new_volume = self.elev_volume.lookup_y(new_water_level)
+        self.quantity = new_volume
+        self.update()
     
     @property
     def area(self) -> float:
