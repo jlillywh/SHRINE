@@ -33,6 +33,12 @@ class Table(Aegis):
     def lookup(self, lookup_value):
         return np.interp(lookup_value, self.x, self.y)
     
+    def lookup_y(self, x_lookup_value):
+        return np.interp(x_lookup_value, self.x, self.y)
+    
+    def lookup_x(self, y_lookup_value):
+        return np.interp(y_lookup_value, self.y, self.x)
+    
     def load_from_excel(self, filename, sheet, begin_cell):
         """Loads data from Excel file
         
