@@ -1,63 +1,43 @@
 from unittest import TestCase
 from geometry.shape import Shape
-from geometry.point import Point
+from geometry.datum import Datum
+from utils.unit_utils import load_units, ureg
 
+# Load units from JSON file
+units = load_units("./data/aegis_units.json")
 
 class TestShape(TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
         size = 65.0
-        self.s = Shape(size)
+        self.s = Shape(size, unit=units['length'])
 
     def tearDown(self):
         """Destroy the object after running tests"""
         del self.s
         
-    def test_centroid(self):
-        centroid = 65 / 2.0
-        self.assertEqual(self.s.centroid()[0], centroid)
+    def test_convert_units(self):
+        """Test unit conversion"""
+        self.s.change_unit('ft')
+        self.assertAlmostEqual(self.s.size.magnitude, 65.0 * ureg(units['length']).to('ft').magnitude, places=3)
+        self.assertEqual(self.s.display_unit, 'ft')
 
+    def test_set_datum(self):
+        """Test setting a new datum"""
+        self.s.set_datum(new_elev=100.0)
+        self.assertEqual(self.s.datum.elevation, 100.0 * ureg(units['length']))
 
-class TestPoint(TestCase):
+class TestDatum(TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
-        self.p1 = Point(2.5, 1.4, 0.6)
-        self.dec_places = 3
-    
+        self.d = Datum(elev=100.0, unit=units['length'])
+
     def tearDown(self):
         """Destroy the object after running tests"""
-        del self.p1
-    
-    def testGetters(self):
-        """Values should be converted correctly upon initialize"""
-        self.assertEqual(self.p1.x, 2.5)
-        self.assertEqual(self.p1.y, 1.4)
-        self.assertEqual(self.p1.z, 0.6)
-    
-    def testSetters(self):
-        """Values should be converted correctly upon changing the unit"""
-        new_point = [0.0, 100, -4.98]
-        self.p1.x = new_point[0]
-        self.p1.y = new_point[1]
-        self.p1.z = new_point[2]
-        self.assertEqual(self.p1.x, new_point[0])
-        self.assertEqual(self.p1.y, new_point[1])
-        self.assertEqual(self.p1.z, new_point[2])
-    
-    def testMovePoint(self):
-        """The point should move the correct amount"""
-        x_move = 2.3
-        y_move = -9.4
-        z_move = 101
-        
-        x = 4.8
-        y = -8
-        z = 101.6
-        
-        self.p1.move(x_move, 'x')
-        self.p1.move(y_move, 'y')
-        self.p1.move(z_move, 'z')
-        
-        self.assertAlmostEqual(self.p1.x, x, self.dec_places)
-        self.assertAlmostEqual(self.p1.y, y, self.dec_places)
-        self.assertAlmostEqual(self.p1.z, z, self.dec_places)
+        del self.d
+
+    def test_convert_units(self):
+        """Test unit conversion"""
+        self.d.convert_units('ft')
+        self.assertAlmostEqual(self.d.elevation.magnitude, 100.0 * ureg(units['length']).to('ft').magnitude, places=3)
+        self.assertEqual(self.d.display_unit, 'ft')

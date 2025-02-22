@@ -1,47 +1,33 @@
 """
 Created on Thu Nov 15 19:47:42 2012
-
-@author: jlillywhite
+...
 """
 from geometry.datum import Datum
+from utils.unit_utils import load_units, ureg
 
+# Load units from JSON file
+units = load_units("./data/aegis_units.json")
 
 class Shape:
-    """A shape that is symmetrical in both axes.
+    """A generic shape class.
         
-        It has a datum that defines the lower left corner of
-        the object.
-        
-        Attributes
-        ----------
-        size : flt
+    Attributes
+    ----------
+    size : float
+    display_unit : str
+    datum : Datum
     """
     
-    def __init__(self, size=10.0, unit='m'):
-        self.size = size
+    def __init__(self, size=10.0, unit=units['length']):
+        self.size = size * ureg(unit)
         self.display_unit = unit
         self.datum = Datum(unit=unit)
     
-    def get_xt(self):
-        # Horizontal coordinate of the Right side of the shape
-        return self.datum.x + self.size
+    def change_unit(self, new_unit):
+        self.size = self.size.to(new_unit)
+        self.display_unit = new_unit
+        self.datum.convert_units(new_unit)
     
-    def get_yt(self):
-        # Vertical coordinate of the Top side of the shape
-        return self.datum.y + self.size
-    
-    def centroid(self):
-        # Centroid coordinates
-        xc = self.datum.x + self.size / 2.0
-        yc = self.datum.y + self.size / 2.0
-        centroid = (xc, yc)
-        return centroid
-    
-    def set_datum(self, new_elev=100.0, new_x=0, new_y=0):
-        self.datum = Datum(new_elev, new_x, new_y, self.display_unit)
-    
-    def ic(self):
-        # Moment of Inertia
-        return 0
-    
-    
+    def set_datum(self, new_elev, unit=units['length']):
+        self.datum.set_datum(new_elev, unit)
+        self.datum = Datum(new_elev, self.display_unit)
