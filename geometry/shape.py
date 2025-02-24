@@ -26,7 +26,7 @@ class Shape:
     def change_unit(self, new_unit):
         self.size = self.size.to(new_unit)
         self.display_unit = new_unit
-        self.datum.convert_units(new_unit)
+        self.datum.change_units(new_unit)
     
     def set_datum(self, new_elev, unit=units['length']):
         self.datum.set_datum(new_elev, unit)

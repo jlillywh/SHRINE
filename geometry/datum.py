@@ -13,6 +13,6 @@ class Datum:
         self.display_unit = unit
         self.elevation = new_elev * ureg(self.display_unit)
     
-    def convert_units(self, new_unit):
+    def change_units(self, new_unit):
         self.elevation = self.elevation.to(new_unit)
         self.display_unit = new_unit

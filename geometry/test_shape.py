@@ -38,6 +38,6 @@ class TestDatum(TestCase):
 
     def test_convert_units(self):
         """Test unit conversion"""
-        self.d.convert_units('ft')
+        self.d.change_units('ft')
         self.assertAlmostEqual(self.d.elevation.magnitude, 100.0 * ureg(units['length']).to('ft').magnitude, places=3)
         self.assertEqual(self.d.display_unit, 'ft')
