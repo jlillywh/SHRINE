@@ -5,7 +5,6 @@
 ## Water Resources Modeling Library
 This library provides a comprehensive suite of tools for simulating and analyzing water resources. It is designed to support a wide range of hydrologic and hydraulic modeling applications, including:
 
-<<<<<<< HEAD
 The classes in this library:
 - Source
 - Sink
@@ -24,7 +23,7 @@ The classes in this library:
 - Open Source: Fully open-source, encouraging community contributions and collaboration.
 - Advanced Analytics: Includes tools for statistical analysis, machine learning integration, and scenario planning.
 - Documentation and Examples: Comprehensive documentation and example projects to help users get started quickly.
->>>>>>> 5fd24ca1a8d11a4df3e2f2c900b0ecf7fcb84119
+
 
 ## Getting Started
 
