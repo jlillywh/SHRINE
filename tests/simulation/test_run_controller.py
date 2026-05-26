@@ -94,6 +94,9 @@ class TestRunController:
         ).run()
         assert result.metadata["scenario_name"] == "test_scenario"
         assert result.metadata["seed"] == 42
+        assert result.metadata["reproducible"] is True
+        assert "run_id" in result.metadata
+        assert result.metadata["status"] == "success"
 
     def test_fail_fast_raises(self) -> None:
         model = Model(clock=Clock("1/1/2019", "1/3/2019"))
@@ -152,7 +155,8 @@ class TestRunController:
         counter = _CounterElement()
         model.register("c1", counter)
         controller = RunController(model, raise_on_error=False)
-        assert controller.step() is not None
+        step = controller.step()
+        assert step is not None
         assert counter.total == 1
         controller.finalize()
 

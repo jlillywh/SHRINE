@@ -1,109 +1,135 @@
 # Aegis
-![alt text](https://upload.wikimedia.org/wikipedia/en/thumb/d/d6/Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg/330px-Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg "https://en.wikipedia.org/wiki/Aegis")
 
+![Athena's aegis](https://upload.wikimedia.org/wikipedia/en/thumb/d/d6/Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg/330px-Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg)
 
-## Water Resources Modeling Library
-This library provides a comprehensive suite of tools for simulating and analyzing water resources. It is designed to support a wide range of hydrologic and hydraulic modeling applications, including:
+Integrated water-resources modeling library (Python). Aegis combines legacy domain modules (hydrology, storage, flow networks) with a new **`aegis.simulation`** framework for calendar-driven runs, mass balance, scenario files, and structured outputs.
 
-The classes in this library:
-- Source
-- Sink
-- Storage
-- Flow
-- Network
-- Simulation
-=======
-## Key Features
-- Hydrologic Processes: Simulate processes such as precipitation, evaporation, transpiration, infiltration, runoff, and groundwater flow.
-- Hydraulic Modeling: Analyze river and stream flow, reservoir operations, and floodplain mapping.
-- Data Integration: Seamlessly integrate with various data sources, including weather data, land use data, and remote sensing data.
-- Modular Design: The library’s modular architecture allows users to easily extend and customize functionalities to meet specific project needs.
-- User-Friendly Interface: Provides an intuitive interface for setting up models, running simulations, and visualizing results.
-- Flexible and Scalable: Suitable for small-scale watershed studies to large-scale regional water resource assessments.
-- Open Source: Fully open-source, encouraging community contributions and collaboration.
-- Advanced Analytics: Includes tools for statistical analysis, machine learning integration, and scenario planning.
-- Documentation and Examples: Comprehensive documentation and example projects to help users get started quickly.
+## Simulation framework (`aegis.simulation`)
 
+The framework is the supported path for headless model runs and tests:
 
-## Getting Started
+- **`Model`** — register elements (watersheds, reservoirs, custom types) with a shared `Clock`
+- **`RunController`** — validate → initialize → timestep loop → finalize
+- **`InputManager`** — constant, monthly, and stochastic inputs bound by name
+- **`Recorder`** — wide `pandas` DataFrame outputs per run
+- **Scenarios** — YAML/JSON clock, inputs, and parameter overrides
+- **Flow solve** — NetworkX max-flow on graphs owned by `Watershed` adapters
+- **Mass balance** — per-timestep verification with `SimulationError` diagnostics
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Requirements and phased delivery: [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md).
 
-### Prerequisites
+## Project layout
 
-What things you need to install the software and how to install them
+| Area | Description |
+|------|-------------|
+| `aegis/simulation/` | Framework: clock, model, run controller, inputs, recorder, scenarios |
+| `hydrology/` | Catchments, watersheds, networks |
+| `water_manage/` | Storage, flow networks, operating rules |
+| `inputs/` | Tables, time series, data helpers |
+| `results/` | `TimeHistory` (wraps `Recorder`), charts |
+| `examples/` | Runnable demos (climate, watershed, scenarios, stepping) |
+| `tests/simulation/` | Framework unit and acceptance tests |
+| `docs/` | Guides (see below) |
 
-```
-Give examples
-```
+## Prerequisites
 
-### Installing
+- Python **3.10+**
+- WSL/Linux or Windows with WSL recommended for `./scripts/run_tests.sh`
 
-A step by step series of examples that tell you how to get a development env running
+## Install
 
-Say what the step will be
-
-```
-Give the example
+```bash
+cd Aegis
+python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
 ```
 
-And repeat
+Optional plotting (legacy charts, `flow_network.draw`):
 
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
+```bash
+pip install -e ".[dev,viz]"
 ```
 
-### And coding style tests
+## Run tests
 
-Explain what these tests test and why
-
-```
-Give an example
+```bash
+./scripts/run_tests.sh
 ```
 
-## Deployment
+Or manually:
 
-Add additional notes about how to deploy this on a live system
+```bash
+pytest tests/ -v
+pytest tests/simulation --cov=aegis.simulation --cov-report=term-missing
+```
 
-## Built With
+See [docs/testing.md](docs/testing.md) for layout and troubleshooting (WSL sync, venv, etc.).
 
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+## Examples
 
-## Contributing
+From the repo root with the venv activated:
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+```bash
+# Climate inputs via framework (no Excel)
+python examples/climate_loop.py
 
-## Versioning
+# Two catchments → junction → flow solve
+python examples/watershed_run.py
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+# Scenario file (JSON/YAML)
+python examples/run_from_scenario.py scenarios/baseline_watershed.json
 
-## Authors
+# Single-timestep debugging
+python examples/step_debug.py
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+# Minimal custom element
+python examples/custom_element.py
+```
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
+
+## Documentation
+
+| Guide | Topic |
+|-------|--------|
+| [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
+| [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |
+| [docs/scenarios.md](docs/scenarios.md) | Scenario YAML/JSON |
+| [docs/step-debugging.md](docs/step-debugging.md) | `RunController.step()` API |
+| [docs/results-recording.md](docs/results-recording.md) | `Recorder` and `TimeHistory` |
+| [docs/testing.md](docs/testing.md) | Test suite and CI-style local runs |
+
+## Quick API sketch
+
+```python
+from aegis.simulation import (
+    Clock,
+    ConstantInput,
+    InputManager,
+    Model,
+    RunController,
+    WatershedElement,
+)
+from hydrology.watershed import Watershed
+
+ws = Watershed()
+ws.add_junction("J1", "sink")
+ws.link_catchment("C1", "J1")
+
+model = Model(clock=Clock("1/1/2019", "1/15/2019"))
+model.register_watershed("basin", WatershedElement(ws, element_id="basin"))
+
+inputs = InputManager()
+inputs.bind("precipitation", ConstantInput(10.0))
+inputs.bind("evaporation", ConstantInput(1.0))
+
+result = RunController(model, input_manager=inputs, seed=42).run()
+print(result.outputs.head())
+```
+
+Legacy scripts (e.g. `global_attributes/test_model.py`) remain for reference; prefer `examples/climate_loop.py` and the framework APIs for new work.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+GNU General Public License v3.0 — see [LICENSE](LICENSE).

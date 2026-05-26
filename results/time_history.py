@@ -1,73 +1,146 @@
+"""Time series results storage backed by :class:`~aegis.simulation.recorder.Recorder`."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 import pandas as pd
-import matplotlib.pyplot as plt
+
+from aegis.simulation.clock import Clock as SimulationClock
+from aegis.simulation.recorder import Recorder
 from global_attributes.aegis import Aegis
-import numpy as np
-from global_attributes.clock import Clock
+
+if TYPE_CHECKING:
+    from aegis.simulation.run_controller import RunResult
+
+
+def _adapt_clock(clock: Any) -> SimulationClock:
+    """Convert legacy ``global_attributes.clock.Clock`` to simulation clock."""
+    if isinstance(clock, SimulationClock):
+        return clock
+    return SimulationClock(
+        start_date=clock.start_date,
+        end_date=clock.end_date,
+        time_step=clock.time_step,
+    )
 
 
 class TimeHistory(Aegis):
-    """Object to store time series data sets based on clock data
+    """Store and plot time series using the simulation :class:`Recorder` (OUT-04).
 
-        Attributes
-        ----------
-        name : str
-        start_date : str
-            Use mm/dd/yyyy format for the dates
-        periods : int
-        freq : str
-        series : pandas Series
-        th_list : list(Series)
+    Legacy code can still call :meth:`add_series` and :meth:`show`. Framework runs
+    should record via ``RunContext.recorder`` or build from :meth:`from_dataframe`.
+    """
 
-        """
-    
-    def __init__(self, name='TimeHistory', display_unit='in', clock=Clock()):
+    def __init__(
+        self,
+        name: str = "TimeHistory",
+        display_unit: str = "in",
+        clock: Any | None = None,
+        *,
+        recorder: Recorder | None = None,
+    ) -> None:
         Aegis.__init__(self)
         self.name = name
         self.unit = display_unit
-        range = pd.date_range(clock.start_date, clock.range.size, clock.time_step.days)
-        """range : pandas DatetimeIndex
-            Represents the date range for the time series
-            Must be used to provide the index list for the values"""
-        self.series = pd.Series(np.zeros(len(range)), index=range)
-        self.series.name = self.name
-        self.series.index.name = 'date'
-        self.th_list = []
-    
-    def set_value(self, series_name, at_date, value):
-        """Find a value in the time series and replace it.
+        self.th_list: list[pd.Series] = []
+        if recorder is not None:
+            self._recorder = recorder
+        else:
+            sim_clock = _adapt_clock(clock or SimulationClock())
+            self._recorder = Recorder(sim_clock)
 
-            Parameters
-            ----------
-            at_date : str
-                (i.e. mm/dd/yyyy)
-            value : any
-                the type must match that of other values
-                already in the series.
-        """
-        self.series[series_name][at_date] = value
-    
-    def add_series(self, new_series):
-        """Add a series to be plotted with the other(s)
-        
-            Parameters
-            ----------
-            new_series : Series
-                Make sure the Series is named!
-        """
+    @property
+    def recorder(self) -> Recorder:
+        return self._recorder
+
+    @property
+    def series(self) -> pd.DataFrame:
+        """Wide DataFrame of recorded variables (time index)."""
+        return self._recorder.to_dataframe()
+
+    @series.setter
+    def series(self, value: pd.Series | pd.DataFrame) -> None:
+        if isinstance(value, pd.Series):
+            frame = value.to_frame()
+        elif isinstance(value, pd.DataFrame):
+            frame = value
+        else:
+            raise TypeError("series must be a pandas Series or DataFrame")
+        self._load_dataframe(frame)
+
+    def set_value(self, series_name: str, at_date: str | pd.Timestamp, value: Any) -> None:
+        """Set one value for a named column at a calendar timestamp."""
+        ts = pd.Timestamp(at_date)
+        df = self.series
+        if df.empty or ts not in df.index:
+            self._recorder.begin_timestep(ts)
+            self._recorder.record(series_name, value, unit=self.unit)
+            return
+        updated = df.copy()
+        if series_name not in updated.columns:
+            updated[series_name] = pd.NA
+        updated.loc[ts, series_name] = value
+        self._load_dataframe(updated)
+
+    def add_series(self, new_series: pd.Series) -> None:
+        """Add a named series column (legacy API; prefer framework recording)."""
+        if new_series.name is None:
+            raise ValueError("Series must be named")
         self.th_list.append(new_series)
-        self.series = pd.concat(self.th_list, axis=1)
-    
-    def load_csv(self, file_path):
-        """Replaces the time series with data from csv file
+        self._recorder.register(str(new_series.name), unit=self.unit)
+        df = self.series
+        if df.empty:
+            frame = new_series.to_frame()
+        else:
+            frame = df.join(new_series.rename(new_series.name), how="outer")
+        self._load_dataframe(frame)
 
-            Parameters
-            ----------
-            file_path : str
-                full or relative path to the file
-        """
-        self.series = pd.read_csv(file_path)
-        
-    def show(self):
+    def load_csv(self, file_path: str) -> None:
+        """Load a wide CSV with a time index column."""
+        df = pd.read_csv(file_path, index_col=0, parse_dates=True)
+        self._load_dataframe(df)
+
+    @classmethod
+    def from_recorder(
+        cls,
+        recorder: Recorder,
+        *,
+        name: str = "TimeHistory",
+        display_unit: str = "in",
+    ) -> TimeHistory:
+        return cls(name=name, display_unit=display_unit, recorder=recorder)
+
+    @classmethod
+    def from_dataframe(
+        cls,
+        df: pd.DataFrame,
+        *,
+        name: str = "TimeHistory",
+        display_unit: str = "in",
+    ) -> TimeHistory:
+        recorder = Recorder.from_dataframe(df)
+        return cls(name=name, display_unit=display_unit, recorder=recorder)
+
+    @classmethod
+    def from_run_result(
+        cls,
+        result: RunResult,
+        *,
+        name: str = "TimeHistory",
+        display_unit: str = "in",
+    ) -> TimeHistory:
+        return cls.from_dataframe(result.outputs, name=name, display_unit=display_unit)
+
+    def _load_dataframe(self, df: pd.DataFrame) -> None:
+        self._recorder.load_dataframe(df)
+
+    def show(self) -> None:
+        """Plot recorded series (requires matplotlib)."""
+        import matplotlib.pyplot as plt
+
+        if self.series.empty:
+            return
         self.series.plot(title=self.name)
         plt.ylabel(self.unit)
         plt.tight_layout()

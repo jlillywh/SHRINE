@@ -21,7 +21,7 @@ class TimeHistoryChart(Chart):
         """
         
         self.outputs.append(time_series_result.series)
-        self.values = pd.concat(self.outputs, axis=1)
+        self.values.add_series(time_series_result.series)
         
     def show(self):
         self.values.show()

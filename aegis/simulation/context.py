@@ -5,9 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
+import numpy as np
 import pandas as pd
 
 from aegis.simulation.clock import Clock
+from aegis.simulation.rng import make_rng
 
 if TYPE_CHECKING:
     from aegis.simulation.recorder import Recorder
@@ -23,6 +25,11 @@ class RunContext:
     seed: int | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
     recorder: Recorder | None = None
+    rng: np.random.Generator | None = None
+
+    def __post_init__(self) -> None:
+        if self.rng is None:
+            object.__setattr__(self, "rng", make_rng(self.seed))
 
 
 @dataclass
@@ -42,3 +49,7 @@ class TimestepContext:
     @property
     def recorder(self) -> Recorder | None:
         return self.run.recorder
+
+    @property
+    def rng(self) -> np.random.Generator:
+        return self.run.rng

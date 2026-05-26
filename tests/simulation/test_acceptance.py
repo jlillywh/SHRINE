@@ -74,9 +74,12 @@ def test_at07_identical_runs_match() -> None:
     clock = Clock("1/1/2019", "1/5/2019")
     model = Model(clock=clock)
     model.register("c1", _CounterElement())
-    r1 = RunController(model, raise_on_error=False).run().outputs
-    r2 = RunController(model, raise_on_error=False).run().outputs
-    pd.testing.assert_frame_equal(r1, r2)
+    kwargs = dict(seed=123, raise_on_error=False)
+    r1 = RunController(model, **kwargs).run()
+    r2 = RunController(model, **kwargs).run()
+    pd.testing.assert_frame_equal(r1.outputs, r2.outputs)
+    assert r1.metadata["seed"] == 123
+    assert r1.metadata["reproducible"] is True
 
 
 # AT-09

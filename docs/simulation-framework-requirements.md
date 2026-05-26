@@ -353,6 +353,8 @@ aegis/
     adapters/           # watershed, reservoir, ...
 ```
 
+**Extending the framework:** see [extending-elements.md](extending-elements.md) for adding new `Simulatable` elements and adapters.
+
 ---
 
 ## 11. Phased delivery
@@ -384,11 +386,11 @@ aegis/
 
 ### Phase 2 — Scenarios & quality
 
-- [ ] Scenario config (YAML/JSON)
-- [ ] Run metadata and reproducible seeds
-- [ ] `step()` debugging API
-- [ ] Refactor `TimeHistory` to recorder pattern
-- [ ] Document extension guide for new elements
+- [x] Scenario config (YAML/JSON)
+- [x] Run metadata and reproducible seeds
+- [x] `step()` debugging API
+- [x] Refactor `TimeHistory` to recorder pattern
+- [x] Document extension guide for new elements
 
 ### Phase 3 — Platform readiness (later)
 

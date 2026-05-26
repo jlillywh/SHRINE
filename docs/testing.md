@@ -37,6 +37,22 @@ the repo, then ensure `validation/__init__.py` exists at the project root.
 | `tests/simulation/test_run_controller.py` | Run loop, fail-fast, climate |
 | `tests/simulation/test_adapters.py` | Watershed & reservoir adapters |
 | `tests/simulation/test_acceptance.py` | Requirements AT-* checks |
+| `tests/simulation/test_scenario.py` | Scenario YAML/JSON load and run |
+| `tests/simulation/test_metadata.py` | Run metadata fields and seeded RNG |
+| `tests/simulation/test_step_debug.py` | `step()`, `reset()`, `complete()` debugging API |
+| `tests/results/test_time_history.py` | `TimeHistory` backed by `Recorder` |
+| `tests/simulation/test_custom_element_example.py` | Extension guide `DemandElement` example |
+
+## Documentation
+
+| Doc | Topic |
+|-----|--------|
+| [simulation-framework-requirements.md](simulation-framework-requirements.md) | Requirements & phased delivery |
+| [extending-elements.md](extending-elements.md) | **Adding new simulation elements** |
+| [scenarios.md](scenarios.md) | Scenario YAML/JSON |
+| [step-debugging.md](step-debugging.md) | `step()` API |
+| [results-recording.md](results-recording.md) | `Recorder` / `TimeHistory` |
+| `tests/simulation/test_recorder.py` | Recorder API incl. `from_dataframe` |
 
 Legacy domain tests (hydrology, `water_manage`, etc.) live beside their modules (`hydrology/test_*.py`). Run separately when working on those areas:
 

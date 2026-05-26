@@ -1,0 +1,25 @@
+name: wet_year
+seed: 7
+clock:
+  start_date: "1/1/2019"
+  end_date: "1/5/2019"
+  time_step: "1 days"
+inputs:
+  precipitation:
+    type: monthly
+    values:
+      January: 12.0
+      February: 11.0
+      March: 10.0
+      April: 9.0
+      May: 8.0
+      June: 7.0
+      July: 6.0
+      August: 6.0
+      September: 7.0
+      October: 8.0
+      November: 9.0
+      December: 10.0
+  evaporation:
+    type: constant
+    value: 0.5

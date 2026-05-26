@@ -7,13 +7,15 @@ from typing import Any
 
 import pandas as pd
 
-from aegis.simulation.balance import MassBalanceCheck
+from aegis.simulation.balance import MassBalanceCheck, MassBalanceReport, MassBalanceTerm
+from aegis.simulation.step import StepResult
 from aegis.simulation.context import RunContext, TimestepContext
 from aegis.simulation.errors import SimulationError, SimulationPhase
 from aegis.simulation.inputs import InputManager
 from aegis.simulation.model import Model
 from aegis.simulation.recorder import Recorder
 from aegis.simulation.scheduler import ElementScheduler
+from aegis.simulation.metadata import RunTimer, build_run_metadata, enrich_run_metadata
 
 
 @dataclass
@@ -57,20 +59,27 @@ class RunController:
         self.verify_mass_balance = verify_mass_balance
         self._run_context: RunContext | None = None
         self._initialized = False
+        self._last_step: StepResult | None = None
+        self._step_count = 0
 
     def run(self) -> RunResult:
-        clock = self.model.clock
         warnings: list[str] = []
-        metadata: dict[str, Any] = {
-            "scenario_name": self.scenario_name,
-            "seed": self.seed,
-            "start": str(clock.start_date),
-            "end": str(clock.end_date),
-            "time_step": str(clock.time_step),
-        }
+        timer = RunTimer()
+        metadata = enrich_run_metadata(
+            build_run_metadata(
+                self.model,
+                scenario_name=self.scenario_name,
+                seed=self.seed,
+            )
+        )
 
         try:
             self._execute_run(metadata, warnings)
+            metadata = enrich_run_metadata(
+                metadata,
+                elapsed_seconds=timer.elapsed(),
+                status="success",
+            )
             return RunResult(
                 success=True,
                 outputs=self.recorder.to_dataframe(),
@@ -78,6 +87,11 @@ class RunController:
                 metadata=metadata,
             )
         except SimulationError as err:
+            metadata = enrich_run_metadata(
+                metadata,
+                elapsed_seconds=timer.elapsed(),
+                status="failed",
+            )
             result = RunResult(
                 success=False,
                 outputs=self.recorder.to_dataframe(),
@@ -89,35 +103,128 @@ class RunController:
                 raise
             return result
         finally:
-            self._initialized = False
-            self._run_context = None
+            self._tear_down_run()
 
-    def _execute_run(self, metadata: dict[str, Any], warnings: list[str]) -> None:
+    @property
+    def is_initialized(self) -> bool:
+        """True after initialize hooks have run for the current session."""
+        return self._initialized
+
+    @property
+    def is_running(self) -> bool:
+        """True while the clock has timesteps remaining in the current session."""
+        return self._initialized and self.model.clock.running
+
+    @property
+    def steps_completed(self) -> int:
+        """Number of timesteps executed in the current session."""
+        return self._step_count
+
+    @property
+    def last_step(self) -> StepResult | None:
+        """Most recent ``step()`` result, if any."""
+        return self._last_step
+
+    def reset(self) -> None:
+        """Reset clock, recorder, and session state for interactive stepping (RUN-04)."""
+        self._tear_down_run()
+        self.model.clock.reset()
+        self.recorder.reset()
+        self._last_step = None
+        self._step_count = 0
+
+    def begin(self) -> None:
+        """Validate and run element ``initialize`` hooks without advancing time."""
+        self.reset()
+        self._begin_session(metadata=None)
+
+    def step(self) -> StepResult | None:
+        """Advance one timestep and return diagnostics; ``None`` when the run is finished."""
+        if not self._initialized:
+            self._begin_session(metadata=None)
         clock = self.model.clock
+        if not clock.running:
+            return None
+
+        ctx, balance = self._run_one_timestep(collect_balance=True)
+
+        result = StepResult(
+            step_index=ctx.step_index,
+            current_time=ctx.current_time,
+            inputs=dict(ctx.inputs),
+            timestep_context=ctx,
+            balance=balance,
+            done=not clock.running,
+        )
+        self._last_step = result
+        return result
+
+    def step_many(self, count: int) -> list[StepResult]:
+        """Advance up to ``count`` timesteps; stops early if the clock finishes."""
+        if count < 1:
+            return []
+        results: list[StepResult] = []
+        for _ in range(count):
+            result = self.step()
+            if result is None:
+                break
+            results.append(result)
+        return results
+
+    def complete(self) -> RunResult:
+        """Finalize a stepped session and return outputs (RUN-04)."""
+        if self._run_context is not None:
+            for registered in self.scheduler.execution_order(self.model):
+                registered.element.finalize(self._run_context)
+        metadata = enrich_run_metadata(
+            build_run_metadata(
+                self.model,
+                scenario_name=self.scenario_name,
+                seed=self.seed,
+            ),
+            status="success",
+        )
+        metadata["debug_mode"] = True
+        metadata["steps_completed"] = self._step_count
+        outputs = self.recorder.to_dataframe()
+        self._tear_down_run()
+        return RunResult(success=True, outputs=outputs, metadata=metadata)
+
+    def _tear_down_run(self) -> None:
+        self._initialized = False
+        self._run_context = None
+        self._step_count = 0
+
+    def _begin_session(self, metadata: dict[str, Any] | None) -> None:
         self.model.validate()
         self._run_context = RunContext(
             model_id=self.model.name,
-            clock=clock,
+            clock=self.model.clock,
             scenario_name=self.scenario_name,
             seed=self.seed,
-            metadata=metadata,
+            metadata=metadata or {},
             recorder=self.recorder,
         )
-        clock.reset()
-        self.recorder.reset()
-        self._initialized = False
-
         for registered in self.scheduler.execution_order(self.model):
             registered.element.initialize(self._run_context)
         self._initialized = True
 
-        while clock.running:
+    def _execute_run(self, metadata: dict[str, Any], warnings: list[str]) -> None:
+        self.reset()
+        self._begin_session(metadata)
+
+        while self.model.clock.running:
             self._run_one_timestep()
 
-        for registered in self.scheduler.execution_order(self.model):
-            registered.element.finalize(self._run_context)
+        if self._run_context is not None:
+            for registered in self.scheduler.execution_order(self.model):
+                registered.element.finalize(self._run_context)
 
-    def _run_one_timestep(self) -> TimestepContext:
+    def _run_one_timestep(
+        self,
+        *,
+        collect_balance: bool = False,
+    ) -> tuple[TimestepContext, MassBalanceReport | None]:
         if self._run_context is None:
             raise SimulationError(
                 message="Run not initialized",
@@ -149,51 +256,37 @@ class RunController:
                     timestamp=clock.current_date,
                 ) from exc
 
-        if self.verify_mass_balance:
-            self._verify_timestep_balance(partial)
+        balance_report: MassBalanceReport | None = None
+        terms = self._collect_balance_terms(partial)
+        if terms:
+            balance_report = self.mass_balance.verify(terms)
+            if self.verify_mass_balance and not balance_report.passed:
+                raise SimulationError(
+                    message=f"Mass balance violation: residual={balance_report.residual}",
+                    phase=SimulationPhase.BALANCE,
+                    step_index=partial.step_index,
+                    timestamp=partial.current_time,
+                    details={"terms": [(t.name, t.value) for t in terms]},
+                )
+        elif collect_balance:
+            balance_report = None
 
         clock.advance()
-        return partial
+        self._step_count += 1
+        return partial, balance_report
 
-    def _verify_timestep_balance(self, timestep_context: TimestepContext) -> None:
-        terms = []
+    def _collect_balance_terms(self, timestep_context: TimestepContext) -> list[MassBalanceTerm]:
+        terms: list[MassBalanceTerm] = []
         for registered in self.scheduler.execution_order(self.model):
             provider = registered.element
             if hasattr(provider, "balance_terms"):
                 terms.extend(provider.balance_terms(timestep_context))
-        if terms:
-            self.mass_balance.verify_or_raise(
-                terms,
-                step_index=timestep_context.step_index,
-                timestamp=timestep_context.current_time,
-            )
-
-    def step(self) -> TimestepContext | None:
-        """Advance a single timestep (RUN-04); for debugging."""
-        clock = self.model.clock
-        if not self._initialized:
-            self.model.validate()
-            self._run_context = RunContext(
-                model_id=self.model.name,
-                clock=clock,
-                scenario_name=self.scenario_name,
-                seed=self.seed,
-                recorder=self.recorder,
-            )
-            for registered in self.scheduler.execution_order(self.model):
-                registered.element.initialize(self._run_context)
-            self._initialized = True
-
-        if not clock.running:
-            return None
-
-        return self._run_one_timestep()
+        return terms
 
     def finalize(self) -> None:
-        """Call element finalize hooks (e.g. after partial stepping)."""
+        """Call element finalize hooks without building a ``RunResult``."""
         if self._run_context is None:
             return
         for registered in self.scheduler.execution_order(self.model):
             registered.element.finalize(self._run_context)
-        self._initialized = False
-        self._run_context = None
+        self._tear_down_run()

@@ -50,3 +50,20 @@ class TestRecorder:
         df = recorder.to_dataframe()
         assert df.index.name == "time"
         assert isinstance(df.index[0], pd.Timestamp)
+
+    def test_load_dataframe(self) -> None:
+        index = pd.date_range("1/1/2019", periods=3)
+        source = pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [4.0, 5.0, 6.0]}, index=index)
+        recorder = Recorder(Clock("1/1/2019", "1/3/2019"))
+        recorder.load_dataframe(source)
+        expected = source.copy()
+        expected.index.name = "time"
+        pd.testing.assert_frame_equal(recorder.to_dataframe(), expected, check_freq=False)
+
+    def test_from_dataframe_classmethod(self) -> None:
+        index = pd.date_range("1/1/2019", periods=2)
+        source = pd.DataFrame({"flow": [10.0, 11.0]}, index=index)
+        recorder = Recorder.from_dataframe(source)
+        expected = source.copy()
+        expected.index.name = "time"
+        pd.testing.assert_frame_equal(recorder.to_dataframe(), expected, check_freq=False)

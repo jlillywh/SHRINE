@@ -1,0 +1,329 @@
+# Extending the simulation framework with new elements
+
+This guide explains how to add new domain behavior to **`aegis.simulation`** without editing framework internals (NFR-05). The intended pattern is a **thin adapter** around an existing class, or a small new class that implements the **`Simulatable`** lifecycle.
+
+Related docs:
+
+- [simulation-framework-requirements.md](simulation-framework-requirements.md) — requirements ELM-*, MB-*, FLW-*
+- [results-recording.md](results-recording.md) — `Recorder` / `TimeHistory`
+- [scenarios.md](scenarios.md) — YAML/JSON runs
+- [step-debugging.md](step-debugging.md) — `RunController.step()`
+
+---
+
+## 1. Choose adapter vs new implementation
+
+| Situation | Approach |
+|-----------|----------|
+| Legacy class already works (`Watershed`, `Store`, `Catchment`, …) | **Adapter** in `aegis/simulation/adapters/` that delegates to it |
+| New physics or control logic | New element class implementing `Simulatable` |
+| Graph-based routing | Domain object **owns** the NetworkX graph; adapter runs the flow solver (D2, TOP-02) |
+
+Reference adapters:
+
+- `aegis/simulation/adapters/watershed.py` — `WatershedElement`
+- `aegis/simulation/adapters/reservoir.py` — `ReservoirElement`
+- `aegis/simulation/elements.py` — `ClimateRecorderElement` (minimal example)
+
+---
+
+## 2. The `Simulatable` contract (ELM-01)
+
+```python
+from aegis.simulation.context import RunContext, TimestepContext
+
+class MyElement:
+    element_type = "my_element"  # short label for logs/metadata (ELM-03)
+
+    def initialize(self, run_context: RunContext) -> None:
+        """Once per run, before the first timestep."""
+
+    def update(self, timestep_context: TimestepContext) -> None:
+        """Once per timestep; do not advance the clock (ELM-02)."""
+
+    def finalize(self, run_context: RunContext) -> None:
+        """Optional post-run hook (ELM-04)."""
+```
+
+`Simulatable` is a `typing.Protocol` in `aegis/simulation/protocols.py`. You do not need to inherit from it; structural typing is enough.
+
+Optional hooks (not on the protocol, but used by the framework when present):
+
+| Method | Purpose |
+|--------|---------|
+| `balance_terms(timestep_context) -> list[MassBalanceTerm]` | Mass balance check at end of timestep (MB-01) |
+| `element_id` attribute | Used in errors and output names (adapters set this explicitly) |
+
+---
+
+## 3. Timestep loop (what the framework does)
+
+Each timestep (§7.0 in the requirements doc):
+
+1. **Inputs** — `InputManager` fills `timestep_context.inputs`
+2. **Update** — each registered element’s `update()` in registration order (`ElementScheduler`)
+3. **Mass balance** — for elements with `balance_terms`, terms are summed and checked
+4. **Record** — elements write via `timestep_context.recorder` (if they choose)
+5. **Advance clock** — only `RunController` advances time
+
+Your element must **not** call `clock.advance()` or mutate the global clock.
+
+---
+
+## 4. Context objects
+
+### `RunContext` (whole run)
+
+Available in `initialize` / `finalize`:
+
+| Field | Use |
+|-------|-----|
+| `model_id` | Model name |
+| `clock` | Authoritative simulation clock |
+| `recorder` | Register output variables in `initialize` |
+| `rng` | Seeded `numpy.random.Generator` when `RunController(seed=…)` |
+| `seed`, `scenario_name`, `metadata` | Run provenance |
+
+### `TimestepContext` (one step)
+
+Available in `update` (and `balance_terms`):
+
+| Field | Use |
+|-------|-----|
+| `step_index` | 0-based step counter |
+| `current_time` | `pandas.Timestamp` for this step |
+| `dt` | `Timedelta` step length |
+| `inputs` | Named values from `InputManager` |
+| `recorder` | Record outputs for this timestep |
+| `rng` | Same generator as the run |
+
+Read inputs by key (agree on names with scenario files and `InputManager.bind`):
+
+```python
+def update(self, timestep_context: TimestepContext) -> None:
+    demand = float(timestep_context.inputs.get("demand", 0.0))
+```
+
+Missing required inputs should raise **`SimulationError`** with `phase=SimulationPhase.INPUT` (see watershed adapter).
+
+---
+
+## 5. Inputs (ELM-06)
+
+Do **not** read Excel, CSV, or monthly tables inside the element. Bind inputs on the controller:
+
+```python
+from aegis.simulation import ConstantInput, InputManager, MonthlyLookupInput
+
+inputs = InputManager()
+inputs.bind("demand", ConstantInput(5.0))
+# or MonthlyLookupInput({...}), StochasticInput(...), scenario YAML, etc.
+
+RunController(model, input_manager=inputs, seed=42).run()
+```
+
+Interpolation, monthly lookup, and stochastic draws live in **`aegis/simulation/inputs.py`**.
+
+---
+
+## 6. Recording outputs (OUT-01–03)
+
+Register variables once; record each timestep:
+
+```python
+def initialize(self, run_context: RunContext) -> None:
+    recorder = run_context.recorder
+    if recorder is not None:
+        recorder.register(f"{self.element_id}.storage", unit="m3")
+        recorder.register(f"{self.element_id}.outflow", unit="m3/s")
+
+def update(self, timestep_context: TimestepContext) -> None:
+    # ... update domain state ...
+    recorder = timestep_context.recorder
+    if recorder is not None:
+        recorder.record(f"{self.element_id}.storage", self.storage)
+        recorder.record(f"{self.element_id}.outflow", self.outflow)
+```
+
+After `run()`, results are in `result.outputs` (wide DataFrame). Legacy plotting: `TimeHistory.from_run_result(result)` — see [results-recording.md](results-recording.md).
+
+Use a consistent **`element_id` prefix** so multi-element models stay namespaced (`basin.outflow`, `res1.storage`).
+
+---
+
+## 7. Mass balance (MB-01–03)
+
+Implement `balance_terms` so the framework can verify closure each timestep:
+
+```python
+from aegis.simulation.balance import MassBalanceTerm
+
+def balance_terms(self, timestep_context: TimestepContext) -> list[MassBalanceTerm]:
+    return [
+        MassBalanceTerm(f"{self.element_id}.inflow", self._last_inflow),
+        MassBalanceTerm(f"{self.element_id}.outflow", -self._last_outflow),
+        MassBalanceTerm(f"{self.element_id}.storage_delta", -(self.storage - self._volume_before)),
+    ]
+```
+
+Convention: terms **sum to zero** when balanced. Use negative signs for outflows and storage increases that reduce the residual.
+
+Disable checks for exploratory runs: `RunController(model, verify_mass_balance=False)`.
+
+---
+
+## 8. Network / flow elements (ELM-07, FLW-01)
+
+If your element owns a directed graph (like `hydrology.watershed.Watershed`):
+
+1. In `update`, apply local physics (e.g. catchment runoff → node supplies).
+2. Call a **`FlowSolver`** (`NetworkXFlowSolver` in `aegis/simulation/flow.py`) on **your** graph.
+3. Apply solved edge flows back to domain objects.
+4. Expose balance terms comparing total supply vs routed outflow.
+
+Do **not** pass flow scalars directly into downstream elements’ `update` methods; routing goes through the solver (D3).
+
+On solver failure, raise `SimulationError` with `phase=SimulationPhase.FLOW_SOLVE` and `details` from `FlowSolveResult` (see `WatershedElement`).
+
+---
+
+## 9. Register on the model
+
+```python
+from aegis.simulation import Clock, Model, RunController
+
+model = Model(name="MyProject", clock=Clock("1/1/2019", "12/31/2019"))
+model.register("pump1", MyElement(element_id="pump1"))
+model.register_watershed("basin", WatershedElement(ws, element_id="basin"))  # tags kind=watershed
+
+model.validate()  # duplicate ids, empty model, etc.
+result = RunController(model, input_manager=inputs).run()
+```
+
+- **`register(element_id, element)`** — unique string id (MDL-02).
+- **`register_watershed(...)`** — same as `register` with `metadata["kind"] = "watershed"` for filtering.
+
+Scenario **overrides** can set element attributes before a run (`ScenarioConfig.overrides`); see [scenarios.md](scenarios.md).
+
+---
+
+## 10. Execution order (TOP-01)
+
+`ElementScheduler` runs elements in **registration order** (v1). If element B depends on A’s outputs at the same timestep, register A first.
+
+Future versions may add explicit dependencies; avoid hidden cross-element mutable globals.
+
+---
+
+## 11. Errors (D6, RUN-07)
+
+Raise **`SimulationError`** with a clear `phase` and context:
+
+```python
+from aegis.simulation.errors import SimulationError, SimulationPhase
+
+raise SimulationError(
+    message="Release exceeds storage",
+    phase=SimulationPhase.UPDATE,
+    element_id=self.element_id,
+    step_index=timestep_context.step_index,
+    timestamp=timestep_context.current_time,
+    details={"storage": self.storage, "release": release},
+)
+```
+
+Unexpected exceptions in `update` are wrapped as `SimulationError` with `phase=UPDATE`. Prefer raising `SimulationError` yourself for domain failures.
+
+---
+
+## 12. Minimal custom element (copy-paste starter)
+
+```python
+from aegis.simulation.context import RunContext, TimestepContext
+
+class DemandElement:
+    """Applies a demand taken from bound inputs; records applied demand."""
+
+    element_type = "demand"
+
+    def __init__(self, element_id: str = "demand") -> None:
+        self.element_id = element_id
+        self.applied = 0.0
+
+    def initialize(self, run_context: RunContext) -> None:
+        if run_context.recorder is not None:
+            run_context.recorder.register(f"{self.element_id}.applied")
+
+    def update(self, timestep_context: TimestepContext) -> None:
+        self.applied = float(timestep_context.inputs.get("demand", 0.0))
+        if timestep_context.recorder is not None:
+            timestep_context.recorder.record(f"{self.element_id}.applied", self.applied)
+
+    def finalize(self, run_context: RunContext) -> None:
+        pass
+```
+
+Wire-up:
+
+```python
+model.register("d1", DemandElement("d1"))
+inputs = InputManager()
+inputs.bind("demand", ConstantInput(3.0))
+RunController(model, input_manager=inputs).run()
+```
+
+Working example script: `examples/custom_element.py`.
+
+---
+
+## 13. Where to put code
+
+| Piece | Location |
+|-------|----------|
+| Reusable adapter for existing Aegis class | `aegis/simulation/adapters/<name>.py`, export in `adapters/__init__.py` |
+| Built-in / tutorial element | `aegis/simulation/elements.py` or project `examples/` |
+| Project-specific element | Your package or script; register on `Model` |
+
+Keep adapters **thin**: translate context ↔ legacy API, raise structured errors, register outputs.
+
+---
+
+## 14. Testing checklist
+
+1. **Unit test** the element with a short `Clock` and `RunController(..., raise_on_error=False)`.
+2. Assert **outputs** in `result.outputs` or via `recorder.to_dataframe()`.
+3. If `balance_terms` is implemented, test both passing and failing cases (`verify_mass_balance=True`).
+4. For adapters, test against a **minimal domain fixture** (see `tests/conftest.py`, `tests/simulation/test_adapters.py`).
+5. Add an **acceptance-style** test if the element satisfies a requirements AT-* item.
+
+```python
+def test_demand_element_records_input():
+    model = Model(clock=Clock("1/1/2019", "1/3/2019"))
+    model.register("d1", DemandElement("d1"))
+    inputs = InputManager()
+    inputs.bind("demand", ConstantInput(4.0))
+    result = RunController(model, input_manager=inputs).run()
+    assert result.outputs["d1.applied"].iloc[0] == 4.0
+```
+
+---
+
+## 15. Debugging
+
+- **Step mode:** `controller.reset()` then `controller.step()` in a loop — see [step-debugging.md](step-debugging.md).
+- **Scenarios:** run from JSON/YAML — [scenarios.md](scenarios.md).
+- **Solver / balance failures:** read `SimulationError.phase`, `element_id`, `step_index`, and `details`.
+
+---
+
+## 16. Checklist before opening a PR
+
+- [ ] Implements `initialize` / `update` (and `finalize` if needed)
+- [ ] Does not advance the clock inside `update`
+- [ ] Reads forcing via `timestep_context.inputs`, not ad hoc files
+- [ ] Registers and records outputs with `{element_id}.variable` names
+- [ ] Raises `SimulationError` with phase + element id for expected failures
+- [ ] `balance_terms` provided if the element participates in storage/routing balance
+- [ ] Graph routing uses `FlowSolver`, not manual downstream arguments (if applicable)
+- [ ] Tests added under `tests/simulation/` or `tests/results/`
+- [ ] Example or doc cross-link if the element is user-facing

@@ -1,0 +1,16 @@
+{
+  "name": "baseline_watershed",
+  "seed": 42,
+  "clock": {
+    "start_date": "1/1/2019",
+    "end_date": "1/8/2019",
+    "time_step": "1 days"
+  },
+  "inputs": {
+    "precipitation": 10.0,
+    "evaporation": 1.0
+  },
+  "metadata": {
+    "description": "Constant climate, eight-day test window"
+  }
+}

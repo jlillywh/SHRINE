@@ -51,3 +51,38 @@ class Recorder:
 
     def reset(self) -> None:
         self._rows.clear()
+
+    def load_dataframe(self, df: pd.DataFrame) -> None:
+        """Replace recorded rows from a wide time-indexed DataFrame."""
+        self.reset()
+        if df.empty:
+            return
+        frame = df.copy()
+        if frame.index.name != "time":
+            frame = frame.reset_index()
+            if "time" not in frame.columns:
+                frame = frame.rename(columns={frame.columns[0]: "time"})
+            frame = frame.set_index("time")
+        for ts, row in frame.iterrows():
+            self.begin_timestep(pd.Timestamp(ts))
+            for col, val in row.items():
+                if pd.notna(val):
+                    self.record(str(col), val)
+
+    @classmethod
+    def from_dataframe(
+        cls,
+        df: pd.DataFrame,
+        clock: Clock | None = None,
+    ) -> Recorder:
+        """Build a recorder pre-filled from a wide DataFrame (time index)."""
+        if clock is None:
+            if df.empty:
+                clock = Clock()
+            else:
+                index = pd.DatetimeIndex(df.index)
+                step = index[1] - index[0] if len(index) > 1 else pd.Timedelta("1 days")
+                clock = Clock(index[0], index[-1], time_step=step)
+        recorder = cls(clock)
+        recorder.load_dataframe(df)
+        return recorder

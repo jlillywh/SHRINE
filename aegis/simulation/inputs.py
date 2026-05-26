@@ -24,6 +24,36 @@ class ConstantInput:
         return self.value
 
 
+class StochasticInput:
+    """Random input drawn from the run's seeded generator (INP-04).
+
+    Supported ``distribution`` values: ``normal``, ``uniform``.
+    """
+
+    def __init__(
+        self,
+        distribution: str,
+        *,
+        loc: float = 0.0,
+        scale: float = 1.0,
+        low: float = 0.0,
+        high: float = 1.0,
+    ) -> None:
+        self.distribution = distribution
+        self.loc = loc
+        self.scale = scale
+        self.low = low
+        self.high = high
+
+    def value_at(self, context: TimestepContext) -> float:
+        rng = context.run.rng
+        if self.distribution == "normal":
+            return float(rng.normal(self.loc, self.scale))
+        if self.distribution == "uniform":
+            return float(rng.uniform(self.low, self.high))
+        raise ValueError(f"Unknown distribution: {self.distribution!r}")
+
+
 class MonthlyLookupInput:
     """Lookup by calendar month name (e.g. ``January``)."""
 

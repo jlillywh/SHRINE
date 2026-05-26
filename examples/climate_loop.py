@@ -15,6 +15,7 @@ from aegis.simulation import (
     MonthlyLookupInput,
     RunController,
 )
+from results.time_history import TimeHistory
 
 # Example monthly rates (inches/day), keyed by month name — same pattern as Vector + Months labels.
 EVAPORATION_BY_MONTH = {
@@ -70,6 +71,9 @@ def main() -> None:
     print(result.metadata)
     print(result.outputs.head())
     print(f"Recorded {len(result.outputs)} timesteps")
+
+    history = TimeHistory.from_run_result(result, name="Climate Results", display_unit="in")
+    assert len(history.series) == len(result.outputs)
 
 
 if __name__ == "__main__":

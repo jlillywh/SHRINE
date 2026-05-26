@@ -12,6 +12,7 @@ dependencies = [
     "networkx>=3.0",
     "numpy",
     "pandas",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
