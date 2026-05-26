@@ -54,12 +54,14 @@ Thumbs.db
 abandoned_files/
 
 # External datasets (not the `data/` Python package)
-data_external/
+data_external/*
+!data_external/apikey.txt.example
 
 # Generated outputs
 mapping/*.html
 
-# Local secrets
-data_external/apikey.txt
+# Local secrets (never commit API keys)
+**/apikey.txt
+!**/apikey.txt.example
 *.env
 .env.*

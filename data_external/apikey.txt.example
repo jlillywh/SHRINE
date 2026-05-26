@@ -1,0 +1,3 @@
+# Copy this file to apikey.txt and paste your Google Maps Platform API key on one line.
+# Restrict the key to Maps APIs only. Do not use or commit Gemini / Generative Language keys.
+# Prefer: export GOOGLE_MAPS_API_KEY="your-key-here"

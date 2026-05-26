@@ -6,7 +6,7 @@ import os
 class TestFileManager(TestCase):
     def setUp(self):
         self.fm = FileManager('..\\data_external')
-        self.fm.add_file('apikey.txt')
+        self.fm.add_file('data.xlsx')
         
     def tearDown(self):
         del self.fm
@@ -26,7 +26,7 @@ class TestFileManager(TestCase):
         self.assertEqual(expected_path, self.fm.get_file(file_name))
     
     def test_get_file(self):
-        file_name = 'apikey.txt'
+        file_name = 'data.xlsx'
         expected_path = '..\\data_external' + '\\' + file_name
         self.assertEqual(expected_path, self.fm.get_file(file_name))
         

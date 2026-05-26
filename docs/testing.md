@@ -94,4 +94,4 @@ structured pytest suite, coverage config, and requirements documentation.
 Removes the broken Simulator prototype."
 ```
 
-Do **not** commit `venv/` or `data_external/apikey.txt`.
+Do **not** commit `venv/` or any `apikey.txt` file. For the optional Maps demo (`mapping/map_toy.py`), set `GOOGLE_MAPS_API_KEY` or copy `data_external/apikey.txt.example` to `data_external/apikey.txt` locally (Maps Platform key only).
