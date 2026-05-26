@@ -1,0 +1,20 @@
+# Gitleaks config for Aegis — extends default rules.
+# https://github.com/gitleaks/gitleaks
+
+title = "Aegis gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Docs, templates, and known-safe placeholders"
+paths = [
+  '''(?i)docs/secrets-and-repo-hygiene\.md''',
+  '''(?i)docs/modernization-roadmap\.md''',
+  '''(?i)data_external/apikey\.txt\.example''',
+]
+regexes = [
+  '''your-maps-platform-key''',
+  '''your-key-here''',
+  '''your-key''',
+]

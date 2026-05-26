@@ -54,6 +54,31 @@ Restrict keys in [Google Cloud Console](https://console.cloud.google.com/apis/cr
 
 ---
 
+## Automated scanning (CI and local)
+
+| Layer | What runs |
+|-------|-----------|
+| **GitHub Actions** | [`.github/workflows/secrets.yml`](../.github/workflows/secrets.yml) runs **gitleaks** on every push/PR to `master` |
+| **Pre-commit (optional)** | [`.pre-commit-config.yaml`](../.pre-commit-config.yaml) scans **staged** files before each commit |
+| **Manual** | `./scripts/scan_secrets.sh` (requires [gitleaks](https://github.com/gitleaks/gitleaks) installed) |
+
+Config and allowlists (docs, `apikey.txt.example`): [`.gitleaks.toml`](../.gitleaks.toml).
+
+### Enable pre-commit locally
+
+```bash
+pip install -e ".[dev]"
+pre-commit install
+```
+
+Run on all files once:
+
+```bash
+pre-commit run gitleaks --all-files
+```
+
+---
+
 ## Before you push
 
 Quick self-check from the repo root:
@@ -61,6 +86,7 @@ Quick self-check from the repo root:
 ```bash
 git status
 git diff --cached | grep -iE 'api[_-]?key|secret|password|AIza[0-9A-Za-z_-]{20,}' || true
+pre-commit run gitleaks --all-files   # if pre-commit is installed
 ```
 
 If anything looks like a key, **stop**, rotate the credential in the provider, and do not push until the commit is fixed.
@@ -105,4 +131,4 @@ If you discover a secret in this repository (current tree or history), contact t
 ## Related docs
 
 - [testing.md](testing.md) — what not to commit with test runs (`venv/`, local data)
-- [modernization-roadmap.md](modernization-roadmap.md) — Phase 0 security tasks (CI secret scanning planned)
+- [modernization-roadmap.md](modernization-roadmap.md) — Phase 0 security tasks

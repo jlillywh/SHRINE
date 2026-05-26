@@ -68,7 +68,7 @@ See [docs/testing.md](docs/testing.md) for layout and troubleshooting (WSL sync,
 
 ## Secrets and credentials
 
-Do **not** commit API keys or `.env` files. Use `GOOGLE_MAPS_API_KEY` for the optional Maps demo, or a local gitignored `data_external/apikey.txt` (see `data_external/apikey.txt.example`). Full guidance: **[docs/secrets-and-repo-hygiene.md](docs/secrets-and-repo-hygiene.md)**.
+Do **not** commit API keys or `.env` files. Use `GOOGLE_MAPS_API_KEY` for the optional Maps demo, or a local gitignored `data_external/apikey.txt` (see `data_external/apikey.txt.example`). Full guidance: **[docs/secrets-and-repo-hygiene.md](docs/secrets-and-repo-hygiene.md)**. Optional local hook: `pip install -e ".[dev]" && pre-commit install` (gitleaks on commit); CI runs the same scan on push/PR.
 
 ## Examples
 

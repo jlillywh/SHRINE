@@ -75,7 +75,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 - [x] **0.1** Confirm no secrets in history (`git log -S 'AIza'`, GitGuardian cleared) — verified 2026-05-26: `git-filter-repo` removed `data/apikey.txt` and `data_external/apikey.txt` from all refs; `7c383cc` no longer reachable; `file_class` force-pushed; pickaxe `-S AIza` only hits `docs/secrets-and-repo-hygiene.md` (example text, no key material). **You:** mark incident resolved in GitGuardian UI.
 - [x] **0.2** Document secret handling in [secrets-and-repo-hygiene.md](secrets-and-repo-hygiene.md); link from README and [testing.md](testing.md)
-- [ ] **0.3** Add pre-commit hook or CI secret scan (e.g. `gitleaks`, `trufflehog`)
+- [x] **0.3** Add pre-commit hook or CI secret scan — `.github/workflows/secrets.yml` (gitleaks), `.pre-commit-config.yaml`, `.gitleaks.toml`, `scripts/scan_secrets.sh`
 
 #### P0 — Fix broken contracts
 
