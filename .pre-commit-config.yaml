@@ -1,5 +1,9 @@
 # Optional local hooks — install: pip install pre-commit && pre-commit install
 # See docs/secrets-and-repo-hygiene.md
+#
+# Upstream hook runs: gitleaks git --pre-commit --redact --staged --verbose
+# Do not pass "protect" as an arg — that breaks git and causes:
+#   fatal: cannot change to 'protect': No such file or directory
 
 minimum_pre_commit_version: "3.0.0"
 
@@ -9,4 +13,4 @@ repos:
     hooks:
       - id: gitleaks
         name: gitleaks (staged files)
-        args: ["protect", "--staged", "--verbose", "--config", ".gitleaks.toml"]
+        args: ["--config", ".gitleaks.toml"]

@@ -66,16 +66,23 @@ Config and allowlists (docs, `apikey.txt.example`): [`.gitleaks.toml`](../.gitle
 
 ### Enable pre-commit locally
 
+Use the project venv (do not `pip install` into system Python on Ubuntu — PEP 668 blocks it):
+
 ```bash
+cd Aegis
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e ".[dev]"
 pre-commit install
 ```
 
-Run on all files once:
+Run on all files once (uses the hook’s staged/pre-commit mode over the repo):
 
 ```bash
 pre-commit run gitleaks --all-files
 ```
+
+If you see `cannot change to 'protect'`, update `.pre-commit-config.yaml` — the upstream hook uses `gitleaks git --pre-commit`, not `gitleaks protect`.
 
 ---
 
