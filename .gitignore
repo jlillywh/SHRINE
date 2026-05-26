@@ -35,15 +35,31 @@ htmlcov/
 coverage.xml
 *.cover
 
-# IDE
+# IDE & editors
 .idea/
 .vscode/
 *.swp
 *.swo
+*conflicted copy*
+*.iml
+
+# Jupyter
+.ipynb_checkpoints/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Local secrets / data (keep structure, not keys)
+# Local / abandoned work
+abandoned_files/
+
+# External datasets (not the `data/` Python package)
+data_external/
+
+# Generated outputs
+mapping/*.html
+
+# Local secrets
 data_external/apikey.txt
+*.env
+.env.*
