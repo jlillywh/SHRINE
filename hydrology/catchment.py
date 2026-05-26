@@ -1,6 +1,3 @@
-from hydrology.awbm import Awbm
-
-
 class Catchment:
     """
     A class used to create watershed catchment objects.
@@ -48,6 +45,8 @@ class Catchment:
         if runoff_method == 'simple':
             self.runoff_method = Rational()
         else:
+            from hydrology.awbm import Awbm
+
             self.runoff_method = Awbm()
 
     def outflow(self, precip, et):

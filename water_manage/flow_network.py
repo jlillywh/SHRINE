@@ -1,6 +1,4 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-from hydrology.catchment import Catchment
 
 
 class Network:
@@ -58,6 +56,8 @@ class Network:
         
            
     def draw(self):
+        import matplotlib.pyplot as plt
+
         network_copy = self.dg.copy()
         network_copy.remove_node(self.source)
         plt.subplot()

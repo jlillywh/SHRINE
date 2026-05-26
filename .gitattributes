@@ -1,0 +1,5 @@
+# Shell scripts must use LF for WSL/Linux shebangs
+*.sh text eol=lf
+
+# Python sources
+*.py text eol=lf

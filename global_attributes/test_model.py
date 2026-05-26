@@ -5,9 +5,8 @@ from results.time_history import TimeHistory
 from global_attributes.clock import Clock
 
 
-"""This is a test model. Used to test my library to see if I can build a model using
-    its features and modules.
-    
+"""Legacy script — manual clock loop. Prefer examples/climate_loop.py (aegis.simulation).
+
     This model replicates the work done in the IWRM SLC V9.111.gsm model."""
 fm = FileManager('..\\data_external')
 input_file = fm.add_file('data.xlsx')

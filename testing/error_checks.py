@@ -1,4 +1,4 @@
-from validation.error import WrongUnits
+from testing.error import WrongUnits
 
 
 def check_all_items_positive(my_list):

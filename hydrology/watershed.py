@@ -1,8 +1,6 @@
 from water_manage.flow_network import Network
 from hydrology.catchment import Catchment
-from hydrology.junction import Junction
 import networkx as nx
-import matplotlib.pyplot as plt
 
 
 class Watershed(Network):
