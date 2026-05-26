@@ -66,6 +66,10 @@ pytest tests/simulation --cov=aegis.simulation --cov-report=term-missing
 
 See [docs/testing.md](docs/testing.md) for layout and troubleshooting (WSL sync, venv, etc.).
 
+## Secrets and credentials
+
+Do **not** commit API keys or `.env` files. Use `GOOGLE_MAPS_API_KEY` for the optional Maps demo, or a local gitignored `data_external/apikey.txt` (see `data_external/apikey.txt.example`). Full guidance: **[docs/secrets-and-repo-hygiene.md](docs/secrets-and-repo-hygiene.md)**.
+
 ## Examples
 
 From the repo root with the venv activated:
@@ -93,12 +97,14 @@ Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml
 
 | Guide | Topic |
 |-------|--------|
+| [docs/modernization-roadmap.md](docs/modernization-roadmap.md) | Strategic checklist: pythonic OOP, OSS excellence |
 | [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
 | [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |
 | [docs/scenarios.md](docs/scenarios.md) | Scenario YAML/JSON |
 | [docs/step-debugging.md](docs/step-debugging.md) | `RunController.step()` API |
 | [docs/results-recording.md](docs/results-recording.md) | `Recorder` and `TimeHistory` |
 | [docs/testing.md](docs/testing.md) | Test suite and CI-style local runs |
+| [docs/secrets-and-repo-hygiene.md](docs/secrets-and-repo-hygiene.md) | API keys, `.env`, history purge if a secret was committed |
 
 ## Quick API sketch
 
