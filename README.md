@@ -1,6 +1,6 @@
 # SHRINE
 
-**S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**ngine.
+**S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**nvironments..
 
 ![Athena's aegis (mythology)](https://upload.wikimedia.org/wikipedia/en/thumb/d/d6/Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg/330px-Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg)
 
