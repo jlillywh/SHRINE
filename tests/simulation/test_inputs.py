@@ -1,13 +1,13 @@
-"""Tests for aegis.simulation.inputs."""
+"""Tests for shrine.simulation.inputs."""
 
 from __future__ import annotations
 
 import pandas as pd
 import pytest
 
-from aegis.simulation import ConstantInput, MonthlyLookupInput
-from aegis.simulation.context import RunContext, TimestepContext
-from aegis.simulation import Clock
+from shrine.simulation import ConstantInput, MonthlyLookupInput
+from shrine.simulation.context import RunContext, TimestepContext
+from shrine.simulation import Clock
 
 
 def _timestep(month: int, day: int = 1) -> TimestepContext:

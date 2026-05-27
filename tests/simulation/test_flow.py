@@ -1,12 +1,12 @@
-"""Tests for aegis.simulation.flow."""
+"""Tests for shrine.simulation.flow."""
 
 from __future__ import annotations
 
 import networkx as nx
 import pytest
 
-from aegis.simulation.errors import SimulationError, SimulationPhase
-from aegis.simulation.flow import NetworkXFlowSolver
+from shrine.simulation.errors import SimulationError, SimulationPhase
+from shrine.simulation.flow import NetworkXFlowSolver
 from hydrology.catchment import Catchment
 from hydrology.watershed import Watershed
 

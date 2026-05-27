@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from aegis.simulation import Clock, Recorder, RunController
+from shrine.simulation import Clock, Recorder, RunController
 from examples.climate_loop import build_climate_model
 from results.time_history import TimeHistory
 

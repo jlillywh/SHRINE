@@ -1,12 +1,40 @@
-# Aegis
+# SHRINE
 
-![Athena's aegis](https://upload.wikimedia.org/wikipedia/en/thumb/d/d6/Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg/330px-Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg)
+**S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**ngine (singular *Engine*).
 
-Integrated water-resources modeling library (Python). Aegis combines legacy domain modules (hydrology, storage, flow networks) with a new **`aegis.simulation`** framework for calendar-driven runs, mass balance, scenario files, and structured outputs.
+![Athena's aegis (mythology)](https://upload.wikimedia.org/wikipedia/en/thumb/d/d6/Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg/330px-Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg)
 
-## Simulation framework (`aegis.simulation`)
+Open-source integrated water-resources modeling library (Python). SHRINE combines legacy domain modules (hydrology, storage, flow networks) with **`shrine.simulation`** for calendar-driven runs, mass balance, scenario files, and structured outputs.
 
-The framework is the supported path for headless model runs and tests:
+Naming details: [docs/project-name.md](docs/project-name.md).
+
+## Simulation framework (`shrine.simulation`)
+
+The framework is the **only supported path** for new model runs. Import from the package root:
+
+```python
+import shrine.simulation as sim
+# or
+from shrine.simulation import Model, RunController, Clock, WatershedElement
+```
+
+**Package versions:** `shrine.__version__` (distribution) and `shrine.simulation.__api_version__` (stable simulation API surface, currently **1.0**). Stability and deprecation rules: [docs/api-stability.md](docs/api-stability.md). Submodules outside `__all__` are internal unless noted in [extending-elements.md](docs/extending-elements.md).
+
+### Public API
+
+| Category | Symbols |
+|----------|---------|
+| **Run** | `Model`, `RegisteredElement`, `RunController`, `RunResult`, `RunSession`, `StepResult`, `ElementScheduler` |
+| **Time** | `Clock`, `RunContext`, `TimestepContext` |
+| **Elements** | `Simulatable`, `WatershedElement`, `ReservoirElement`, `ClimateRecorderElement`, `StorageLike` |
+| **Inputs** | `InputManager`, `InputProvider`, `ConstantInput`, `MonthlyLookupInput`, `StochasticInput` |
+| **Flow / balance** | `FlowSolver`, `NetworkXFlowSolver`, `FlowSolveResult`, `MassBalanceCheck`, `MassBalanceReport`, `MassBalanceTerm` |
+| **Outputs / scenarios** | `Recorder`, `ScenarioConfig`, `load_scenario_file`, `run_scenario`, `run_scenarios`, `load_and_run` |
+| **Metadata / RNG** | `build_run_metadata`, `enrich_run_metadata`, `RunTimer`, `make_rng` |
+| **Deprecation** | `warn_api_deprecated` |
+| **Errors** | `SimulationError`, `SimulationPhase` |
+
+Capabilities:
 
 - **`Model`** — register elements (watersheds, reservoirs, custom types) with a shared `Clock`
 - **`RunController`** — validate → initialize → timestep loop → finalize
@@ -16,13 +44,13 @@ The framework is the supported path for headless model runs and tests:
 - **Flow solve** — NetworkX max-flow on graphs owned by `Watershed` adapters
 - **Mass balance** — per-timestep verification with `SimulationError` diagnostics
 
-Requirements and phased delivery: [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md).
+Requirements and phased delivery: [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md). Layer diagram: [docs/architecture.md](docs/architecture.md).
 
 ## Project layout
 
 | Area | Description |
 |------|-------------|
-| `aegis/simulation/` | Framework: clock, model, run controller, inputs, recorder, scenarios |
+| `shrine/simulation/` | Framework: clock, model, run controller, inputs, recorder, scenarios |
 | `hydrology/` | Catchments, watersheds, networks |
 | `water_manage/` | Storage, flow networks, operating rules |
 | `inputs/` | Tables, time series, data helpers |
@@ -39,7 +67,7 @@ Requirements and phased delivery: [docs/simulation-framework-requirements.md](do
 ## Install
 
 ```bash
-cd Aegis
+cd SHRINE   # or your clone directory (GitHub repo may still be named Aegis)
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
@@ -61,14 +89,14 @@ Or manually:
 
 ```bash
 pytest tests/ -v
-pytest tests/simulation --cov=aegis.simulation --cov-report=term-missing
+pytest tests/simulation --cov=shrine.simulation --cov-report=term-missing
 ```
 
 See [docs/testing.md](docs/testing.md) for layout and troubleshooting (WSL sync, venv, etc.).
 
 ## Secrets and credentials
 
-Do **not** commit API keys or `.env` files. Use `GOOGLE_MAPS_API_KEY` for the optional Maps demo, or a local gitignored `data_external/apikey.txt` (see `data_external/apikey.txt.example`). Full guidance: **[docs/secrets-and-repo-hygiene.md](docs/secrets-and-repo-hygiene.md)**. Optional local hook: `pip install -e ".[dev]" && pre-commit install` (gitleaks on commit); CI runs the same scan on push/PR.
+Do **not** commit API keys or `.env` files. Use `GOOGLE_MAPS_API_KEY` for the optional Maps demo, or a local gitignored `data_external/apikey.txt` (see `data_external/apikey.txt.example`). Full guidance: **[docs/secrets-and-repo-hygiene.md](docs/secrets-and-repo-hygiene.md)**. Optional local hook (with venv activated): `pip install -e ".[dev]" && pre-commit install` — gitleaks on commit; CI runs the same scan on push/PR.
 
 ## Examples
 
@@ -97,7 +125,10 @@ Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml
 
 | Guide | Topic |
 |-------|--------|
+| [docs/project-name.md](docs/project-name.md) | **SHRINE** naming and acronym |
 | [docs/modernization-roadmap.md](docs/modernization-roadmap.md) | Strategic checklist: pythonic OOP, OSS excellence |
+| [docs/api-stability.md](docs/api-stability.md) | SemVer, deprecation cycle, public API policy |
+| [docs/architecture.md](docs/architecture.md) | Framework vs domain vs adapters (diagrams) |
 | [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
 | [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |
 | [docs/scenarios.md](docs/scenarios.md) | Scenario YAML/JSON |
@@ -109,7 +140,7 @@ Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml
 ## Quick API sketch
 
 ```python
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     ConstantInput,
     InputManager,

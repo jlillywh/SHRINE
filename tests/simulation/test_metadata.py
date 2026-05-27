@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     InputManager,
     Model,
     RunController,
     StochasticInput,
 )
-from aegis.simulation.metadata import build_run_metadata, enrich_run_metadata
-from aegis.simulation.rng import make_rng
+from shrine.simulation.metadata import build_run_metadata, enrich_run_metadata
+from shrine.simulation.rng import make_rng
 
 
 class _CounterElement:

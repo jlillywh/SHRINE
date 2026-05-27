@@ -1,15 +1,15 @@
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
-from global_attributes.aegis import Aegis
+from global_attributes.shrine_object import ShrineObject
 from pandas import Series
 
 
-class Chart(Aegis):
+class Chart(ShrineObject):
     """Class to create a generic charting object
     """
     def __init__(self):
-        Aegis.__init__(self)
+        ShrineObject.__init__(self)
         self.update_title(self.name + ' Chart')
         self.ylabel = ''
         self.xlabel = ''

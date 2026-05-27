@@ -68,3 +68,13 @@ class TestReservoir(unittest.TestCase):
         self.r1.evaporation = evap_rate
         self.r1.update()
         self.assertAlmostEqual(self.r1.volume, expected_volume, 2)
+
+    def test_calc_overflow_reduces_volume_above_crest(self):
+        """Spillway withdrawal uses Store.update(inflow, request)."""
+        r = Reservoir(init_vol=400.0)
+        r.spillway_crest = 5.0
+        r.water_level = 12.0
+        vol_before = r.volume
+        r.calc_overflow()
+        self.assertLess(r.volume, vol_before)
+        self.assertGreaterEqual(r.outflow, 0.0)

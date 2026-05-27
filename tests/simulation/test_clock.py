@@ -1,11 +1,11 @@
-"""Tests for aegis.simulation.clock."""
+"""Tests for shrine.simulation.clock."""
 
 from __future__ import annotations
 
 import pandas as pd
 import pytest
 
-from aegis.simulation import Clock
+from shrine.simulation import Clock
 
 
 class TestClock:

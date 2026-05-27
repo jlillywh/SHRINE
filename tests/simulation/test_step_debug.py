@@ -5,7 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     ConstantInput,
     InputManager,
@@ -16,7 +16,7 @@ from aegis.simulation import (
     StepResult,
     WatershedElement,
 )
-from aegis.simulation.balance import MassBalanceTerm
+from shrine.simulation.balance import MassBalanceTerm
 from hydrology.watershed import Watershed
 
 

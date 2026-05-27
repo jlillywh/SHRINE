@@ -7,7 +7,7 @@ Uses synthetic monthly evaporation and precipitation (no Excel required).
 
 from __future__ import annotations
 
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     ClimateRecorderElement,
     InputManager,

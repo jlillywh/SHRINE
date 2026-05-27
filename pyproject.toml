@@ -3,16 +3,19 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aegis"
+name = "shrine"
 version = "0.1.0"
-description = "Integrated water resources modeling (Aegis)"
+description = "SHRINE — Simulation of Hydrology, Reservoirs, and Integrated Network Engine"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "networkx>=3.0",
     "numpy",
     "pandas",
+    "openpyxl>=3.0",
     "pyyaml>=6.0",
+    "pint>=0.23",
+    "iapws>=1.2",
 ]
 
 [project.optional-dependencies]
@@ -28,18 +31,18 @@ viz = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["aegis*", "validation*"]
+include = ["shrine*", "validation*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-ra"
+addopts = "-ra --import-mode=importlib"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
 
 [tool.coverage.run]
-source = ["aegis"]
+source = ["shrine"]
 omit = [
     "*/tests/*",
     "*/venv/*",

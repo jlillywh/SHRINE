@@ -1,0 +1,9 @@
+# Install runtime dependencies (editable package + pins from pyproject.toml).
+-e .
+pint>=0.23
+networkx>=3.0
+numpy
+pandas
+openpyxl>=3.0
+pyyaml>=6.0
+iapws>=1.2

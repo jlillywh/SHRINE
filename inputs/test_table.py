@@ -28,7 +28,7 @@ class TestAllocator(unittest.TestCase):
         x_result = self.table.lookup_x(y_value)
         self.assertAlmostEqual(x_expected, x_result, self.decimals)
 
-# fm = FileManager('..\\data_external')
+# fm = FileManager(REPO_ROOT / "data_external")
 # filename = 'data.xlsx'
 # fm.add_file(filename)
 # input_file = fm.files[filename]

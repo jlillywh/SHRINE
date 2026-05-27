@@ -27,12 +27,12 @@ class File:
         self.validate_ext()
         self.save()
     
-    def save(self, path):
+    def save(self, path=None):
         print(os.path.abspath('.'))
 
         with open(self.name, 'w') as f:
             f.write('Edited: ' + str(datetime.datetime.now()))
-        
+        return self
     def edit(self):
         os.system(self.name)
         

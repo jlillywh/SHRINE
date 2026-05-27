@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 
 class TimeSeries:
@@ -79,7 +77,7 @@ class TimeSeries:
         Returns:
             datetime.date: the return value
         """
-        return self.df.index.min()
+        return self.df.index.min().date()
     
     def end_date(self):
         """ The calendar time of the *last* datetime or etime of the time series.
@@ -87,7 +85,7 @@ class TimeSeries:
         Returns:
             datetime.date: the return value
         """
-        return self.df.index.max()
+        return self.df.index.max().date()
     
     def duration(self):
         """ The duration between the start and end time of the index.
@@ -102,6 +100,8 @@ class TimeSeries:
         return date_list.index.min()
     
     def plot(self):
+        import seaborn as sns
+
         sns.set(rc={'figure.figsize': (11, 4)})
         axis = self.df[self.values_name].plot(linewidth=1)
         axis.set_ylabel(self.values_name)

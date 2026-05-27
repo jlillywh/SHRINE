@@ -1,4 +1,4 @@
-"""Time series results storage backed by :class:`~aegis.simulation.recorder.Recorder`."""
+"""Time series results storage backed by :class:`~shrine.simulation.recorder.Recorder`."""
 
 from __future__ import annotations
 
@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
-from aegis.simulation.clock import Clock as SimulationClock
-from aegis.simulation.recorder import Recorder
-from global_attributes.aegis import Aegis
+from shrine.simulation.clock import Clock as SimulationClock
+from shrine.simulation.recorder import Recorder
+from global_attributes.shrine_object import ShrineObject
 
 if TYPE_CHECKING:
-    from aegis.simulation.run_controller import RunResult
+    from shrine.simulation.run_controller import RunResult
 
 
 def _adapt_clock(clock: Any) -> SimulationClock:
@@ -25,7 +25,7 @@ def _adapt_clock(clock: Any) -> SimulationClock:
     )
 
 
-class TimeHistory(Aegis):
+class TimeHistory(ShrineObject):
     """Store and plot time series using the simulation :class:`Recorder` (OUT-04).
 
     Legacy code can still call :meth:`add_series` and :meth:`show`. Framework runs
@@ -40,7 +40,7 @@ class TimeHistory(Aegis):
         *,
         recorder: Recorder | None = None,
     ) -> None:
-        Aegis.__init__(self)
+        ShrineObject.__init__(self)
         self.name = name
         self.unit = display_unit
         self.th_list: list[pd.Series] = []

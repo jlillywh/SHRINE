@@ -3,7 +3,7 @@ from geometry.shape import Shape
 from geometry.cylinder import Cylinder
 
 # Load units from JSON file
-units = load_units("./data/aegis_units.json")
+units = load_units("./data/shrine_units.json")
 
 def main():
     # Create an instance of the Shape class

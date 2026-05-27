@@ -1,7 +1,7 @@
-# Gitleaks config for Aegis — extends default rules.
+# Gitleaks config for SHRINE — extends default rules.
 # https://github.com/gitleaks/gitleaks
 
-title = "Aegis gitleaks"
+title = "SHRINE gitleaks"
 
 [extend]
 useDefault = true

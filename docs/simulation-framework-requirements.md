@@ -1,4 +1,4 @@
-# Aegis Simulation Framework — Requirements (Draft)
+# SHRINE Simulation Framework — Requirements (Draft)
 
 **Status:** Draft — architecture decisions recorded  
 **Author:** Jason  
@@ -9,9 +9,9 @@
 
 ## 1. Purpose
 
-Define requirements for the **Aegis simulation framework**: the layer that advances time, binds components into a model, supplies inputs, records outputs, and runs repeatable experiments. Physics modules (catchments, reservoirs, pipes, etc.) remain separate; the framework orchestrates them.
+Define requirements for the **SHRINE simulation framework**: the layer that advances time, binds components into a model, supplies inputs, records outputs, and runs repeatable experiments. Physics modules (catchments, reservoirs, pipes, etc.) remain separate; the framework orchestrates them.
 
-**Strategic goal:** Everything else in Aegis (networks, allocation, stochastic weather, future web platform) should plug into this layer. A stable framework reduces rework when adding new element types or deployment targets.
+**Strategic goal:** Everything else in SHRINE (networks, allocation, stochastic weather, future web platform) should plug into this layer. A stable framework reduces rework when adding new element types or deployment targets.
 
 ---
 
@@ -21,10 +21,10 @@ Define requirements for the **Aegis simulation framework**: the layer that advan
 
 | Piece | Location | Role today |
 |-------|----------|------------|
-| `Aegis` | `global_attributes/aegis.py` | Base object: id, name, description, metadata |
+| `ShrineObject` | `global_attributes/shrine_object.py` | Base object: id, name, description, metadata |
 | `Clock` | `global_attributes/clock.py` | Calendar time stepping (`start_date`, `end_date`, `time_step`, `advance`, `reset`) |
-| `Simulator` | `global_attributes/simulator.py` | Prototype loop; references undefined `self.r`, `self.w`; placeholder ET |
-| `Model` | `global_attributes/model.py` | Thin holder for clock, simulator, file loading |
+| ~~`Simulator`~~ | `global_attributes/simulator.py` | **Removed** — stub raises; use `shrine.simulation.RunController` |
+| `LegacyModel` (`Model` alias, deprecated) | `global_attributes/model.py` | Thin holder for clock and label sets (no file I/O) |
 | `TimeHistory` | `results/time_history.py` | Output storage aligned to clock index |
 | Ad-hoc script | `global_attributes/test_model.py` | Manual loop: clock + inputs + append series (closest to intended pattern) |
 | Domain elements | `hydrology/`, `water_manage/`, etc. | Called directly; no common simulation contract |
@@ -37,7 +37,7 @@ Define requirements for the **Aegis simulation framework**: the layer that advan
 - **Execution order** for networked elements (upstream → downstream) is implicit or missing.
 - **Inputs** (tables, time series, stochastic generators) are not bound to the clock in a uniform way.
 - **Outputs** are ad hoc (`pandas.Series`, `TimeHistory`); no run manifest or structured results.
-- **Units** (`aegis_units.json`, pint in places) are not enforced at the framework boundary.
+- **Units** (`shrine_units.json`, pint in places) are not enforced at the framework boundary.
 - **Reproducibility** (seeds, run metadata) not specified.
 
 ### 2.3 Reference pattern (target mental model)
@@ -55,7 +55,7 @@ The framework should make this pattern **declarative and reusable**, not copy-pa
 
 ## 3. Vision statement
 
-> The Aegis simulation framework provides a **deterministic, testable time-stepping engine** that composes hydrologic, hydraulic, and water-management elements into models of arbitrary topology, with explicit time, inputs, state, and outputs suitable for later exposure via APIs and a web UI.
+> The SHRINE simulation framework provides a **deterministic, testable time-stepping engine** that composes hydrologic, hydraulic, and water-management elements into models of arbitrary topology, with explicit time, inputs, state, and outputs suitable for later exposure via APIs and a web UI.
 
 ---
 
@@ -122,7 +122,7 @@ These decisions supersede §12 (formerly open questions). Implementation MUST fo
 
 | # | Topic | Decision |
 |---|--------|----------|
-| D1 | **Package** | Introduce **`aegis.simulation`** for the framework (`Clock`, `Model`, `RunController`, scheduler, recorder, validation). Legacy `global_attributes` may be migrated incrementally; new code lives under `aegis`. |
+| D1 | **Package** | Introduce **`shrine.simulation`** for the framework (`Clock`, `Model`, `RunController`, scheduler, recorder, validation). Legacy `global_attributes` may be migrated incrementally; new code lives under `shrine`. |
 | D2 | **Graph ownership** | **`Watershed` (and similar network elements) own their graphs.** The framework registers and schedules them; it does not centralize all topology in `Model`. A single project `Model` MAY contain **multiple watersheds** (and other elements) as peers. |
 | D3 | **Flow coupling** | **Implicit / global solve per timestep.** Elements contribute supplies, demands, and edge capacities (and eventually costs/constraints). A **flow solver** (initially NetworkX max-flow / min-cost; later LP/MIP as needed) assigns flows on the graph. Flows are NOT passed as explicit arguments along edges in v1. |
 | D4 | **Sub-stepping** | **Not in v1.** One model clock, one `time_step` for all elements. No nested hourly-inside-daily loops in the framework. |
@@ -234,14 +234,14 @@ Requirements use **MUST** / **SHOULD** / **MAY** (RFC 2119 style).
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| RUN-01 | `aegis.simulation.RunController` MUST expose `run()` that executes: validate → initialize → loop(timestep) → finalize. | P0 |
+| RUN-01 | `shrine.simulation.RunController` MUST expose `run()` that executes: validate → initialize → loop(timestep) → finalize. | P0 |
 | RUN-02 | Each loop iteration MUST follow §7.0: inputs → local updates → flow solve → post-solve updates → mass balance → record → advance clock. | P0 |
 | RUN-03 | `run()` MUST return a structured `RunResult` (success, warnings, timing, output handles, last error if failed). | P0 |
 | RUN-04 | The framework SHOULD support `step()` for single-timestep debugging. | P1 |
 | RUN-05 | The framework SHOULD support `pause` / `resume` hooks for future UI (no UI required in v1). | P2 |
 | RUN-06 | Any exception or solver/balance failure MUST **fail-fast**; no partial timestep commit (see D6). | P0 |
 | RUN-07 | Errors MUST be **structured** (timestep index, timestamp, element id, phase: input / update / flow_solve / balance / record, message, optional solver diagnostics). | P0 |
-| RUN-08 | The legacy `Simulator` class MUST be removed or replaced; no compatibility shim (see D7). | P0 |
+| RUN-08 | The legacy `Simulator` class MUST be removed or replaced; minimal import stub only (warn + `NotImplementedError`, see 1.6). | P0 |
 
 ### 8.9 Scenarios & experiments
 
@@ -270,17 +270,19 @@ Requirements use **MUST** / **SHOULD** / **MAY** (RFC 2119 style).
 | NFR-04 | Testability | Core framework runnable without GUI, network, or Excel files. | P0 |
 | NFR-05 | Maintainability | New element type addable without editing framework internals (registry + adapter). | P0 |
 | NFR-06 | Documentation | Public docstrings for lifecycle, one tutorial script, architecture diagram in docs. | P1 |
-| NFR-07 | Packaging | Framework code importable as **`aegis.simulation`** (see D1); no implicit `sys.path` hacks. | P0 |
+| NFR-07 | Packaging | Framework code importable as **`shrine.simulation`** (see D1); no implicit `sys.path` hacks. | P0 |
 | NFR-09 | Diagnostics | Solver and balance failures MUST produce logs/errors sufficient to debug without attaching a debugger. | P0 |
-| NFR-08 | Extensibility | Clear extension points documented; breaking changes versioned once semver adopted. | P2 |
+| NFR-08 | Extensibility | Clear extension points documented; breaking changes versioned per [api-stability.md](api-stability.md). | P2 |
 
 ---
 
 ## 10. Proposed architecture (conceptual)
 
+**Diagrams and package map:** [architecture.md](architecture.md) (framework vs domain vs adapters).
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  aegis.simulation.Model                                           │
+│  shrine.simulation.Model                                           │
 │  ┌─────────┐  ┌────────────────┐  ┌──────────────────────────┐  │
 │  │  Clock  │  │ ElementScheduler│  │  InputManager            │  │
 │  └────┬────┘  │ (top-level order)│  │  (providers/bind)      │  │
@@ -309,24 +311,24 @@ Requirements use **MUST** / **SHOULD** / **MAY** (RFC 2119 style).
 
 | Type | Package | Role |
 |------|---------|------|
-| `RunContext` | `aegis.simulation` | Clock, model id, scenario metadata, random generator |
-| `TimestepContext` | `aegis.simulation` | Current time, index, dt, input snapshot |
-| `Simulatable` | `aegis.simulation` | Protocol: `initialize`, `update`, optional `finalize` |
-| `ElementAdapter` | `aegis.simulation` | Wraps legacy `Catchment`, `Reservoir`, `Watershed`, etc. |
-| `InputProvider` | `aegis.simulation` | `value_at(timestep_context) -> float \| dict` |
-| `FlowSolveResult` | `aegis.simulation` | Solver status, edge flows, diagnostics |
-| `MassBalanceReport` | `aegis.simulation` | Residuals, pass/fail, contributors |
-| `SimulationError` | `aegis.simulation` | Structured fail-fast exception |
-| `Recorder` | `aegis.simulation` | `record(name, value, unit, context)` |
-| `RunResult` | `aegis.simulation` | Status, warnings, `outputs: DataFrame`, metadata |
+| `RunContext` | `shrine.simulation` | Clock, model id, scenario metadata, random generator |
+| `TimestepContext` | `shrine.simulation` | Current time, index, dt, input snapshot |
+| `Simulatable` | `shrine.simulation` | Protocol: `initialize`, `update`, optional `finalize` |
+| `ElementAdapter` | `shrine.simulation` | Wraps legacy `Catchment`, `Reservoir`, `Watershed`, etc. |
+| `InputProvider` | `shrine.simulation` | `value_at(timestep_context) -> float \| dict` |
+| `FlowSolveResult` | `shrine.simulation` | Solver status, edge flows, diagnostics |
+| `MassBalanceReport` | `shrine.simulation` | Residuals, pass/fail, contributors |
+| `SimulationError` | `shrine.simulation` | Structured fail-fast exception |
+| `Recorder` | `shrine.simulation` | `record(name, value, unit, context)` |
+| `RunResult` | `shrine.simulation` | Status, warnings, `outputs: DataFrame`, metadata |
 
 ### 10.2 Relationship to existing classes
 
 | Existing | Framework role |
 |----------|----------------|
-| `Clock` | Move or re-export from `aegis.simulation.clock` |
+| `Clock` | Move or re-export from `shrine.simulation.clock` |
 | `Simulator` | **Removed** — replaced by `RunController` (D7) |
-| `Model` | `aegis.simulation.Model` — registry, validate, run config; does **not** own watershed graphs |
+| `Model` | `shrine.simulation.Model` — registry, validate, run config; does **not** own watershed graphs |
 | `TimeHistory` | Implements `Recorder` or wraps it |
 | `Watershed` | Owns DiGraph; adapter runs local update + invokes flow solver |
 | `Network` | Used inside `Watershed`; not duplicated at model level |
@@ -335,7 +337,7 @@ Requirements use **MUST** / **SHOULD** / **MAY** (RFC 2119 style).
 ### 10.3 Suggested package layout
 
 ```
-aegis/
+shrine/
   __init__.py
   simulation/
     __init__.py
@@ -363,7 +365,7 @@ aegis/
 
 **Exit criteria:** One scripted model runs headlessly with tests.
 
-- [x] Create `aegis/simulation/` package (D1)
+- [x] Create `shrine/simulation/` package (D1)
 - [x] Define `Simulatable`, `TimestepContext`, `RunContext`, `SimulationError`
 - [x] Implement `Model`: register elements (incl. multiple watersheds), validate, hold clock
 - [x] Implement `RunController.run()` per §7.0 and RUN-01/02 (Phase 0 subset; flow solve Phase 1)
@@ -432,15 +434,15 @@ The simulation framework v1 is successful when:
 
 | Requirement area | Primary existing modules | Target |
 |------------------|-------------------------|--------|
-| Time | `global_attributes/clock.py` | `aegis/simulation/clock.py` |
-| Run loop | `test_model.py` | `aegis/simulation/run_controller.py` |
-| Model shell | `global_attributes/model.py` | `aegis/simulation/model.py` |
-| Flow solve | `water_manage/flow_network.py` | `Watershed` + `aegis/simulation/flow.py` |
+| Time | `global_attributes/clock.py` | `shrine/simulation/clock.py` |
+| Run loop | `test_model.py` | `shrine/simulation/run_controller.py` |
+| Model shell | `global_attributes/model.py` (`LegacyModel`) | `shrine/simulation/model.py` |
+| Flow solve | `water_manage/flow_network.py` | `Watershed` + `shrine/simulation/flow.py` |
 | Outputs | `results/time_history.py` |
 | Inputs | `inputs/data.py`, `inputs/table.py`, `inputs/time_series.py` |
 | Topology | `water_manage/flow_network.py`, `hydrology/watershed.py` |
 | Storage ops | `water_manage/store.py`, `reservoir.py`, `allocator.py` |
-| Base object | `global_attributes/aegis.py` |
+| Base object | `global_attributes/shrine_object.py` |
 
 ---
 

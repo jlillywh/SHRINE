@@ -1,10 +1,10 @@
-"""Tests for aegis.simulation.recorder."""
+"""Tests for shrine.simulation.recorder."""
 
 from __future__ import annotations
 
 import pandas as pd
 
-from aegis.simulation import Clock, Recorder
+from shrine.simulation import Clock, Recorder
 
 
 class TestRecorder:

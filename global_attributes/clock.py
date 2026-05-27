@@ -1,8 +1,8 @@
 import pandas as pd
-from global_attributes.aegis import Aegis
+from global_attributes.shrine_object import ShrineObject
 
 
-class Clock(Aegis):
+class Clock(ShrineObject):
     """Clock objects for keeping track of time during a simulation
         ...
 
@@ -23,7 +23,7 @@ class Clock(Aegis):
             advance
         """
     def __init__(self, start_date='1/1/2019', end_date='1/1/2020', time_step='1 days'):
-        Aegis.__init__(self)
+        ShrineObject.__init__(self)
         self.description = "Clock to keep track of simulation time."
         ## Static time variables
         self.start_date = pd.Timestamp(start_date)
@@ -33,9 +33,9 @@ class Clock(Aegis):
         self.time_step = pd.Timedelta(time_step)
 
         ## Dynamic time variables
-        self.current_date = self.start_date
-        #self.jday = self.current_date.timetuple().tm_yday
-        self.remaining_time = self.duration
+        self._current_date = self.start_date
+        self.day_of_year = self._current_date.dayofyear
+        self.remaining_time = self.end_date - self._current_date
         self.running = True
      
     def reset(self):
@@ -43,17 +43,23 @@ class Clock(Aegis):
         
             This is useful when performing multiple simulations
         """
-        self.current_date = self.start_date
-        self.remaining_time = self.duration
+        self._current_date = self.start_date
+        self.remaining_time = self.end_date - self._current_date
         self.running = True
+        self.day_of_year = self._current_date.dayofyear
 
     def advance(self):
         """Increment the clock by 1 time step."""
-        if self.current_date >= self.end_date:
+        if self._current_date >= self.end_date:
             self.running = False
+            return
+        self._current_date = self._current_date + self.time_step
+        self.day_of_year = self._current_date.dayofyear
+        if self._current_date >= self.end_date:
+            self.running = False
+            self.remaining_time = pd.Timedelta(0)
         else:
-            self.current_date += self.time_step
-            self.remaining_time -= self.time_step
+            self.remaining_time = self.end_date - self._current_date
 
     def set_start_date(self, new_date):
         """Change the start date before running a new simulation
@@ -72,11 +78,15 @@ class Clock(Aegis):
             Returns
             -------
             """
-        self.start_date = pd.Timestamp(new_date, freq=self.time_step)
-        self.current_date = self.start_date
-        self.end_date = self.current_date + self.duration
+        span = self.end_date - self.start_date
+        self.start_date = pd.Timestamp(new_date)
+        self._current_date = self.start_date
+        self.end_date = self.start_date + span
+        self.duration = span
+        self.remaining_time = self.end_date - self._current_date
         self.running = True
         self.range = pd.date_range(start=self.start_date, end=self.end_date)
+        self.day_of_year = self._current_date.dayofyear
         
     @property
     def current_date(self):
@@ -92,15 +102,14 @@ class Clock(Aegis):
             Parameters : str
                 new_date
         """
-        self._current_date = pd.Timestamp(new_date, freq=self.time_step)
+        self._current_date = pd.Timestamp(new_date)
+        self.day_of_year = self._current_date.dayofyear
         if self._current_date >= self.end_date:
             self.running = False
-            self.duration = pd.Timedelta('0 days')
+            self.remaining_time = pd.Timedelta(0)
         else:
-            self.duration = self.end_date - self._current_date
-
-        self.remaining_time = self.duration
-        self.day_of_year = self._current_date.dayofyear
+            self.running = True
+            self.remaining_time = self.end_date - self._current_date
 
     def set_duration(self, new_duration):
         """Change the duration and update the end_date.

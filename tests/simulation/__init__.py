@@ -1,1 +1,1 @@
-"""Unit and integration tests for ``aegis.simulation``."""
+"""Unit and integration tests for ``shrine.simulation``."""

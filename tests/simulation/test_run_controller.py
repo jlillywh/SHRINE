@@ -1,11 +1,11 @@
-"""Tests for aegis.simulation.run_controller."""
+"""Tests for shrine.simulation.run_controller."""
 
 from __future__ import annotations
 
 import pandas as pd
 import pytest
 
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     ClimateRecorderElement,
     InputManager,
@@ -15,8 +15,8 @@ from aegis.simulation import (
     SimulationError,
     SimulationPhase,
 )
-from aegis.simulation.balance import MassBalanceTerm
-from aegis.simulation.context import RunContext, TimestepContext
+from shrine.simulation.balance import MassBalanceTerm
+from shrine.simulation.context import RunContext, TimestepContext
 from examples.climate_loop import (
     EVAPORATION_BY_MONTH,
     PRECIPITATION_BY_MONTH,

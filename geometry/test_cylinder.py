@@ -4,7 +4,7 @@ from utils.unit_utils import load_units, ureg
 import math
 
 # Load units from JSON file
-units = load_units("./data/aegis_units.json")
+units = load_units("./data/shrine_units.json")
 
 class TestCylinder(TestCase):
     def setUp(self):

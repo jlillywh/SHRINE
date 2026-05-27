@@ -115,11 +115,9 @@ class Reservoir(Store):
             
             q = Ce * l * h**(3.0/2.0)
             q = min(q, v)
-            
-            # TODO put "q" in terms of display units before updating reservoir
-            self.update(0.0, q)
-            self.water_level = np.interp(self.volume,
-                                         self.volumes, self.elevations)
+
+            # Spillway release: no inflow, withdraw up to q from storage
+            self.update(inflow=0.0, request=q)
 
     @property
     def evaporation(self):

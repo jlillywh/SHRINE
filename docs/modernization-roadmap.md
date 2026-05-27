@@ -1,7 +1,9 @@
-# Aegis Modernization Roadmap
+# SHRINE Modernization Roadmap
+
+**SHRINE** — **S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**ngine (singular *Engine*, not “Engines”).
 
 **Status:** Living document — strategic checklist  
-**Audience:** Maintainers, contributors, water-resources engineers evaluating Aegis  
+**Audience:** Maintainers, contributors, water-resources engineers evaluating SHRINE  
 **Last updated:** 2026-05-26  
 **Related:** [simulation-framework-requirements.md](simulation-framework-requirements.md), [extending-elements.md](extending-elements.md), [testing.md](testing.md)
 
@@ -9,9 +11,9 @@
 
 ## 1. North star
 
-> **Aegis is a state-of-the-art, open-source Python library for integrated water-resources modeling** — calendar-driven, unit-aware, testable, and composable — with a clear framework boundary and domain modules that plug in through well-defined contracts.
+> **SHRINE is a state-of-the-art, open-source Python library for integrated water-resources modeling** — calendar-driven, unit-aware, testable, and composable — with a clear framework boundary and domain modules that plug in through well-defined contracts.
 
-### What “pythonic + object-oriented” means for Aegis
+### What “pythonic + object-oriented” means for SHRINE
 
 | Principle | In practice |
 |-----------|-------------|
@@ -26,7 +28,7 @@
 - Rewrite every hydrology routine as deep inheritance trees
 - Wrap every NetworkX node in a custom class
 - Block releases on 100% legacy test migration before framework value is proven
-- Break public `aegis.simulation` APIs without deprecation cycles
+- Break public `shrine.simulation` APIs without deprecation cycles
 
 ---
 
@@ -34,9 +36,9 @@
 
 | Layer | Maturity | Notes |
 |-------|----------|-------|
-| `aegis/simulation/` | **Strong** | Protocols, dataclasses, scenarios, mass balance, pytest |
+| `shrine/simulation/` | **Strong** | Protocols, dataclasses, scenarios, mass balance, pytest |
 | Legacy domain (`hydrology/`, `water_manage/`, …) | **Mixed** | Classes exist; weak polymorphism, string dispatch, path/typing debt |
-| Packaging | **Partial** | `pip install -e .` installs `aegis*` only; domain on `PYTHONPATH` |
+| Packaging | **Partial** | `pip install -e .` installs `shrine*` only; domain on `PYTHONPATH` |
 | Open-source polish | **Early** | GPL, README, examples; needs CI badges, CONTRIBUTING, API docs |
 
 ---
@@ -54,7 +56,7 @@ flowchart LR
 | Phase | Theme | Outcome |
 |-------|--------|---------|
 | **0** | Foundations | Safe repo, one import story, broken APIs fixed |
-| **1** | Framework GA | `aegis.simulation` is the only supported run path |
+| **1** | Framework GA | `shrine.simulation` is the only supported run path |
 | **2** | Domain contracts | Legacy modules implement clear boundaries |
 | **3** | OSS excellence | CI, docs, packaging, units, benchmarks |
 | **4** | Community scale | Plugins, translations, reference models, governance |
@@ -79,15 +81,15 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P0 — Fix broken contracts
 
-- [ ] **0.4** Align `Store.update()` and `Reservoir.calc_overflow()` (`water_manage/store.py`, `reservoir.py`)
-- [ ] **0.5** Fix `Aegis.get_instance_count()` to return `int` (`global_attributes/aegis.py`)
-- [ ] **0.6** Replace `raise("...")` with proper exceptions in `data/fileman.py`
+- [x] **0.4** Align `Store.update()` and `Reservoir.calc_overflow()` — `Store.update(inflow=None, request=None)`; `calc_overflow` calls `update(inflow=0.0, request=q)`
+- [X] **0.5** Fix `ShrineObject.get_instance_count()` to return `int` (`global_attributes/shrine_object.py`)
+- [X] **0.6** Replace `raise("...")` with proper exceptions in `data/fileman.py`
 
 #### P0 — Portability
 
-- [ ] **0.7** Refactor `data/fileman.py` to `pathlib.Path`; remove `'\\'` concatenation
-- [ ] **0.8** Remove hard-coded `C:\Users\...` from tests; use `tmp_path` / repo-relative fixtures
-- [ ] **0.9** Audit `global_attributes/model.py` paths; mark deprecated or delete file I/O from `__init__`
+- [x] **0.7** Refactor `data/fileman.py` to `pathlib.Path`; remove `'\\'` concatenation
+- [x] **0.8** Remove hard-coded `C:\Users\...` from tests; use `tmp_path` / repo-relative fixtures
+- [x] **0.9** Audit `global_attributes/model.py` paths; mark deprecated or delete file I/O from `__init__`
 
 #### P1 — Packaging & imports
 
@@ -98,33 +100,33 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P1 — Naming clarity
 
-- [ ] **0.14** Rename legacy `global_attributes.Model` → `LegacyModel` (re-export with deprecation warning)
-- [ ] **0.15** Rename legacy `global_attributes.Clock` → `LegacyClock` (same)
-- [ ] **0.16** Add `docs/architecture.md` diagram: framework vs domain vs adapters
+- [x] **0.14** Rename legacy `global_attributes.Model` → `LegacyModel` (re-export with deprecation warning)
+- [x] **0.15** Rename legacy `global_attributes.Clock` → `LegacyClock` (same)
+- [x] **0.16** Add `docs/architecture.md` diagram: framework vs domain vs adapters
 
 **Phase 0 exit criteria**
 
 - `pytest tests/` green on Linux/WSL without manual `PYTHONPATH` hacks
 - No string exceptions; no Windows-only paths in library code
-- README states: **new code → `aegis.simulation` only**
+- README states: **new code → `shrine.simulation` only**
 
 ---
 
 ### Phase 1 — Framework general availability (8–16 weeks)
 
-**Goal:** Any new model is built only with `aegis.simulation`; legacy is wrapped, not extended.
+**Goal:** Any new model is built only with `shrine.simulation`; legacy is wrapped, not extended.
 
 #### P0 — Framework hardening
 
-- [ ] **1.1** Publish stable public API in `aegis/simulation/__init__.py`; document in README
-- [ ] **1.2** Add API stability policy (semver; deprecation warnings for one minor release)
-- [ ] **1.3** Scenario validation: reject unknown keys / invalid units at load time (`scenario.py`)
-- [ ] **1.4** Run manifest on `RunResult` (git commit, scenario hash, seed, timestamps, element list)
-- [ ] **1.5** Optional `with RunSession(controller):` context manager wrapping begin/step/complete
+- [x] **1.1** Publish stable public API in `shrine/simulation/__init__.py`; document in README
+- [x] **1.2** Add API stability policy (semver; deprecation warnings for one minor release)
+- [x] **1.3** Scenario validation: reject unknown keys / invalid units at load time (`scenario.py`)
+- [x] **1.4** Run manifest on `RunResult` (git commit, scenario hash, seed, timestamps, element list)
+- [x] **1.5** Optional `with RunSession(controller):` context manager wrapping begin/step/complete
 
 #### P0 — Deprecate legacy entry points
 
-- [ ] **1.6** Mark `global_attributes/simulator.py` deprecated; remove or quarantine broken prototype
+- [x] **1.6** Mark `global_attributes/simulator.py` deprecated; remove or quarantine broken prototype
 - [ ] **1.7** Redirect `main.py` to an `examples/` script or minimal framework demo
 - [ ] **1.8** Move `hydrology/streamflow.py` to `examples/` or `scripts/` (NWIS one-off)
 
@@ -136,7 +138,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P1 — Units at the boundary
 
-- [ ] **1.12** Load `data/aegis_units.json` once; inject `UnitRegistry` via `RunContext` (not module import in `geometry/shape.py`)
+- [ ] **1.12** Load `data/shrine_units.json` once; inject `UnitRegistry` via `RunContext` (not module import in `geometry/shape.py`)
 - [ ] **1.13** Validate input/output units in `Recorder` metadata
 - [ ] **1.14** Fail fast when adapter returns bare floats without unit metadata (configurable strict mode)
 
@@ -144,7 +146,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 - [ ] **1.15** Golden-run test: fixed scenario JSON → hash of `result.outputs` (regression guard)
 - [ ] **1.16** Property test or fuzz-light: mass balance holds for `SimpleStore` + constant inputs
-- [ ] **1.17** CI workflow: `pytest tests/`, coverage ≥80% on `aegis` (GitHub Actions)
+- [ ] **1.17** CI workflow: `pytest tests/`, coverage ≥80% on `shrine` (GitHub Actions)
 
 **Phase 1 exit criteria**
 
@@ -190,34 +192,34 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P2 — Type checking
 
-- [ ] **2.12** Add `mypy` (or `pyright`) config; strict on `aegis/`, basic on domain
+- [ ] **2.12** Add `mypy` (or `pyright`) config; strict on `shrine/`, basic on domain
 - [ ] **2.13** `from __future__ import annotations` in all domain modules
 - [ ] **2.14** Ruff (or flake8) + format with `ruff format` in CI
 
 **Phase 2 exit criteria**
 
 - `Catchment` and `Watershed` usable only through typed APIs in new tests
-- mypy clean on `aegis/`; &lt;N known ignores on domain (documented in `pyproject.toml`)
+- mypy clean on `shrine/`; &lt;N known ignores on domain (documented in `pyproject.toml`)
 
 ---
 
 ### Phase 3 — Open-source excellence (6–12 months)
 
-**Goal:** A global engineer can discover, install, learn, and trust Aegis in one afternoon.
+**Goal:** A global engineer can discover, install, learn, and trust SHRINE in one afternoon.
 
 #### P0 — Documentation site
 
 - [ ] **3.1** MkDocs Material (or Sphinx) site: Install, Quickstart, Concepts, API reference
-- [ ] **3.2** Auto-generate API docs from `aegis.simulation` docstrings
+- [ ] **3.2** Auto-generate API docs from `shrine.simulation` docstrings
 - [ ] **3.3** Tutorial: “Build your first watershed model” (scenario + plot)
 - [ ] **3.4** Architecture page (framework / domain / adapters) with mermaid diagrams
-- [ ] **3.5** Comparison note: how Aegis differs from PySWMM, GHMF, Spotpy, etc. (honest scope)
+- [ ] **3.5** Comparison note: how SHRINE differs from PySWMM, GHMF, Spotpy, etc. (honest scope)
 
 #### P0 — Packaging & releases
 
-- [ ] **3.6** Publish to PyPI (`aegis-wrm` or `aegis-water` if name taken)
+- [ ] **3.6** Publish to PyPI (`shrine-wrm` or `shrine-water` if name taken)
 - [ ] **3.7** Versioning policy (SemVer); changelog (`CHANGELOG.md`, Keep a Changelog)
-- [ ] **3.8** `pip install aegis[hydrology,viz,dev]` documented
+- [ ] **3.8** `pip install shrine[hydrology,viz,dev]` documented
 
 #### P1 — Engineering quality
 
@@ -241,16 +243,16 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 **Phase 3 exit criteria**
 
 - PyPI install works on Windows, macOS, Linux (smoke test in CI)
-- ReadTheDocs (or GitHub Pages) live; Google finds “Aegis water resources Python”
+- ReadTheDocs (or GitHub Pages) live; Google finds “SHRINE water resources Python”
 
 ---
 
 ### Phase 4 — Community & ecosystem (ongoing)
 
-**Goal:** Third parties extend Aegis without forking core.
+**Goal:** Third parties extend SHRINE without forking core.
 
-- [ ] **4.1** Plugin entry point: `aegis.elements` for third-party `Simulatable` implementations
-- [ ] **4.2** Template repo: `aegis-element-cookiecutter`
+- [ ] **4.1** Plugin entry point: `shrine.elements` for third-party `Simulatable` implementations
+- [ ] **4.2** Template repo: `shrine-element-cookiecutter`
 - [ ] **4.3** Discussions / Discord / matrix channel linked from README
 - [ ] **4.4** “Good first issue” and `help wanted` labels; quarterly release train
 - [ ] **4.5** Translation of docs (Spanish, Portuguese, French — common in water sector)
@@ -285,11 +287,11 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 | Metric | Target (18 months) |
 |--------|---------------------|
-| Framework test coverage | ≥85% `aegis.simulation` |
+| Framework test coverage | ≥85% `shrine.simulation` |
 | CI | Green on 3.10–3.12, Linux + Windows |
-| Install | `pip install aegis` &lt;2 min on fresh venv |
+| Install | `pip install shrine` &lt;2 min on fresh venv |
 | Time to first run | &lt;15 min following Quickstart |
-| API stability | SemVer; deprecation warnings documented |
+| API stability | SemVer; deprecation warnings documented — [api-stability.md](api-stability.md) |
 | Adapters | ≥4 element types (watershed, reservoir, catchment, custom example) |
 | Docs | Published site + API reference + 3 tutorials |
 | Issues | Critical bugs &lt;7 days median response (aspirational) |
@@ -302,7 +304,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 |-------|---------|
 | `phase-0` … `phase-4` | Roadmap phase |
 | `P0` / `P1` / `P2` | Priority within phase |
-| `framework` | `aegis/simulation` |
+| `framework` | `shrine/simulation` |
 | `domain` | hydrology, water_manage, … |
 | `tech-debt` | Legacy cleanup |
 | `good-first-issue` | Docs, tests, small fixes |
@@ -312,7 +314,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 ## 8. Anti-patterns to flag in code review
 
-- New features on `LegacyModel` / `global_attributes.Simulator`
+- New features on `LegacyModel` / `global_attributes.Simulator` (Simulator removed — use `RunController`)
 - String method dispatch where an enum or protocol exists
 - Bare `float` across framework boundary without unit metadata
 - `type(x) == str` instead of `isinstance(x, str)`
@@ -337,11 +339,11 @@ For simulation-specific requirements, continue to use [simulation-framework-requ
 
 | Concern | Canonical location |
 |---------|-------------------|
-| Run lifecycle | `aegis/simulation/run_controller.py` |
-| Element contract | `aegis/simulation/protocols.py` |
-| Model registry | `aegis/simulation/model.py` |
+| Run lifecycle | `shrine/simulation/run_controller.py` |
+| Element contract | `shrine/simulation/protocols.py` |
+| Model registry | `shrine/simulation/model.py` |
 | Legacy deprecation | `global_attributes/` → shrink over time |
-| New hydrology | `hydrology/` + adapter in `aegis/simulation/adapters/` |
+| New hydrology | `hydrology/` + adapter in `shrine/simulation/adapters/` |
 | New storage / ops | `water_manage/` + adapter |
 | Examples | `examples/`, `scenarios/` |
 | Tests (target) | `tests/` only (pytest) |

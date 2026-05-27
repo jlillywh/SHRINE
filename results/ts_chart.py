@@ -17,7 +17,7 @@ class TimeHistoryChart(Chart):
             Parameters
             ----------
             time_series_result : TimeSeries
-                This must be in the form of an Aegis TimeSeries object
+                This must be in the form of an SHRINE TimeSeries object
         """
         
         self.outputs.append(time_series_result.series)

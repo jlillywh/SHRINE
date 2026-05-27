@@ -5,7 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     ConstantInput,
     InputManager,
@@ -18,7 +18,7 @@ from aegis.simulation import (
 from hydrology.catchment import Catchment
 from hydrology.watershed import Watershed
 from tests.conftest import SimpleStore
-from aegis.simulation.adapters import ReservoirElement
+from shrine.simulation.adapters import ReservoirElement
 
 
 class _CounterElement:
@@ -84,7 +84,7 @@ def test_at07_identical_runs_match() -> None:
 
 # AT-09
 def test_at09_mass_balance_violation_fail_fast() -> None:
-    from aegis.simulation.balance import MassBalanceTerm
+    from shrine.simulation.balance import MassBalanceTerm
 
     class _Imbalanced:
         element_type = "x"

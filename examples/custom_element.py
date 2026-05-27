@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-from aegis.simulation import Clock, ConstantInput, InputManager, Model, RunController
-from aegis.simulation.context import RunContext, TimestepContext
+from shrine.simulation import Clock, ConstantInput, InputManager, Model, RunController
+from shrine.simulation.context import RunContext, TimestepContext
 
 
 class DemandElement:

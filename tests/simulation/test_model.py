@@ -1,12 +1,12 @@
-"""Tests for aegis.simulation.model."""
+"""Tests for shrine.simulation.model."""
 
 from __future__ import annotations
 
 import pytest
 
-from aegis.simulation import Model, SimulationError, SimulationPhase
+from shrine.simulation import Model, SimulationError, SimulationPhase
 from tests.conftest import SimpleStore
-from aegis.simulation.adapters import ReservoirElement
+from shrine.simulation.adapters import ReservoirElement
 
 
 class _DummyElement:

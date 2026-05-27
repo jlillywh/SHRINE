@@ -13,9 +13,9 @@ U = pint.UnitRegistry(auto_reduce_dimensions=True)
 
 # load the custom units file
 try:
-    U.load_definitions('..\\data\\aegis_units.txt')
+    U.load_definitions('..\\data\\shrine_units.txt')
 except ValueError:
-    U.load_definitions('.\\data\\aegis_units.txt')
+    U.load_definitions('.\\data\\shrine_units.txt')
 
 # Water density at 4 deg C in units of g/cm3
 WATER_DENSITY = 1.102 * U.g / U.cm**3

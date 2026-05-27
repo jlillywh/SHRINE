@@ -1,11 +1,11 @@
-from global_attributes.aegis import Aegis
+from global_attributes.shrine_object import ShrineObject
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import re       # import regex
 
 
-class Table(Aegis):
+class Table(ShrineObject):
     """Class for creating and using 1D lookup tables
     
         Parameters
@@ -24,7 +24,7 @@ class Table(Aegis):
         
     """
     def __init__(self, x=[1, 2, 3], y=[0, 2, 5]):
-        Aegis.__init__(self)
+        ShrineObject.__init__(self)
         self.x = x
         self.x_name = 'x'
         self.y = y

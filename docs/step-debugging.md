@@ -4,6 +4,22 @@ Use `RunController` in **step mode** to advance one timestep at a time, inspect 
 
 ## Workflow
 
+### Context manager (recommended)
+
+```python
+from shrine.simulation import RunController, RunSession
+
+controller = RunController(model, input_manager=inputs, seed=42)
+
+with RunSession(controller) as session:  # or: with controller.session() as session:
+    for step in session:
+        print(step.current_time, step.inputs, step.balance)
+
+result = session.result  # RunResult after the block exits
+```
+
+### Manual stepping
+
 ```python
 controller = RunController(model, input_manager=inputs, seed=42)
 controller.reset()  # fresh clock + recorder
@@ -33,6 +49,7 @@ Alternatively call `begin()` to run `initialize` hooks without advancing time, t
 - `step_many(n)` — advance up to `n` steps
 - `is_running`, `is_initialized`, `steps_completed`, `last_step` — session state
 - `reset()` — reset clock/recorder for a new session
+- `RunSession` / `controller.session()` — `with` block runs `begin()` on enter, `complete()` on clean exit, `finalize()` on exception (1.5)
 - `finalize()` — call element finalize hooks without building `RunResult`
 - `complete()` — finalize and return `RunResult` with `metadata["debug_mode"] = True`
 

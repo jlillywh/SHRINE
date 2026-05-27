@@ -1,41 +1,44 @@
-from unittest import TestCase
+from pathlib import Path
+
+import pytest
+
 from data.fileman import FileManager
-import os
+from tests.path_fixtures import REPO_ROOT
 
 
-class TestFileManager(TestCase):
-    def setUp(self):
-        self.fm = FileManager('..\\data_external')
-        self.fm.add_file('data.xlsx')
-        
-    def tearDown(self):
-        del self.fm
-    
-    def test_change_dir(self):
-        self.fm.directory = '..\\geometry'
-        self.assertTrue(os.path.exists(self.fm.directory))
-        
-    def test_file_does_not_exist(self):
-        file_name = "data1.xlsx"
-        self.assertFalse(self.fm.add_file(file_name))
-        
-    def test_add_file(self):
-        file_name = 'data.xlsx'
-        self.fm.add_file(file_name)
-        expected_path = '..\\data_external' + '\\' + file_name
-        self.assertEqual(expected_path, self.fm.get_file(file_name))
-    
-    def test_get_file(self):
-        file_name = 'data.xlsx'
-        expected_path = '..\\data_external' + '\\' + file_name
-        self.assertEqual(expected_path, self.fm.get_file(file_name))
-        
-    def test_invalid_path(self):
-        """ See if the program catches an invalid path"""
-        path = "C:\\Users\\jlillywhite\\GarbageCan\\"
-        try:
-            self.fm.directory = path
-        except Exception:
-            pass
-        else:
-            self.fail('Expected Exception not raised')
+@pytest.fixture
+def file_manager(tmp_path: Path):
+    data_dir = tmp_path / "data_external"
+    data_dir.mkdir()
+    (data_dir / "data.xlsx").write_text("test")
+    return FileManager(data_dir), data_dir
+
+
+class TestFileManager:
+    def test_change_dir(self, file_manager):
+        fm, _data_dir = file_manager
+        fm.directory = REPO_ROOT / "geometry"
+        assert fm.directory.exists()
+
+    def test_file_does_not_exist(self, file_manager):
+        fm, _data_dir = file_manager
+        with pytest.raises(ValueError, match="not valid"):
+            fm.add_file("data1.xlsx")
+
+    def test_add_file(self, file_manager):
+        fm, data_dir = file_manager
+        file_name = "data.xlsx"
+        fm.add_file(file_name)
+        assert fm.get_file(file_name) == data_dir / file_name
+
+    def test_get_file(self, file_manager):
+        fm, data_dir = file_manager
+        file_name = "data.xlsx"
+        fm.add_file(file_name)
+        assert fm.get_file(file_name) == data_dir / file_name
+
+    def test_invalid_path(self, file_manager, tmp_path: Path):
+        fm, _data_dir = file_manager
+        invalid = tmp_path / "does-not-exist"
+        with pytest.raises(Exception, match="does not exist"):
+            fm.directory = invalid

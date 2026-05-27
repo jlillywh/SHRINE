@@ -1,1 +1,1 @@
-"""Example scripts for Aegis."""
+"""Example scripts for SHRINE."""

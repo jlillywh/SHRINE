@@ -1,6 +1,6 @@
 # Extending the simulation framework with new elements
 
-This guide explains how to add new domain behavior to **`aegis.simulation`** without editing framework internals (NFR-05). The intended pattern is a **thin adapter** around an existing class, or a small new class that implements the **`Simulatable`** lifecycle.
+This guide explains how to add new domain behavior to **`shrine.simulation`** without editing framework internals (NFR-05). The intended pattern is a **thin adapter** around an existing class, or a small new class that implements the **`Simulatable`** lifecycle.
 
 Related docs:
 
@@ -15,22 +15,21 @@ Related docs:
 
 | Situation | Approach |
 |-----------|----------|
-| Legacy class already works (`Watershed`, `Store`, `Catchment`, …) | **Adapter** in `aegis/simulation/adapters/` that delegates to it |
+| Legacy class already works (`Watershed`, `Store`, `Catchment`, …) | **Adapter** in `shrine/simulation/adapters/` that delegates to it |
 | New physics or control logic | New element class implementing `Simulatable` |
 | Graph-based routing | Domain object **owns** the NetworkX graph; adapter runs the flow solver (D2, TOP-02) |
 
-Reference adapters:
+Reference adapters (import from ``shrine.simulation``):
 
-- `aegis/simulation/adapters/watershed.py` — `WatershedElement`
-- `aegis/simulation/adapters/reservoir.py` — `ReservoirElement`
-- `aegis/simulation/elements.py` — `ClimateRecorderElement` (minimal example)
+- `WatershedElement`, `ReservoirElement`, `StorageLike`
+- `ClimateRecorderElement` in `shrine/simulation/elements.py`
 
 ---
 
 ## 2. The `Simulatable` contract (ELM-01)
 
 ```python
-from aegis.simulation.context import RunContext, TimestepContext
+from shrine.simulation.context import RunContext, TimestepContext
 
 class MyElement:
     element_type = "my_element"  # short label for logs/metadata (ELM-03)
@@ -45,7 +44,7 @@ class MyElement:
         """Optional post-run hook (ELM-04)."""
 ```
 
-`Simulatable` is a `typing.Protocol` in `aegis/simulation/protocols.py`. You do not need to inherit from it; structural typing is enough.
+`Simulatable` is a `typing.Protocol` in `shrine/simulation/protocols.py`. You do not need to inherit from it; structural typing is enough.
 
 Optional hooks (not on the protocol, but used by the framework when present):
 
@@ -113,7 +112,7 @@ Missing required inputs should raise **`SimulationError`** with `phase=Simulatio
 Do **not** read Excel, CSV, or monthly tables inside the element. Bind inputs on the controller:
 
 ```python
-from aegis.simulation import ConstantInput, InputManager, MonthlyLookupInput
+from shrine.simulation import ConstantInput, InputManager, MonthlyLookupInput
 
 inputs = InputManager()
 inputs.bind("demand", ConstantInput(5.0))
@@ -122,7 +121,7 @@ inputs.bind("demand", ConstantInput(5.0))
 RunController(model, input_manager=inputs, seed=42).run()
 ```
 
-Interpolation, monthly lookup, and stochastic draws live in **`aegis/simulation/inputs.py`**.
+Interpolation, monthly lookup, and stochastic draws live in **`shrine/simulation/inputs.py`**.
 
 ---
 
@@ -156,7 +155,7 @@ Use a consistent **`element_id` prefix** so multi-element models stay namespaced
 Implement `balance_terms` so the framework can verify closure each timestep:
 
 ```python
-from aegis.simulation.balance import MassBalanceTerm
+from shrine.simulation.balance import MassBalanceTerm
 
 def balance_terms(self, timestep_context: TimestepContext) -> list[MassBalanceTerm]:
     return [
@@ -177,7 +176,7 @@ Disable checks for exploratory runs: `RunController(model, verify_mass_balance=F
 If your element owns a directed graph (like `hydrology.watershed.Watershed`):
 
 1. In `update`, apply local physics (e.g. catchment runoff → node supplies).
-2. Call a **`FlowSolver`** (`NetworkXFlowSolver` in `aegis/simulation/flow.py`) on **your** graph.
+2. Call a **`FlowSolver`** (`NetworkXFlowSolver` in `shrine/simulation/flow.py`) on **your** graph.
 3. Apply solved edge flows back to domain objects.
 4. Expose balance terms comparing total supply vs routed outflow.
 
@@ -190,7 +189,7 @@ On solver failure, raise `SimulationError` with `phase=SimulationPhase.FLOW_SOLV
 ## 9. Register on the model
 
 ```python
-from aegis.simulation import Clock, Model, RunController
+from shrine.simulation import Clock, Model, RunController
 
 model = Model(name="MyProject", clock=Clock("1/1/2019", "12/31/2019"))
 model.register("pump1", MyElement(element_id="pump1"))
@@ -220,7 +219,7 @@ Future versions may add explicit dependencies; avoid hidden cross-element mutabl
 Raise **`SimulationError`** with a clear `phase` and context:
 
 ```python
-from aegis.simulation.errors import SimulationError, SimulationPhase
+from shrine.simulation.errors import SimulationError, SimulationPhase
 
 raise SimulationError(
     message="Release exceeds storage",
@@ -239,7 +238,7 @@ Unexpected exceptions in `update` are wrapped as `SimulationError` with `phase=U
 ## 12. Minimal custom element (copy-paste starter)
 
 ```python
-from aegis.simulation.context import RunContext, TimestepContext
+from shrine.simulation.context import RunContext, TimestepContext
 
 class DemandElement:
     """Applies a demand taken from bound inputs; records applied demand."""
@@ -280,8 +279,8 @@ Working example script: `examples/custom_element.py`.
 
 | Piece | Location |
 |-------|----------|
-| Reusable adapter for existing Aegis class | `aegis/simulation/adapters/<name>.py`, export in `adapters/__init__.py` |
-| Built-in / tutorial element | `aegis/simulation/elements.py` or project `examples/` |
+| Reusable adapter for existing SHRINE class | `shrine/simulation/adapters/<name>.py`, export in `adapters/__init__.py` |
+| Built-in / tutorial element | `shrine/simulation/elements.py` or project `examples/` |
 | Project-specific element | Your package or script; register on `Model` |
 
 Keep adapters **thin**: translate context ↔ legacy API, raise structured errors, register outputs.

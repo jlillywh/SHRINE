@@ -1,17 +1,18 @@
 from data.fileman import FileManager
+from tests.path_fixtures import REPO_ROOT
 import pandas as pd
 from inputs.data import Vector
 from results.time_history import TimeHistory
 from global_attributes.clock import Clock
 
 
-"""Legacy script — manual clock loop. Prefer examples/climate_loop.py (aegis.simulation).
+"""Legacy script — manual clock loop. Prefer examples/climate_loop.py (shrine.simulation).
 
     Results: build TimeHistory via add_series, or TimeHistory.from_dataframe after a
     framework run (see docs/results-recording.md).
 
     This model replicates the work done in the IWRM SLC V9.111.gsm model."""
-fm = FileManager('..\\data_external')
+fm = FileManager(REPO_ROOT / "data_external")
 input_file = fm.add_file('data.xlsx')
 
 xls_file = pd.ExcelFile(input_file)

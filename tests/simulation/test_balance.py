@@ -1,11 +1,11 @@
-"""Tests for aegis.simulation.balance."""
+"""Tests for shrine.simulation.balance."""
 
 from __future__ import annotations
 
 import pytest
 
-from aegis.simulation.balance import MassBalanceCheck, MassBalanceTerm
-from aegis.simulation.errors import SimulationError, SimulationPhase
+from shrine.simulation.balance import MassBalanceCheck, MassBalanceTerm
+from shrine.simulation.errors import SimulationError, SimulationPhase
 
 
 class TestMassBalanceCheck:

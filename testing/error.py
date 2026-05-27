@@ -1,6 +1,6 @@
 
 class Error(Exception):
-    """Base class for exceptions found in Aegis.
+    """Base class for exceptions found in SHRINE.
     """
     
     pass

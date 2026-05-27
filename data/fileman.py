@@ -1,6 +1,6 @@
-import os.path
-from data.file import File
 from pathlib import Path
+
+from data.file import File
 
 
 class FileManager:
@@ -51,7 +51,7 @@ class FileManager:
             new_directory: str
                 name of the new directory. This is relative to the project path"""
         self._directory = self.validate_directory(new_directory)
-        self.available_files = os.listdir(self._directory)
+        self.available_files = [entry.name for entry in self._directory.iterdir()]
         
     def add_file(self, file_name):
         """ Adds an existing file to the list of files
@@ -63,28 +63,27 @@ class FileManager:
             file_name : str
                 Must include the suffix of the file name
         """
-        if file_name not in self.files:
-            if self.validate_file(file_name):
-                new_file = File(file_name).save()
-                self.files.append(new_file)
-                print('New file created.')
-            else:
-                raise('File type is not valid.')
+        if any(f.name == file_name for f in self.files):
+            raise ValueError('File already in list.')
+        if self.validate_file(file_name):
+            new_file = File(file_name)
+            self.files.append(new_file)
+            print('New file created.')
         else:
-            raise('File already in list.')
+            raise ValueError('File type is not valid.')
         
     def get_file(self, file_name):
         # first see if the file exists in the list
         if type(file_name) == str:
             for file in self.files:
                 if file.name == file_name:
-                    return self._directory + '\\' + file.name
+                    return self._directory / file.name
             else:
                 raise KeyError('Not in list!')
         elif type(file_name) == int:
             try:
                 file = self.files[file_name]
-                return self._directory + '\\' + file.name
+                return self._directory / file.name
             except IndexError:
                 print('Not in list!')
     
@@ -97,7 +96,6 @@ class FileManager:
                 The name of the file, including file extension.
         """
         
-        new_file = File(file_name).save()
         self.add_file(file_name)
         
         
@@ -117,21 +115,15 @@ class FileManager:
 
     @staticmethod
     def validate_directory(new_directory):
-        p = os.getcwd()
-        if os.path.exists(new_directory):
-            if new_directory == '.':
-                return os.path.abspath(__file__ + "/../")
-            elif new_directory == '..':
-                return os.path.abspath(__file__ + "/../../")
-            else:
-                return new_directory
-        else:
+        path = Path(new_directory)
+        if not path.exists():
             raise Exception('The directory {} does not exist.'.format(new_directory))
-            # return new_directory
+
+        if new_directory == '.' or path == Path('.'):
+            return Path(__file__).resolve().parent
+        if new_directory == '..' or path == Path('..'):
+            return Path(__file__).resolve().parent.parent
+        return path
     
     def validate_file(self, existing_file):
-        if os.path.exists(self._directory + '\\' + existing_file):
-            f = self._directory + '\\' + existing_file
-            return True
-        else:
-            return False
+        return (self._directory / existing_file).exists()

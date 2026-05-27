@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 import math
-from global_attributes.aegis import Aegis
+from global_attributes.shrine_object import ShrineObject
 
-class Wgen(Aegis):
+class Wgen(ShrineObject):
     """A class to create an object that generates weather data.
 
             WGEN is a stochastic weather generator originally developed
@@ -99,7 +99,7 @@ class Wgen(Aegis):
     	"""
 
     def __init__(self):
-        Aegis.__init__(self)
+        ShrineObject.__init__(self)
         self.lat = 40.76
 
         self.pww_array = [0.4113, 0.4026, 0.4585, 0.4826,

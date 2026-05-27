@@ -2,23 +2,20 @@
 # Run simulation framework tests with optional coverage.
 # Uses a project .venv (Ubuntu/Debian block system-wide pip via PEP 668).
 set -euo pipefail
-cd "$(dirname "$0")/.."
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
 
-if [ -z "${VIRTUAL_ENV:-}" ]; then
-  if [ -f .venv/bin/activate ]; then
-    # shellcheck source=/dev/null
-    source .venv/bin/activate
-  elif [ -f venv/bin/activate ]; then
-    # shellcheck source=/dev/null
-    source venv/bin/activate
-  else
-    echo "Creating .venv ..."
-    python3 -m venv .venv
-    # shellcheck source=/dev/null
-    source .venv/bin/activate
-  fi
+VENV_PY="$ROOT/.venv/bin/python3"
+
+if [ ! -x "$VENV_PY" ]; then
+  echo "No .venv found; running scripts/bootstrap_venv.sh ..."
+  bash "$ROOT/scripts/bootstrap_venv.sh"
 fi
 
-python -m pip install -U pip -q
-python -m pip install -e ".[dev]" -q
-python -m pytest tests/simulation "$@"
+"$VENV_PY" -m pip install -U pip -q
+"$VENV_PY" -m pip install -e ".[dev]" -q
+"$VENV_PY" -c "import pint" 2>/dev/null || {
+  echo "ERROR: pint not installed in .venv. Run: bash scripts/bootstrap_venv.sh" >&2
+  exit 1
+}
+"$VENV_PY" -m pytest tests/simulation "$@"

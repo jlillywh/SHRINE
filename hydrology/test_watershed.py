@@ -1,8 +1,9 @@
 import unittest
+from pathlib import Path
+
 from hydrology.watershed import Watershed
 from hydrology.catchment import Catchment
 import numpy as np
-from data.fileman import FileManager
 
 
 class TestWatershed(unittest.TestCase):
@@ -37,7 +38,7 @@ class TestWatershed(unittest.TestCase):
         c = Catchment()
         expected_ouflow = c.outflow(precip, et) * 4
         
-        filename = "C:\\Users\\jlillywhite\\PyCharmProjects\\AegisProject\\hydrology\\test_data\\watershed_GML_input.gml"
+        filename = Path(__file__).resolve().parent / "test_data" / "watershed_GML_input.gml"
 
         self.w = Watershed()
         self.w.load_from_file(filename)

@@ -1,11 +1,14 @@
-"""Shared pytest fixtures for Aegis simulation tests."""
+"""Shared pytest fixtures for SHRINE simulation tests."""
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
-from aegis.simulation import Clock, InputManager, Model
-from aegis.simulation.adapters import ReservoirElement, WatershedElement
+from tests.path_fixtures import REPO_ROOT
+from shrine.simulation import Clock, InputManager, Model
+from shrine.simulation.adapters import ReservoirElement, WatershedElement
 from hydrology.watershed import Watershed
 
 
@@ -39,6 +42,11 @@ class SimpleStore:
 
 
 @pytest.fixture
+def repo_root() -> Path:
+    return REPO_ROOT
+
+
+@pytest.fixture
 def short_clock() -> Clock:
     return Clock("1/1/2019", "1/5/2019")
 
@@ -69,7 +77,7 @@ def watershed_model(short_clock: Clock, two_catchment_watershed: Watershed) -> M
 
 @pytest.fixture
 def climate_inputs() -> InputManager:
-    from aegis.simulation import ConstantInput
+    from shrine.simulation import ConstantInput
 
     inputs = InputManager()
     inputs.bind("precipitation", ConstantInput(10.0))

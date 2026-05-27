@@ -4,7 +4,7 @@ from geometry.datum import Datum
 from utils.unit_utils import load_units, ureg
 
 # Load units from JSON file
-units = load_units("./data/aegis_units.json")
+units = load_units("./data/shrine_units.json")
 
 class TestShape(TestCase):
     def setUp(self):

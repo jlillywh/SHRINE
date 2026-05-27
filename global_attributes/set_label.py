@@ -1,5 +1,6 @@
+from pathlib import Path
+
 import pandas as pd
-import os
 
 
 class SetLabel:
@@ -25,8 +26,8 @@ class SetLabel:
     """
     
     def __init__(self):
-        data_dir = self.dir_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..\data'))
-        csv_file = data_dir + '\\' + 'labelsets.csv'
+        data_dir = Path(__file__).resolve().parent.parent / "data"
+        csv_file = data_dir / "labelsets.csv"
         self.df = pd.read_csv(csv_file)
         
         frames = []
@@ -40,11 +41,6 @@ class SetLabel:
         for key, value in self.list_set.items():
             self.list_set[key] = value.dropna()
         
-    # month_list = ['January', 'February', 'March', 'April',
-    #               'May', 'June', 'July', 'August',
-    #               'September', 'October', 'November', 'December']
-    # list_set = {'Months': month_list}
-    
     def add_list(self, name, items):
         self.list_set.update({name: items})
     
@@ -58,5 +54,3 @@ class SetLabel:
         d= {name: self.list_set[name]}
         p = pd.DataFrame.from_dict(d)
         return p
-        
-    

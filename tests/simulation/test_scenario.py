@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 from pathlib import Path
 
 import pytest
 
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     Model,
     ScenarioConfig,
@@ -16,11 +17,11 @@ from aegis.simulation import (
     run_scenario,
     run_scenarios,
 )
-from aegis.simulation.errors import SimulationError, SimulationPhase
+from shrine.simulation.errors import SimulationError, SimulationPhase
 from hydrology.catchment import Catchment
 from hydrology.watershed import Watershed
 from tests.conftest import SimpleStore
-from aegis.simulation.adapters import ReservoirElement
+from shrine.simulation.adapters import ReservoirElement
 
 
 def _watershed_model() -> Model:
@@ -41,7 +42,7 @@ class TestScenarioConfig:
             }
         )
         mgr = sc.build_input_manager()
-        from aegis.simulation.context import RunContext, TimestepContext
+        from shrine.simulation.context import RunContext, TimestepContext
 
         clock = Clock()
         run = RunContext(model_id="t", clock=clock)
@@ -72,6 +73,89 @@ class TestScenarioConfig:
             ScenarioConfig.from_dict({"inputs": {}})
         assert exc_info.value.phase == SimulationPhase.VALIDATE
 
+    def test_unknown_top_level_key_raises(self) -> None:
+        with pytest.raises(SimulationError, match="Unknown keys in scenario"):
+            ScenarioConfig.from_dict({"name": "x", "extra_field": 1})
+
+    def test_unknown_clock_key_raises(self) -> None:
+        with pytest.raises(SimulationError, match="Unknown keys in clock"):
+            ScenarioConfig.from_dict(
+                {
+                    "name": "x",
+                    "clock": {"start_date": "1/1/2019", "bad": True},
+                }
+            )
+
+    def test_invalid_clock_time_step_raises(self) -> None:
+        with pytest.raises(SimulationError, match="Invalid duration in clock.time_step"):
+            ScenarioConfig.from_dict(
+                {
+                    "name": "x",
+                    "clock": {"time_step": "not-a-duration"},
+                }
+            )
+
+    def test_unknown_input_key_raises(self) -> None:
+        with pytest.raises(SimulationError, match="Unknown keys in inputs.precipitation"):
+            ScenarioConfig.from_dict(
+                {
+                    "name": "x",
+                    "inputs": {
+                        "precipitation": {
+                            "type": "constant",
+                            "value": 1.0,
+                            "extra": True,
+                        }
+                    },
+                }
+            )
+
+    def test_invalid_input_unit_raises(self) -> None:
+        if not importlib.util.find_spec("pint"):
+            pytest.skip("pint required for semantic unit validation")
+        with pytest.raises(SimulationError, match="Invalid unit in inputs.evaporation.unit"):
+            ScenarioConfig.from_dict(
+                {
+                    "name": "x",
+                    "inputs": {
+                        "evaporation": {
+                            "type": "constant",
+                            "value": 1.0,
+                            "unit": "not_a_real_unit_xyz",
+                        }
+                    },
+                }
+            )
+
+    def test_valid_input_unit_accepted(self) -> None:
+        sc = ScenarioConfig.from_dict(
+            {
+                "name": "x",
+                "inputs": {
+                    "precipitation": {
+                        "type": "constant",
+                        "value": 1.0,
+                        "unit": "mm/day",
+                    }
+                },
+            }
+        )
+        assert sc.inputs["precipitation"]["unit"] == "mm/day"
+
+    def test_unknown_month_in_monthly_input_raises(self) -> None:
+        with pytest.raises(SimulationError, match="unknown month names"):
+            ScenarioConfig.from_dict(
+                {
+                    "name": "x",
+                    "inputs": {
+                        "precipitation": {
+                            "type": "monthly",
+                            "values": {"NotAMonth": 1.0},
+                        }
+                    },
+                }
+            )
+
 
 class TestRunScenario:
     def test_run_scenario_applies_clock_and_inputs(self) -> None:
@@ -88,6 +172,9 @@ class TestRunScenario:
         assert result.outputs["basin.outflow"].iloc[0] == pytest.approx(expected, rel=1e-5)
         assert result.metadata["scenario_name"] == "dry"
         assert result.metadata["seed"] == 99
+        assert result.manifest["scenario_hash"] is not None
+        assert result.manifest["elements"]
+        assert "git_commit" in result.manifest
         assert result.metadata["framework_version"] == "0.1.0"
         assert "run_timestamp_utc" in result.metadata
 

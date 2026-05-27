@@ -1,7 +1,7 @@
 import unittest   # second test
 
 # Import all tests here
-from global_attributes.test_aegis import TestAegis
+from global_attributes.test_shrine_object import TestShrineObject
 from global_attributes.test_clock import TestClockCase
 from controllers.test_controller import TestController
 from geometry.test_shape import TestShape, TestPoint
@@ -28,7 +28,7 @@ def suite():
         Gather all the tests from this module in a test suite.
     """
     test_suite = unittest.TestSuite()
-    test_suite.addTest(unittest.makeSuite(TestAegis))
+    test_suite.addTest(unittest.makeSuite(TestShrineObject))
     test_suite.addTest(unittest.makeSuite(TestClockCase))
     test_suite.addTest(unittest.makeSuite(TestController))
     test_suite.addTest(unittest.makeSuite(TestShape))

@@ -1,25 +1,30 @@
-# Testing Aegis
+# Testing SHRINE
 
 ## Quick start
 
-Ubuntu/WSL often blocks `pip install` on the system Python (PEP 668). Use a project venv:
+Ubuntu/WSL often blocks `pip install` on the system Python (PEP 668). Use the project venv’s **python3** explicitly (activation alone may still leave `python3` pointing at the system interpreter):
 
 ```bash
-cd /home/jason/Aegis
-./scripts/run_tests.sh
+cd /home/jason/SHRINE
+bash scripts/bootstrap_venv.sh    # create .venv + install deps (first time or repair)
+bash scripts/run_tests.sh
 
-# Or manually:
+# Or manually (note: .venv/bin/python3, not bare pip/python3):
 python3 -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
-pytest tests/simulation -v
-pytest tests/simulation --cov=aegis.simulation --cov-report=term-missing
+.venv/bin/python3 -m pip install -U pip
+.venv/bin/python3 -m pip install -e ".[dev]"
+.venv/bin/python3 -c "import pint; print(pint.__version__)"
+.venv/bin/python3 -m pytest tests/simulation -v
 ```
+
+If `source .venv/bin/activate` shows `(.venv)` but `python3 -c "import pint"` fails, your PATH did not switch — use `.venv/bin/python3 -m pip` as above or rerun `bash scripts/bootstrap_venv.sh`.
 
 If you already have `venv/` from older work, either `source venv/bin/activate` or rename it to `.venv`.
 
+**Dependencies:** Scenario unit validation uses **pint** when installed (`pip install -e ".[dev]"` or `pip install -r requirements.txt`). Without pint, only unit syntax is checked and tests that require semantic validation are skipped.
+
 **WSL / Cursor:** If errors reference old line numbers (for example `catchment.py` line 1 importing `Awbm`),
-your WSL tree under `~/Aegis` may still be an old copy. Pull or sync from the machine where you edited
+your WSL tree under `~/SHRINE` may still be an old copy. Pull or sync from the machine where you edited
 the repo, then ensure `validation/__init__.py` exists at the project root.
 
 ## Layout
@@ -54,15 +59,17 @@ the repo, then ensure `validation/__init__.py` exists at the project root.
 | [results-recording.md](results-recording.md) | `Recorder` / `TimeHistory` |
 | `tests/simulation/test_recorder.py` | Recorder API incl. `from_dataframe` |
 
-Legacy domain tests (hydrology, `water_manage`, etc.) live beside their modules (`hydrology/test_*.py`). Run separately when working on those areas:
+Legacy domain tests (hydrology, `water_manage`, etc.) live beside their modules (`hydrology/test_*.py`). Install project deps first (`pip install -e ".[dev]"`), then run:
 
 ```bash
-python3 -m pytest hydrology/ water_manage/ -q
+python3 -m pytest hydrology/ water_manage/ data/ inputs/ -q
 ```
+
+Pytest uses `--import-mode=importlib` in `addopts` (see `pyproject.toml`) so `inputs/data.py` does not shadow the top-level `data/` package when collecting tests from multiple directories.
 
 ## Coverage expectations
 
-- **`aegis.simulation`**: target **≥ 85%** line coverage before merging simulation work.
+- **`shrine.simulation`**: target **≥ 85%** line coverage before merging simulation work.
 - New framework code should include unit tests; integration behavior should map to an AT-* test when applicable.
 
 ## CI (future)
@@ -70,12 +77,12 @@ python3 -m pytest hydrology/ water_manage/ -q
 ```yaml
 # Example GitHub Actions step
 - run: pip install -e ".[dev]"
-- run: pytest tests/simulation --cov=aegis.simulation --cov-fail-under=85
+- run: pytest tests/simulation --cov=shrine.simulation --cov-fail-under=85
 ```
 
 ## Commit checklist
 
-1. `./scripts/run_tests.sh --cov=aegis.simulation --cov-report=term-missing` (creates `.venv` on first run)
+1. `./scripts/run_tests.sh --cov=shrine.simulation --cov-report=term-missing` (creates `.venv` on first run)
 2. Confirm `.gitignore` excludes `venv/`, `*.egg-info/`, `.pytest_cache/`, `htmlcov/`
 3. Stage simulation work only (see suggested commit below)
 
@@ -83,10 +90,10 @@ python3 -m pytest hydrology/ water_manage/ -q
 
 ```bash
 git status
-git add .gitignore pyproject.toml aegis/ tests/ examples/ docs/simulation-framework-requirements.md docs/testing.md scripts/run_tests.sh
-git add -u global_attributes/simulator.py   # deleted
+git add .gitignore pyproject.toml shrine/ tests/ examples/ docs/simulation-framework-requirements.md docs/testing.md scripts/run_tests.sh
+git add global_attributes/simulator.py global_attributes/test_legacy_simulator.py
 git add -u global_attributes/model.py         # if modified
-git commit -m "Add aegis.simulation framework with tests and examples.
+git commit -m "Add shrine.simulation framework with tests and examples.
 
 Introduce the simulation package (clock, model, run controller, flow solve,
 watershed/reservoir adapters, mass balance). Includes Phase 0–1 examples,

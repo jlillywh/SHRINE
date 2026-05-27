@@ -1,10 +1,10 @@
-"""Tests for aegis.simulation.errors."""
+"""Tests for shrine.simulation.errors."""
 
 from __future__ import annotations
 
 import pandas as pd
 
-from aegis.simulation import SimulationError, SimulationPhase
+from shrine.simulation import SimulationError, SimulationPhase
 
 
 class TestSimulationError:

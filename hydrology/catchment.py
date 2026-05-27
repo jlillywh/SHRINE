@@ -10,8 +10,8 @@ class Catchment:
     area : float
         The land surface area of the catchment
 
-    runoff_method : Aegis
-        This is an Aegis object that represents the
+    runoff_method : ShrineObject
+        This is an SHRINE object that represents the
         particular method used to calculate runoff
 
     outflow : float

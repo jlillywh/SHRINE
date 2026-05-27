@@ -1,7 +1,8 @@
 import unittest
+from pathlib import Path
+
 from water_manage.flow_network import Network
 import numpy as np
-import os
 
 
 class TestMyNetwork(unittest.TestCase):
@@ -91,7 +92,7 @@ class TestMyNetwork(unittest.TestCase):
         self.assertAlmostEqual(self.n1.outflow(), expected_sum, self.precision)
         
     def testReadFromGML(self):
-        filename = "C:\\Users\\jlillywhite\\PyCharmProjects\\AegisProject\\water_manage\\test_data\\network_GML_input.gml"
+        filename = Path(__file__).resolve().parent / "test_data" / "network_GML_input.gml"
         self.n1.load_from_file(filename)
         
         # self.n1.draw()

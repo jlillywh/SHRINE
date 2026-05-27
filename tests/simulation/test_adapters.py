@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     ConstantInput,
     InputManager,
@@ -16,7 +16,7 @@ from aegis.simulation import (
     SimulationPhase,
     WatershedElement,
 )
-from aegis.simulation.balance import MassBalanceCheck, MassBalanceTerm
+from shrine.simulation.balance import MassBalanceCheck, MassBalanceTerm
 from hydrology.catchment import Catchment
 
 
@@ -32,7 +32,7 @@ class TestWatershedElement:
 
     def test_balance_terms_close(self, two_catchment_watershed) -> None:
         element = WatershedElement(two_catchment_watershed, element_id="ws1")
-        from aegis.simulation.context import RunContext, TimestepContext
+        from shrine.simulation.context import RunContext, TimestepContext
 
         clock = Clock()
         run = RunContext(model_id="t", clock=clock)
@@ -86,8 +86,8 @@ class TestReservoirElement:
         element._last_outflow = store.outflow
         element._last_overflow = store.overflow
 
-        from aegis.simulation.context import RunContext, TimestepContext
-        from aegis.simulation import Clock
+        from shrine.simulation.context import RunContext, TimestepContext
+        from shrine.simulation import Clock
 
         clock = Clock()
         run = RunContext(model_id="t", clock=clock)
@@ -109,8 +109,8 @@ class TestReservoirElement:
         element._last_outflow = store.outflow
         element._last_overflow = store.overflow
 
-        from aegis.simulation.context import RunContext, TimestepContext
-        from aegis.simulation import Clock
+        from shrine.simulation.context import RunContext, TimestepContext
+        from shrine.simulation import Clock
 
         clock = Clock()
         run = RunContext(model_id="t", clock=clock)

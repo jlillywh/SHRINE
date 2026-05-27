@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from aegis.simulation import Model, WatershedElement, load_and_run
+from shrine.simulation import Model, WatershedElement, load_and_run
 from hydrology.watershed import Watershed
 
 
@@ -21,7 +21,7 @@ def build_model() -> Model:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run Aegis simulation from scenario file")
+    parser = argparse.ArgumentParser(description="Run SHRINE simulation from scenario file")
     parser.add_argument(
         "scenario",
         type=Path,

@@ -47,7 +47,7 @@ cp data_external/apikey.txt.example data_external/apikey.txt
 | Use case | Credential type |
 |----------|-----------------|
 | `mapping/map_toy.py` (elevation, gmplot) | Maps Platform API key |
-| LLM / Gemini experiments | Separate key; **not** used by Aegis core |
+| LLM / Gemini experiments | Separate key; **not** used by SHRINE core |
 | Production automation | Service account or OAuth where appropriate; never commit JSON keys |
 
 Restrict keys in [Google Cloud Console](https://console.cloud.google.com/apis/credentials) (API restrictions, HTTP referrers, quotas).
@@ -69,7 +69,7 @@ Config and allowlists (docs, `apikey.txt.example`): [`.gitleaks.toml`](../.gitle
 Use the project venv (do not `pip install` into system Python on Ubuntu — PEP 668 blocks it):
 
 ```bash
-cd Aegis
+cd SHRINE
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"

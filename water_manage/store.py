@@ -86,18 +86,24 @@ class Store:
             self.overflow = 0.0
             self._capacity = new_capacity
 
-    def update(self):
-        """Updates the _quantity given inflow and request being applied
+    def update(self, inflow=None, request=None):
+        """Update storage after applying inflow and requested outflow.
 
-        If _quantity ends up out of bounds (upper or lower) then it is
-        set to the bound and overflow or outflow is updated
+        Parameters
+        ----------
+        inflow : float, optional
+            If given, assigned to ``self.inflow`` before the mass balance.
+        request : float, optional
+            If given, assigned to ``self.request`` before the mass balance.
 
-        Raises
-        ------
-        NotImplementedError
-            Raise if either value is negative
+        If quantity exceeds capacity, overflow is set and quantity is capped.
+        If quantity goes negative, outflow is reduced and quantity is set to zero.
         """
-        
+        if inflow is not None:
+            self.inflow = inflow
+        if request is not None:
+            self.request = request
+
         self._quantity += (self.inflow - self.request)
 
         if self._quantity > self._capacity:

@@ -165,11 +165,11 @@ class Watershed(Network):
         ----------
         node_name : str
             The name of the node we are checking for existence
-        node_list : list(Aegis objects)
+        node_list : list(SHRINE objects)
         
         Returns
         -------
-        node : Aegis object
+        node : SHRINE object
             Return the node if found; None if not found
 
         """

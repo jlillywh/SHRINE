@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from aegis.simulation import (
+from shrine.simulation import (
     Clock,
     ConstantInput,
     InputManager,

@@ -1,6 +1,6 @@
 # Results recording (`TimeHistory` + `Recorder`)
 
-Simulation runs record outputs through `aegis.simulation.Recorder` (wide DataFrame, time index). Legacy `results.TimeHistory` is now a thin wrapper around the same storage (OUT-04).
+Simulation runs record outputs through `shrine.simulation.Recorder` (wide DataFrame, time index). Legacy `results.TimeHistory` is now a thin wrapper around the same storage (OUT-04).
 
 ## Framework recording
 
@@ -20,7 +20,7 @@ def update(self, timestep_context):
 
 ```python
 from results.time_history import TimeHistory
-from aegis.simulation import RunController
+from shrine.simulation import RunController
 
 result = RunController(model, input_manager=inputs).run()
 history = TimeHistory.from_run_result(result, name="Climate Results", display_unit="in")

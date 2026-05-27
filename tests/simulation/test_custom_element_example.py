@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from aegis.simulation import Clock, ConstantInput, InputManager, Model, RunController
+from shrine.simulation import Clock, ConstantInput, InputManager, Model, RunController
 from examples.custom_element import DemandElement
 
 

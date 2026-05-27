@@ -1,8 +1,8 @@
-from global_attributes.aegis import Aegis
+from global_attributes.shrine_object import ShrineObject
 from hydrology.catchment import  Catchment
 from global_attributes.constants import U
 
-class Junction(Aegis):
+class Junction(ShrineObject):
     def __init__(self, name="J1"):
         """A junction combines 1 or more inflows to output the sum
         
@@ -30,13 +30,13 @@ class Junction(Aegis):
                 is the sum of all inflows.
                 
         """
-        Aegis.__init__(self)
+        ShrineObject.__init__(self)
 
         self.inflows = []
         self.name = name
 
     def add_inflow(self, node):
-        """ Add an Aegis node to the junction"""
+        """ Add an ShrineObject node to the junction"""
         self.inflows.append(node)
         
     def delete_inflow(self, node):
