@@ -1,4 +1,4 @@
-# Framework tests + coverage upload (roadmap 1.17, Codecov).
+# Framework tests + coverage upload (roadmap 1.17, Codecov PR checks).
 name: Tests
 
 on:
@@ -40,4 +40,6 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
-          fail_ci_if_error: false
+          slug: jlillywh/SHRINE
+          fail_ci_if_error: true
+          verbose: true
