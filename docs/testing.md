@@ -86,13 +86,15 @@ Pytest uses `--import-mode=importlib` in `addopts` (see `pyproject.toml`) so `in
 - **`shrine.simulation`**: target **≥ 85%** line coverage before merging simulation work.
 - New framework code should include unit tests; integration behavior should map to an AT-* test when applicable.
 
-## CI (future)
+## CI
 
-```yaml
-# Example GitHub Actions step
-- run: pip install -e ".[dev]"
-- run: pytest tests/simulation --cov=shrine.simulation --cov-fail-under=85
-```
+GitHub Actions (`.github/workflows/test.yml`) on every push/PR to `master`:
+
+- `pip install -e ".[dev]"`
+- `pytest tests/ --cov=shrine --cov-report=xml` (80% floor from `pyproject.toml`)
+- Upload `coverage.xml` to Codecov (`CODECOV_TOKEN` repository secret)
+
+Requires **Codecov** repo secret `CODECOV_TOKEN` (see [codecov.io](https://app.codecov.io)).
 
 ## Commit checklist
 
