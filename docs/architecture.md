@@ -16,7 +16,7 @@ Related:
 |-------|----------------|------------|
 | **Framework** (`shrine.simulation`) | Time, run loop, inputs, recording, flow dispatch, mass balance, scenarios, errors | Implement catchment/reservoir physics |
 | **Adapters** (`shrine.simulation.adapters`, `elements.py`) | Thin `Simulatable` wrappers; translate framework context ↔ domain API | Own the simulation clock or global run loop |
-| **Domain** (`hydrology/`, `water_manage/`, `inputs/`, `results/`, …) | Physics, networks, tables, legacy helpers | Advance time or enforce a common run contract (unless called directly in legacy scripts) |
+| **Domain** (`hydrology/`, `water_manage/`, `inputs/`, `results/`, …) | Physics, networks, tables, legacy helpers; Phase 2 **protocols** (e.g. `RunoffModel`) | Advance time or enforce a common run contract (unless called directly in legacy scripts) |
 
 ```mermaid
 flowchart TB

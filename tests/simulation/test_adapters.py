@@ -56,7 +56,7 @@ class TestWatershedElement:
     def test_solver_matches_legacy_discharge(self, two_catchment_watershed) -> None:
         precip, et = 8.0, 0.5
         expected = two_catchment_watershed.discharge(precip, et)
-        for name, c in two_catchment_watershed.catchments.items():
+        for name, c in two_catchment_watershed.iter_catchment_items():
             two_catchment_watershed.update_capacity(name, c.outflow(precip, et))
         result = NetworkXFlowSolver().solve(
             two_catchment_watershed.dg,
@@ -68,10 +68,12 @@ class TestWatershedElement:
 
 class TestCatchmentElement:
     def test_run_records_rational_outflow(self, short_clock: Clock) -> None:
+        from hydrology.catchment import Rational
+
         model = Model(clock=short_clock)
         model.register_catchment(
             "c1",
-            CatchmentElement(element_id="c1", area=1000.0, runoff_method="simple"),
+            CatchmentElement(element_id="c1", area=1000.0, runoff_method=Rational()),
         )
         inputs = InputManager()
         inputs.bind("precipitation", ConstantInput(10.0))

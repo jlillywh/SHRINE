@@ -7,11 +7,15 @@ from typing import TYPE_CHECKING, Literal
 from shrine.simulation.balance import MassBalanceTerm
 from shrine.simulation.context import RunContext, TimestepContext
 from shrine.simulation.errors import SimulationError, SimulationPhase
+from hydrology.enums import RunoffMethod
+from hydrology.protocols import RunoffModel
 
 if TYPE_CHECKING:
     from hydrology.catchment import Catchment
 
+# Deprecated alias for string literals; prefer :class:`~hydrology.enums.RunoffMethod`.
 RunoffMethodName = Literal["simple", "awbm"]
+RunoffMethodArg = RunoffModel | RunoffMethod | RunoffMethodName | str
 
 
 class CatchmentElement:
@@ -29,7 +33,7 @@ class CatchmentElement:
         *,
         element_id: str = "catchment",
         area: float = 1000.0,
-        runoff_method: RunoffMethodName | str = "simple",
+        runoff_method: RunoffMethodArg = RunoffMethod.SIMPLE,
         precip_key: str = "precipitation",
         et_key: str = "evaporation",
     ) -> None:

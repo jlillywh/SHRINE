@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from hydrology.enums import RunoffMethod
 from shrine.simulation import (
     CatchmentElement,
     Clock,
@@ -18,7 +19,7 @@ def main() -> None:
     model = Model(name="RationalCatchment", clock=clock)
     model.register_catchment(
         "hillslope",
-        CatchmentElement(element_id="hillslope", area=5000.0, runoff_method="simple"),
+        CatchmentElement(element_id="hillslope", area=5000.0, runoff_method=RunoffMethod.SIMPLE),
     )
 
     inputs = InputManager()

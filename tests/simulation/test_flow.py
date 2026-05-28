@@ -24,7 +24,7 @@ class TestNetworkXFlowSolver:
         ws = _built_watershed()
         precip, et = 10.0, 1.0
         expected = Catchment().outflow(precip, et) * 2
-        for name, catchment in ws.catchments.items():
+        for name, catchment in ws.iter_catchment_items():
             ws.update_capacity(name, catchment.outflow(precip, et))
 
         result = NetworkXFlowSolver("max").solve(

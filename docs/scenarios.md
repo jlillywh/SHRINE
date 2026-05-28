@@ -17,7 +17,7 @@ Unknown keys at the top level, under `clock`, or inside typed `inputs` entries a
 | `inputs` (constant) | `type`, `value`, `unit` |
 | `inputs` (monthly) | `type`, `values`, `unit` — month names must be English full names (`January`, …) |
 | `inputs` (stochastic) | `type`, `distribution`, `loc`, `scale`, `low`, `high`, `unit` |
-| `overrides` | Per-element mappings (validated when applied to the model) |
+| `overrides` | Per-element mappings (validated when applied to the model; see [reservoir keys](#reservoir-overrides) below) |
 | `metadata` | Free-form user metadata |
 
 ```yaml
@@ -45,13 +45,25 @@ inputs:
 
 overrides:
   res1:
-    default_release: 5.0        # element attribute overrides (SCN-01)
+    default_release: 5.0        # ReservoirElement (SCN-01)
+    capacity: 1.0e6             # applied to element.store when present
 
 metadata:
   description: Optional notes stored in run metadata
 ```
 
 Bundled examples: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
+
+### Reservoir overrides
+
+For elements registered as `ReservoirElement`, only these override keys are accepted (others raise `SimulationError` at apply time):
+
+| Target | Keys |
+|--------|------|
+| Element | `default_release`, `inflow_key`, `release_key` |
+| `element.store` | `capacity`, `quantity` |
+
+See [extending-elements.md §14](extending-elements.md#14-storagelike-and-reservoir-overrides) for the `StorageLike` timestep contract.
 
 ## Python API
 

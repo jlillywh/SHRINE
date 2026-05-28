@@ -3,10 +3,7 @@
 from __future__ import annotations
 
 import calendar
-import importlib.util
 import json
-import re
-import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable
@@ -24,7 +21,12 @@ from shrine.simulation.inputs import (
 )
 from shrine.simulation.metadata import enrich_run_metadata
 from shrine.simulation.manifest import scenario_content_hash
+from shrine.simulation.adapters.reservoir import (
+    ReservoirElement,
+    apply_reservoir_element_override,
+)
 from shrine.simulation.model import Model
+from shrine.units import validate_unit_string
 
 if TYPE_CHECKING:
     from shrine.simulation.run_controller import RunResult
@@ -38,9 +40,6 @@ _INPUT_KEYS_BY_TYPE: dict[str, frozenset[str]] = {
 }
 _STOCHASTIC_DISTRIBUTIONS = frozenset({"normal", "uniform"})
 _VALID_MONTHS = frozenset(calendar.month_name[1:])
-_PINT_AVAILABLE = importlib.util.find_spec("pint") is not None
-# Syntax-only check when pint is not installed (hydrology rates like mm/day).
-_UNIT_SYNTAX = re.compile(r"^[a-zA-Z][a-zA-Z0-9./\*\-\s]*$")
 
 
 def _validate_unknown_keys(
@@ -69,58 +68,8 @@ def _validate_timedelta(value: Any, *, field: str) -> None:
         ) from exc
 
 
-_SCENARIO_UREG: Any | None = None
-
-
-def _scenario_unit_registry():
-    """Lazy pint registry for scenario unit validation."""
-    global _SCENARIO_UREG
-    if _SCENARIO_UREG is None:
-        from pint import UnitRegistry
-
-        _SCENARIO_UREG = UnitRegistry()
-    return _SCENARIO_UREG
-
-
-def _validate_unit_syntax(text: str, *, field: str) -> None:
-    if not _UNIT_SYNTAX.match(text):
-        raise SimulationError(
-            message=f"Invalid unit in {field}: {text!r}",
-            phase=SimulationPhase.VALIDATE,
-            details={"field": field, "unit": text},
-        )
-
-
 def _validate_unit(unit: Any, *, field: str) -> None:
-    if not isinstance(unit, str) or not unit.strip():
-        raise SimulationError(
-            message=f"Invalid unit in {field}: unit must be a non-empty string",
-            phase=SimulationPhase.VALIDATE,
-            details={"field": field, "unit": unit},
-        )
-    text = unit.strip()
-    if not _PINT_AVAILABLE:
-        warnings.warn(
-            "pint is not installed; validating scenario units with syntax checks only. "
-            "Install project dependencies for full validation (pip install -e .).",
-            stacklevel=4,
-        )
-        _validate_unit_syntax(text, field=field)
-        return
-    ureg = _scenario_unit_registry()
-    try:
-        # Unit() / Quantity() use the unit parser (mm → millimeter).
-        # parse_expression() treats "mm" as m*m and rejects hydrology rates like mm/day.
-        ureg.Unit(text)
-    except Exception:
-        try:
-            ureg.Quantity(1, text)
-        except Exception as exc:
-            raise SimulationError(
-                message=f"Invalid unit in {field}: {unit!r}",
-                phase=SimulationPhase.VALIDATE,
-                details={"field": field, "unit": unit},
-            ) from exc
+    validate_unit_string(unit, field=field, phase=SimulationPhase.VALIDATE)
 
 
 def _validate_clock(clock: dict[str, Any]) -> None:
@@ -291,7 +240,9 @@ class ScenarioConfig:
                     element_id=element_id,
                 ) from exc
             for key, value in params.items():
-                if hasattr(element, key):
+                if isinstance(element, ReservoirElement):
+                    apply_reservoir_element_override(element, key, value)
+                elif hasattr(element, key):
                     setattr(element, key, value)
                 elif hasattr(element, "store") and hasattr(element.store, key):
                     setattr(element.store, key, value)

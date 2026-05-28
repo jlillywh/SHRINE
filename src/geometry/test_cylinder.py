@@ -1,12 +1,11 @@
-from unittest import TestCase
-from geometry.cylinder import Cylinder
-from utils.unit_utils import load_units, ureg
 import math
+from unittest import TestCase
 
-# Load units from JSON file
-from data import PACKAGE_DIR as _data_dir
+from geometry.cylinder import Cylinder
+from shrine.units import get_default_units, get_unit_registry
 
-units = load_units(str(_data_dir / "shrine_units.json"))
+units = get_default_units()
+ureg = get_unit_registry()
 
 class TestCylinder(TestCase):
     def setUp(self):

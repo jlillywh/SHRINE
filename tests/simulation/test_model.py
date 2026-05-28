@@ -65,3 +65,10 @@ class TestModel:
         store = SimpleStore()
         model.register("r1", ReservoirElement(store, element_id="r1"))
         assert model.get("r1").element_type == "reservoir"
+
+    def test_register_reservoir_helper(self) -> None:
+        model = Model()
+        store = SimpleStore()
+        model.register_reservoir("r1", ReservoirElement(store, element_id="r1"))
+        registered = model._elements["r1"]
+        assert registered.metadata["kind"] == "reservoir"

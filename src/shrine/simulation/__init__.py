@@ -10,6 +10,8 @@ Import framework types from this package only — do not rely on submodules
 
 **Time and context:** :class:`Clock`, :class:`RunContext`, :class:`TimestepContext`
 
+**Units:** :func:`shrine.units.get_unit_registry`, :func:`shrine.units.get_default_units` (injected on :class:`RunContext`)
+
 **Elements:** :class:`Simulatable`, :class:`WatershedElement`, :class:`ReservoirElement`,
 :class:`ClimateRecorderElement`, :class:`CatchmentElement`, :class:`StorageLike`, :class:`RegisteredElement`
 
@@ -39,6 +41,7 @@ from shrine.simulation.version import API_VERSION as __api_version__
 from shrine.simulation.adapters import (
     CatchmentElement,
     ReservoirElement,
+    StorageElement,
     StorageLike,
     WatershedElement,
 )
@@ -57,6 +60,7 @@ from shrine.simulation.inputs import (
     StochasticInput,
 )
 from shrine.simulation.metadata import RunTimer, build_run_metadata, enrich_run_metadata
+from shrine.simulation.golden import outputs_content_hash
 from shrine.simulation.manifest import (
     build_run_manifest,
     element_list_from_model,
@@ -78,6 +82,7 @@ from shrine.simulation.scenario import (
 )
 from shrine.simulation.scheduler import ElementScheduler
 from shrine.simulation.step import StepResult
+from shrine.units import get_default_units, get_unit_registry, validate_unit_string
 
 __all__ = [
     # Version
@@ -95,12 +100,16 @@ __all__ = [
     "Clock",
     "RunContext",
     "TimestepContext",
+    "get_default_units",
+    "get_unit_registry",
+    "validate_unit_string",
     # Elements and adapters
     "Simulatable",
     "WatershedElement",
     "CatchmentElement",
     "ReservoirElement",
     "ClimateRecorderElement",
+    "StorageElement",
     "StorageLike",
     # Inputs
     "InputManager",
@@ -129,6 +138,7 @@ __all__ = [
     "element_list_from_model",
     "resolve_git_commit",
     "scenario_content_hash",
+    "outputs_content_hash",
     "RunTimer",
     "make_rng",
     # Deprecation

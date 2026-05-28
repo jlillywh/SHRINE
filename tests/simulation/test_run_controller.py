@@ -165,3 +165,45 @@ class TestRunController:
         result = controller.run()
         jan = result.outputs[result.outputs.index.month == 1]
         assert (jan["evaporation"] == EVAPORATION_BY_MONTH["January"]).all()
+
+
+class _BareOutputElement:
+    element_type = "bare_output"
+
+    def initialize(self, run_context: RunContext) -> None:
+        pass
+
+    def update(self, timestep_context: TimestepContext) -> None:
+        recorder = timestep_context.recorder
+        if recorder is not None:
+            recorder.record("out", 1.0)
+
+    def finalize(self, run_context: RunContext) -> None:
+        pass
+
+
+class TestStrictUnits:
+    def test_run_controller_strict_units_fails_on_bare_record(self) -> None:
+        model = Model(clock=Clock("1/1/2019", "1/2/2019"))
+        model.register("bare", _BareOutputElement())
+        controller = RunController(model, strict_units=True, raise_on_error=False)
+        result = controller.run()
+        assert not result.success
+        assert result.error is not None
+        assert result.error.phase == SimulationPhase.RECORD
+
+    def test_climate_recorder_passes_strict_units(self) -> None:
+        model = Model(clock=Clock("1/1/2019", "1/3/2019"))
+        model.register("climate", ClimateRecorderElement())
+        inputs = InputManager()
+        inputs.bind("evaporation", MonthlyLookupInput(EVAPORATION_BY_MONTH))
+        inputs.bind("precipitation", MonthlyLookupInput(PRECIPITATION_BY_MONTH))
+        controller = RunController(
+            model,
+            input_manager=inputs,
+            strict_units=True,
+            raise_on_error=False,
+        )
+        result = controller.run()
+        assert result.success
+        assert result.outputs["evaporation"].notna().all()

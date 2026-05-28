@@ -46,6 +46,10 @@ Installable code lives under **`src/`** (framework and legacy domain packages). 
 | Path | Purpose |
 |------|---------|
 | `tests/conftest.py` | Shared fixtures (`short_clock`, `two_catchment_watershed`, `SimpleStore`, …) |
+| `tests/golden/` | Expected SHA-256 of `result.outputs` for bundled scenarios (see `test_golden_run.py`) |
+| `tests/simulation/test_mass_balance_property.py` | Fuzz-light mass balance for `SimpleStore` + `ReservoirElement` (seed `20240528`) |
+| `tests/hydrology/` | Phase 2 hydrology contract tests (`RunoffModel`, `RunoffMethod`, graph payloads) |
+| `tests/water_manage/` | Phase 2 storage contract tests (`StorageElement`) |
 | `tests/simulation/test_clock.py` | Time stepping |
 | `tests/simulation/test_model.py` | Model registry & validation |
 | `tests/simulation/test_inputs.py` | Input providers |

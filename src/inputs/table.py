@@ -1,6 +1,5 @@
 from global_attributes.shrine_object import ShrineObject
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 import re       # import regex
 
@@ -61,6 +60,8 @@ class Table(ShrineObject):
         self.y_name = df.columns.values[0]
     
     def plot(self):
+        import matplotlib.pyplot as plt
+
         plt.scatter(self.x, self.y)
         plt.suptitle(self.name)
         plt.xlabel(self.x_name)
