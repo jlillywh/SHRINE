@@ -162,13 +162,13 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 - [ ] **1.15** Golden-run test: fixed scenario JSON → hash of `result.outputs` (regression guard)
 - [ ] **1.16** Property test or fuzz-light: mass balance holds for `SimpleStore` + constant inputs
-- [ ] **1.17** CI workflow: `pip install -e ".[dev]"` + `pytest tests/`, coverage ≥80% on `shrine` *(only `.github/workflows/secrets.yml` exists today)*
+- [x] **1.17** CI workflow: `pip install -e ".[dev]"` + `pytest tests/`, coverage ≥80% on `shrine` (`.github/workflows/test.yml` + Codecov)
 
 **Phase 1 exit criteria**
 
 - Three documented examples run headless from `pip install -e ".[dev]"` *(five scripts in `examples/`; verify README lists the three “official” quickstart paths)*
 - No recommended path uses `LegacyModel` / manual loops in `src/global_attributes/`
-- CI green on every PR to `master` *(blocked on **1.17**)*
+- CI green on every PR to `master` *(enable **Require status checks** → `pytest` after first green run)*
 
 ---
 
