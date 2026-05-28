@@ -144,7 +144,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 - [x] **1.6** Mark `src/global_attributes/simulator.py` deprecated; remove or quarantine broken prototype
 - [x] **1.7** Remove root `main.py` (legacy geometry demo); use `examples/` scripts as the only documented entry points
-- [ ] **1.8** Move `src/hydrology/streamflow.py` to `examples/` or `scripts/` (NWIS one-off)
+- [x] **1.8** Move `src/hydrology/streamflow.py` to `examples/nwis_streamflow.py` (NWIS one-off; requires `.[hydrology]`)
 
 #### P1 — Adapters & elements
 

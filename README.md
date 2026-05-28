@@ -83,7 +83,7 @@ Defined in `pyproject.toml` under `[project.optional-dependencies]`. Combine ext
 | *(none)* | Core runtime: `shrine`, domain packages, scenarios (`numpy`, `pandas`, `pint`, …) | `pip install -e .` |
 | `dev` | `pytest`, coverage, `pre-commit` | `pip install -e ".[dev]"` |
 | `viz` | `matplotlib` — legacy charts, `flow_network.draw`, `inputs.table` plots | `pip install -e ".[viz]"` |
-| `hydrology` | `hydrofunctions` — USGS NWIS helpers (`src/hydrology/streamflow.py`) | `pip install -e ".[hydrology]"` |
+| `hydrology` | `hydrofunctions` — USGS NWIS demo (`examples/nwis_streamflow.py`) | `pip install -e ".[hydrology]"` |
 
 **Recommended for contributors** (framework tests + common legacy tooling):
 
@@ -141,6 +141,9 @@ python examples/step_debug.py
 
 # Minimal custom element
 python examples/custom_element.py
+
+# USGS NWIS fetch (optional: pip install -e ".[hydrology]")
+python examples/nwis_streamflow.py
 ```
 
 Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
