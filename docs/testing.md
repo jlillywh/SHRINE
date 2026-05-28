@@ -31,7 +31,7 @@ the repo, then reinstall: `pip install -e ".[dev]"`.
 
 Installable code lives under **`src/`** (framework and legacy domain packages). Tests, examples, and scenarios stay at the repo root.
 
-**Do not** set `PYTHONPATH=.` or add the repo root to `sys.path`. After `pip install -e ".[dev]"`, imports resolve via the editable install (see `pyproject.toml` → `[tool.setuptools.packages.find]` with `where = ["src"]`). Pytest is configured the same way (no `pythonpath` override).
+**Do not** set `PYTHONPATH=.` or add the repo root to `sys.path`. After `pip install -e ".[dev]"`, imports resolve via the editable install (`src/` packages plus root `examples/` — see `pyproject.toml` → `[tool.setuptools.packages.find]`). Pytest uses `--import-mode=importlib` (no `pythonpath` override).
 
 | Path | Purpose |
 |------|---------|

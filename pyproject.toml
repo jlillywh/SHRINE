@@ -34,9 +34,10 @@ hydrology = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["src", "."]
 include = [
     "shrine*",
+    "examples*",
     "validation*",
     # Legacy domain (see docs/modernization-roadmap.md §0.10–0.12)
     "hydrology*",
