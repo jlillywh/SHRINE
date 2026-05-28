@@ -1,5 +1,16 @@
 import networkx as nx
 
+from hydrology.enums import GraphNodeType
+from hydrology.graph_nodes import (
+    CatchmentNode,
+    JunctionNode,
+    SinkNode,
+    SourceNode,
+    attach_payloads_from_node_type,
+    get_node_type,
+    set_node_payload,
+)
+
 
 class Network:
     """Class for creating flow networks to route flows through a system of source, routes, stores, and sinks
@@ -21,19 +32,23 @@ class Network:
     """
     def __init__(self):
         self.dg = nx.DiGraph()
-        self.dg.add_node('source')
-        self.dg.add_node('sink')
-        self.source = 'source'
-        self.sink = 'sink'
-        self.calc_method = 'max'
-        
-    def add_catchment(self, node_name, downstream_name='sink'):
-        self.dg.add_node(node_name, node_type='Catchment')
+        self.source = "source"
+        self.sink = "sink"
+        self.dg.add_node(self.source)
+        self.dg.add_node(self.sink)
+        set_node_payload(self.dg, self.source, SourceNode(node_id=self.source))
+        set_node_payload(self.dg, self.sink, SinkNode(node_id=self.sink))
+        self.calc_method = "max"
+
+    def add_catchment(self, node_name, downstream_name="sink"):
+        self.dg.add_node(node_name, node_type=GraphNodeType.CATCHMENT)
+        set_node_payload(self.dg, node_name, CatchmentNode(node_id=node_name))
         self.dg.add_edge(self.source, node_name)
         self.dg.add_edge(node_name, downstream_name, capacity=0.0)
-    
-    def add_junction(self, name, downstream_name='sink'):
-        self.dg.add_node(name, node_type='Junction')
+
+    def add_junction(self, name, downstream_name="sink"):
+        self.dg.add_node(name, node_type=GraphNodeType.JUNCTION)
+        set_node_payload(self.dg, name, JunctionNode(node_id=name))
         self.dg.add_edge(name, downstream_name)
         
     def add_supply(self, name, downstream_name, capacity=0.0):
@@ -123,13 +138,15 @@ class Network:
     
     def load_from_file(self, filename):
         self.dg = nx.read_gml(filename)
-        # Convert catchment labels to Catchment objects
         for node in self.dg.copy().nodes():
             try:
-                if self.dg.nodes[node]['node_type'] == 'Catchment':
+                if get_node_type(self.dg, node) is GraphNodeType.CATCHMENT:
                     self.dg.add_edge(self.source, node)
             except KeyError:
                 pass
-
-        # nx.set_node_attributes(self.dg, labels, 'labels')
+        attach_payloads_from_node_type(
+            self.dg,
+            source_id=self.source,
+            sink_id=self.sink,
+        )
 

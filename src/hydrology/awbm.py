@@ -146,6 +146,13 @@ class Awbm:
         # Sum surface and baseflow
         return self.surface.outflow + self.base.outflow
 
+    def compute(self, precip: float, et: float):
+        """Runoff depth rate (:class:`~hydrology.protocols.RunoffModel`)."""
+        from hydrology.protocols import AWBM_RUNOFF_UNIT
+        from shrine.units import get_unit_registry
+
+        return get_unit_registry().Quantity(self.runoff(precip, et), AWBM_RUNOFF_UNIT)
+
     def set_partial_area_fraction(self, new_fractions):
         """Reset the partial area fractions used for the bucket stores
 

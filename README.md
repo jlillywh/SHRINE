@@ -26,7 +26,7 @@ from shrine.simulation import Model, RunController, Clock, WatershedElement
 |----------|---------|
 | **Run** | `Model`, `RegisteredElement`, `RunController`, `RunResult`, `RunSession`, `StepResult`, `ElementScheduler` |
 | **Time** | `Clock`, `RunContext`, `TimestepContext` |
-| **Elements** | `Simulatable`, `WatershedElement`, `ReservoirElement`, `ClimateRecorderElement`, `StorageLike` |
+| **Elements** | `Simulatable`, `WatershedElement`, `CatchmentElement`, `ReservoirElement`, `ClimateRecorderElement`, `StorageLike` |
 | **Inputs** | `InputManager`, `InputProvider`, `ConstantInput`, `MonthlyLookupInput`, `StochasticInput` |
 | **Flow / balance** | `FlowSolver`, `NetworkXFlowSolver`, `FlowSolveResult`, `MassBalanceCheck`, `MassBalanceReport`, `MassBalanceTerm` |
 | **Outputs / scenarios** | `Recorder`, `ScenarioConfig`, `load_scenario_file`, `run_scenario`, `run_scenarios`, `load_and_run` |
@@ -83,7 +83,7 @@ Defined in `pyproject.toml` under `[project.optional-dependencies]`. Combine ext
 | *(none)* | Core runtime: `shrine`, domain packages, scenarios (`numpy`, `pandas`, `pint`, …) | `pip install -e .` |
 | `dev` | `pytest`, coverage, `pre-commit` | `pip install -e ".[dev]"` |
 | `viz` | `matplotlib` — legacy charts, `flow_network.draw`, `inputs.table` plots | `pip install -e ".[viz]"` |
-| `hydrology` | `hydrofunctions` — USGS NWIS helpers (`src/hydrology/streamflow.py`) | `pip install -e ".[hydrology]"` |
+| `hydrology` | `hydrofunctions` — USGS NWIS demo (`examples/nwis_streamflow.py`) | `pip install -e ".[hydrology]"` |
 
 **Recommended for contributors** (framework tests + common legacy tooling):
 
@@ -133,6 +133,9 @@ python examples/climate_loop.py
 # Two catchments → junction → flow solve
 python examples/watershed_run.py
 
+# Single catchment, rational runoff (no network)
+python examples/catchment_run.py
+
 # Scenario file (JSON/YAML)
 python examples/run_from_scenario.py scenarios/baseline_watershed.json
 
@@ -141,6 +144,9 @@ python examples/step_debug.py
 
 # Minimal custom element
 python examples/custom_element.py
+
+# USGS NWIS fetch (optional: pip install -e ".[hydrology]")
+python examples/nwis_streamflow.py
 ```
 
 Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.

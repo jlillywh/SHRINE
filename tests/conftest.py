@@ -27,6 +27,18 @@ class SimpleStore:
     def quantity(self) -> float:
         return self._quantity
 
+    @quantity.setter
+    def quantity(self, amount: float) -> None:
+        self._quantity = amount
+
+    @property
+    def capacity(self) -> float:
+        return self._capacity
+
+    @capacity.setter
+    def capacity(self, value: float) -> None:
+        self._capacity = value
+
     def update(self) -> None:
         self._quantity += self.inflow - self.request
         if self._quantity > self._capacity:

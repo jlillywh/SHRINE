@@ -21,8 +21,10 @@ Related docs:
 
 Reference adapters (import from ``shrine.simulation``):
 
-- `WatershedElement`, `ReservoirElement`, `StorageLike`
+- `WatershedElement`, `CatchmentElement`, `ReservoirElement`, `StorageLike`
 - `ClimateRecorderElement` in `shrine/simulation/elements.py`
+
+For storage adapters, see [§14 `StorageLike` and reservoir overrides](#14-storagelike-and-reservoir-overrides). For a step-by-step **adapter** workflow, see [§15 Adapter authoring checklist](#15-adapter-authoring-checklist). For tests, see [§16 Testing checklist](#16-testing-checklist).
 
 ---
 
@@ -82,6 +84,10 @@ Available in `initialize` / `finalize`:
 | `recorder` | Register output variables in `initialize` |
 | `rng` | Seeded `numpy.random.Generator` when `RunController(seed=…)` |
 | `seed`, `scenario_name`, `metadata` | Run provenance |
+| `units_registry` | Shared pint `UnitRegistry` (from `shrine_units.json` / optional `.txt` defs) |
+| `default_units` | Default unit strings per dimension (`time`, `length`, …) from `src/data/shrine_units.json` |
+
+Loaded once per process via `shrine.units.get_unit_registry()` / `get_default_units()`; `RunController` injects them when building `RunContext`. Use these in adapters that emit or convert physical quantities instead of creating a local registry.
 
 ### `TimestepContext` (one step)
 
@@ -95,6 +101,9 @@ Available in `update` (and `balance_terms`):
 | `inputs` | Named values from `InputManager` |
 | `recorder` | Record outputs for this timestep |
 | `rng` | Same generator as the run |
+| `units_registry`, `default_units` | Same as the run (`run.units_registry`, `run.default_units`) |
+
+When `RunController(strict_units=True)`, every `recorder.record` must have unit metadata (`register(..., unit=)`, `record(..., unit=)`, or a pint `Quantity` value). Bare floats without metadata raise `SimulationError` (`phase=record`).
 
 Read inputs by key (agree on names with scenario files and `InputManager.bind`):
 
@@ -201,8 +210,10 @@ result = RunController(model, input_manager=inputs).run()
 
 - **`register(element_id, element)`** — unique string id (MDL-02).
 - **`register_watershed(...)`** — same as `register` with `metadata["kind"] = "watershed"` for filtering.
+- **`register_catchment(...)`** — same with `metadata["kind"] = "catchment"` for standalone hillslope runoff.
+- **`register_reservoir(...)`** — same with `metadata["kind"] = "reservoir"` for local storage (`ReservoirElement`).
 
-Scenario **overrides** can set element attributes before a run (`ScenarioConfig.overrides`); see [scenarios.md](scenarios.md).
+Scenario **overrides** can set element attributes before a run (`ScenarioConfig.overrides`); reservoir elements use a fixed allowlist — see [§14](#14-storagelike-and-reservoir-overrides) and [scenarios.md](scenarios.md).
 
 ---
 
@@ -287,7 +298,168 @@ Keep adapters **thin**: translate context ↔ legacy API, raise structured error
 
 ---
 
-## 14. Testing checklist
+## 14. `StorageLike` and reservoir overrides
+
+Canonical protocol: **`water_manage.protocols.StorageElement`** (import as `StorageLike` from `shrine.simulation`).
+
+`ReservoirElement` (`shrine/simulation/adapters/reservoir.py`) wraps any object that satisfies **`StorageElement`**: a structural protocol (no inheritance required) with writable `inflow` / `request`, readable `quantity` / `outflow` / `overflow`, and a no-arg `update()` that applies the current inflow and request.
+
+Production storage uses `water_manage.store.Store`. Tests often use `tests.conftest.SimpleStore`, which implements the same surface.
+
+### 14.1 Timestep contract
+
+Each timestep the adapter:
+
+1. Reads `timestep_context.inputs[inflow_key]` (default `inflow`).
+2. Reads `timestep_context.inputs[release_key]` when `release_key` is set (default `release`), else uses `default_release`.
+3. Assigns `store.inflow` and `store.request`, then calls `store.update()` with no arguments.
+4. Records `store.quantity` and `store.outflow` and builds mass-balance terms from inflow, outflow, overflow, and Δstorage.
+
+Custom storage backends must follow that contract; do not call `update(inflow, request)` from the adapter — set attributes first, then call `update()`.
+
+### 14.2 Scenario overrides (SCN-01)
+
+For registered `ReservoirElement` instances, `ScenarioConfig.apply_element_overrides` only accepts these keys (unknown keys raise `SimulationError` at validate phase):
+
+| Target | Keys |
+|--------|------|
+| Element | `default_release`, `inflow_key`, `release_key` |
+| `element.store` | `capacity`, `quantity` |
+
+Example:
+
+```yaml
+overrides:
+  res1:
+    default_release: 5.0
+    capacity: 1.0e6
+```
+
+Constants live in `RESERVOIR_ELEMENT_OVERRIDE_KEYS` and `STORAGE_OVERRIDE_KEYS` in `reservoir.py`. Other element types still use generic `hasattr` / `setattr` override logic.
+
+### 14.3 Implementing a new `StorageLike` backend
+
+- Expose `inflow`, `request`, `outflow`, `overflow` as attributes.
+- Provide `quantity` (property or attribute) readable after `update()`.
+- Implement `update()` to apply the current `inflow` and `request` to internal state.
+- If scenarios should override bounds or initial state, add settable `capacity` and `quantity` (see `Store` in `water_manage/store.py`).
+
+---
+
+## 15. Adapter authoring checklist
+
+Use this **before and while** you add an adapter. It complements [§16 Testing checklist](#16-testing-checklist) (run after the adapter exists).
+
+### 15.1 Pre-flight (decide before coding)
+
+| Question | Guidance |
+|----------|----------|
+| Does legacy code already do the physics? | **Yes** → adapter. **No** → new `Simulatable` ([§12](#12-minimal-custom-element-copy-paste-starter)). |
+| Does the domain object **own a NetworkX graph**? | **Yes** → follow `WatershedElement` ([§8](#8-network--flow-elements-elm-07-flw-01)); call `FlowSolver` in `update`. |
+| Is it **local** runoff/storage with no routing? | **Yes** → follow `CatchmentElement` or `ReservoirElement`; no flow solver in the adapter. |
+| What are the **input keys**? | Match scenario YAML and `InputManager.bind` (e.g. `precipitation`, `evaporation`, `inflow`, `release`). Document defaults in the constructor. |
+| What **outputs** must be recorded? | List `{element_id}.variable` names; register in `initialize`, record in `update`. |
+| Should **mass balance** run? | Storage and routing elements: implement `balance_terms`. Pure recorders or pass-through: optional. |
+| Where does the class live? | `src/shrine/simulation/adapters/<name>.py`; export from `adapters/__init__.py` and `shrine.simulation` `__all__`. |
+
+Reference implementations:
+
+| Adapter | Legacy type | Graph? | Typical inputs | Recorded outputs |
+|---------|-------------|--------|----------------|------------------|
+| `WatershedElement` | `hydrology.watershed.Watershed` | Yes | `precipitation`, `evaporation` | `{id}.outflow`, `{id}.total_supply` |
+| `CatchmentElement` | `hydrology.catchment.Catchment` | No | `precipitation`, `evaporation` | `{id}.outflow` |
+| `ReservoirElement` | `water_manage.store.Store` (via `StorageLike`) | No | `inflow`, `release` (optional) | `{id}.storage`, `{id}.outflow` |
+
+### 15.2 Implementation checklist
+
+Copy an existing adapter file and tick through:
+
+- [ ] **`element_type`** — short string for logs/metadata (e.g. `"catchment"`, `"watershed"`).
+- [ ] **`element_id`** — constructor argument; prefix for all recorder keys and errors.
+- [ ] **Domain import** — use `TYPE_CHECKING` for types; lazy-import legacy class in `__init__` when building a default instance.
+- [ ] **`initialize`** — `recorder.register(f"{element_id}.…")` for every column you will record (optional `unit=` when known).
+- [ ] **`update`** — read `timestep_context.inputs` only; **do not** read files or advance `clock`.
+- [ ] **Missing inputs** — catch `KeyError` (or validate keys) and raise `SimulationError` with `phase=SimulationPhase.INPUT`, `element_id`, `step_index`, `timestamp` (see `WatershedElement` / `CatchmentElement`).
+- [ ] **Delegate** — call legacy methods (`outflow`, `update`, graph + solver); keep physics in domain code, not in the adapter.
+- [ ] **Record** — `recorder.record(...)` after domain state is updated; guard with `if recorder is not None`.
+- [ ] **`balance_terms`** — return `list[MassBalanceTerm]` that sum to ~0 when balanced; store `_last_*` floats during `update` for terms.
+- [ ] **`finalize`** — `pass` unless domain needs teardown.
+- [ ] **Public API** — add to `adapters/__init__.py` `__all__` and `shrine/simulation/__init__.py` `__all__` (stable API).
+- [ ] **Model helper** (optional) — `register_watershed` / `register_catchment` / `register_reservoir` if the kind filter helps callers.
+
+### 15.3 Adapter skeleton
+
+```python
+"""Adapter: legacy MyDomain → Simulatable."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from shrine.simulation.balance import MassBalanceTerm
+from shrine.simulation.context import RunContext, TimestepContext
+from shrine.simulation.errors import SimulationError, SimulationPhase
+
+if TYPE_CHECKING:
+    from mydomain import MyDomain
+
+
+class MyDomainElement:
+    element_type = "my_domain"
+
+    def __init__(
+        self,
+        domain: MyDomain | None = None,
+        *,
+        element_id: str = "my_domain",
+        forcing_key: str = "forcing",
+    ) -> None:
+        if domain is None:
+            from mydomain import MyDomain
+
+            domain = MyDomain()
+        self.domain = domain
+        self.element_id = element_id
+        self.forcing_key = forcing_key
+        self._last_out = 0.0
+
+    def initialize(self, run_context: RunContext) -> None:
+        if run_context.recorder is not None:
+            run_context.recorder.register(f"{self.element_id}.out")
+
+    def update(self, timestep_context: TimestepContext) -> None:
+        try:
+            forcing = float(timestep_context.inputs[self.forcing_key])
+        except KeyError as exc:
+            raise SimulationError(
+                message=f"Missing input: {exc}",
+                phase=SimulationPhase.INPUT,
+                element_id=self.element_id,
+                step_index=timestep_context.step_index,
+                timestamp=timestep_context.current_time,
+            ) from exc
+        self._last_out = self.domain.step(forcing)
+        if timestep_context.recorder is not None:
+            timestep_context.recorder.record(f"{self.element_id}.out", self._last_out)
+
+    def balance_terms(self, timestep_context: TimestepContext) -> list[MassBalanceTerm]:
+        return [MassBalanceTerm(f"{self.element_id}.out", self._last_out)]
+
+    def finalize(self, run_context: RunContext) -> None:
+        pass
+```
+
+Replace `balance_terms` / flow-solver blocks with the pattern from `WatershedElement` or `ReservoirElement` as needed.
+
+### 15.4 Done when
+
+- [ ] `tests/simulation/test_adapters.py` (or focused test module) covers run, outputs, missing input, and balance (if applicable).
+- [ ] Optional: `examples/<name>_run.py` runnable headless after `pip install -e ".[dev]"`.
+- [ ] README or this doc cross-link if the adapter is user-facing.
+
+---
+
+## 16. Testing checklist
 
 1. **Unit test** the element with a short `Clock` and `RunController(..., raise_on_error=False)`.
 2. Assert **outputs** in `result.outputs` or via `recorder.to_dataframe()`.
@@ -307,7 +479,7 @@ def test_demand_element_records_input():
 
 ---
 
-## 15. Debugging
+## 17. Debugging
 
 - **Step mode:** `controller.reset()` then `controller.step()` in a loop — see [step-debugging.md](step-debugging.md).
 - **Scenarios:** run from JSON/YAML — [scenarios.md](scenarios.md).
@@ -315,8 +487,10 @@ def test_demand_element_records_input():
 
 ---
 
-## 16. Checklist before opening a PR
+## 18. Checklist before opening a PR
 
+- [ ] Adapter followed [§15](#15-adapter-authoring-checklist) (if wrapping legacy code)
+- [ ] Reservoir/storage: `StorageLike` contract and override keys documented if applicable ([§14](#14-storagelike-and-reservoir-overrides))
 - [ ] Implements `initialize` / `update` (and `finalize` if needed)
 - [ ] Does not advance the clock inside `update`
 - [ ] Reads forcing via `timestep_context.inputs`, not ad hoc files

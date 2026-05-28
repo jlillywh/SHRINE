@@ -11,6 +11,7 @@ import pandas as pd
 from shrine.simulation.balance import MassBalanceCheck, MassBalanceReport, MassBalanceTerm
 from shrine.simulation.step import StepResult
 from shrine.simulation.context import RunContext, TimestepContext
+from shrine.units import get_default_units, get_unit_registry
 from shrine.simulation.errors import SimulationError, SimulationPhase
 from shrine.simulation.inputs import InputManager
 from shrine.simulation.model import Model
@@ -55,10 +56,15 @@ class RunController:
         scenario: ScenarioConfig | None = None,
         raise_on_error: bool = True,
         verify_mass_balance: bool = True,
+        strict_units: bool = False,
     ) -> None:
         self.model = model
         self.input_manager = input_manager or InputManager()
-        self.recorder = recorder or Recorder(model.clock)
+        self.recorder = recorder or Recorder(
+            model.clock,
+            units_registry=get_unit_registry(),
+            strict_units=strict_units,
+        )
         self.scheduler = scheduler or ElementScheduler()
         self.mass_balance = mass_balance or MassBalanceCheck()
         self.scenario_name = scenario_name or (scenario.name if scenario else None)
@@ -66,6 +72,7 @@ class RunController:
         self.scenario = scenario
         self.raise_on_error = raise_on_error
         self.verify_mass_balance = verify_mass_balance
+        self.strict_units = strict_units
         self._run_context: RunContext | None = None
         self._initialized = False
         self._last_step: StepResult | None = None
@@ -250,6 +257,8 @@ class RunController:
             seed=self.seed,
             metadata=metadata or {},
             recorder=self.recorder,
+            units_registry=get_unit_registry(),
+            default_units=get_default_units(),
         )
         for registered in self.scheduler.execution_order(self.model):
             registered.element.initialize(self._run_context)

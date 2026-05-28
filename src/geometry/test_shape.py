@@ -1,11 +1,11 @@
 from unittest import TestCase
-from geometry.shape import Shape
+
 from geometry.datum import Datum
-from utils.unit_utils import load_units, ureg
+from geometry.shape import Shape
+from shrine.units import get_default_units, get_unit_registry
 
-from data import PACKAGE_DIR as _data_dir
-
-units = load_units(str(_data_dir / "shrine_units.json"))
+units = get_default_units()
+ureg = get_unit_registry()
 
 class TestShape(TestCase):
     def setUp(self):

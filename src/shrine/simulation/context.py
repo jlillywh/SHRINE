@@ -12,6 +12,8 @@ from shrine.simulation.clock import Clock
 from shrine.simulation.rng import make_rng
 
 if TYPE_CHECKING:
+    from pint import UnitRegistry
+
     from shrine.simulation.recorder import Recorder
 
 
@@ -26,10 +28,19 @@ class RunContext:
     metadata: dict[str, Any] = field(default_factory=dict)
     recorder: Recorder | None = None
     rng: np.random.Generator | None = None
+    units_registry: UnitRegistry | None = None
+    default_units: dict[str, str] | None = None
 
     def __post_init__(self) -> None:
         if self.rng is None:
             object.__setattr__(self, "rng", make_rng(self.seed))
+        if self.units_registry is None or self.default_units is None:
+            from shrine.units import get_default_units, get_unit_registry
+
+            if self.units_registry is None:
+                object.__setattr__(self, "units_registry", get_unit_registry())
+            if self.default_units is None:
+                object.__setattr__(self, "default_units", get_default_units())
 
 
 @dataclass
@@ -53,3 +64,11 @@ class TimestepContext:
     @property
     def rng(self) -> np.random.Generator:
         return self.run.rng
+
+    @property
+    def units_registry(self) -> UnitRegistry:
+        return self.run.units_registry
+
+    @property
+    def default_units(self) -> dict[str, str]:
+        return self.run.default_units

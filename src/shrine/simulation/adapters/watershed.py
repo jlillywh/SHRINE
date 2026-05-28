@@ -69,7 +69,7 @@ class WatershedElement:
             ) from exc
 
         total_supply = 0.0
-        for name, catchment in self.watershed.catchments.items():
+        for name, catchment in self.watershed.iter_catchment_items():
             supply = float(catchment.outflow(precip, et))
             self.watershed.update_capacity(name, supply)
             total_supply += supply

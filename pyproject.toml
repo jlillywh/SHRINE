@@ -28,7 +28,7 @@ dev = [
 viz = [
     "matplotlib>=3.7",
 ]
-# USGS NWIS / hydrofunctions (src/hydrology/streamflow.py); not required for shrine.simulation tests
+# USGS NWIS / hydrofunctions (examples/nwis_streamflow.py); not required for shrine.simulation tests
 hydrology = [
     "hydrofunctions>=0.2.4",
 ]

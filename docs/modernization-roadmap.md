@@ -46,8 +46,8 @@
 | Phase | Done | Open (highest leverage) |
 |-------|------|-------------------------|
 | **0** | 0.1–0.13, 0.14–0.16 (**complete**) | — |
-| **1** | 1.1–1.6 (6/17) | **1.17** pytest CI; **1.15** golden-run; **1.7**–**1.8** legacy entry cleanup |
-| **2** | — | **2.8**–**2.9** move domain tests to `tests/`; **2.1**–**2.3** runoff protocols |
+| **1** | 1.1–1.17 (**complete**) | Phase 1 exit criteria (examples, no LegacyModel path, CI) |
+| **2** | 2.1–2.7 | **2.8**–**2.9** domain test migration |
 | **3** | — | **3.1** doc site; **3.4** *partial* — [architecture.md](architecture.md) exists in-repo |
 | **4** | — | Deferred |
 
@@ -143,32 +143,34 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 #### P0 — Deprecate legacy entry points
 
 - [x] **1.6** Mark `src/global_attributes/simulator.py` deprecated; remove or quarantine broken prototype
-- [ ] **1.7** Redirect root `main.py` to an `examples/` script or minimal framework demo (still legacy geometry demo)
-- [ ] **1.8** Move `src/hydrology/streamflow.py` to `examples/` or `scripts/` (NWIS one-off)
+- [x] **1.7** Remove root `main.py` (legacy geometry demo); use `examples/` scripts as the only documented entry points
+- [x] **1.8** Move `src/hydrology/streamflow.py` to `examples/nwis_streamflow.py` (NWIS one-off; requires `.[hydrology]`)
 
 #### P1 — Adapters & elements
 
-- [ ] **1.9** Adapter for `Catchment` / rational runoff (minimal second element type)
-- [ ] **1.10** Document adapter **authoring** checklist in [extending-elements.md](extending-elements.md) *(§14 covers testing only; add pre-flight checklist for new adapters)*
-- [ ] **1.11** `StorageLike` protocol documented in extending-elements; reservoir adapter uses it consistently *(protocol exists in `adapters/reservoir.py`; expand docs + scenario overrides)*
+- [x] **1.9** Adapter for `Catchment` / rational runoff (minimal second element type)
+- [x] **1.10** Document adapter **authoring** checklist in [extending-elements.md](extending-elements.md) *(§15 pre-flight + implementation; §16 testing)*
+- [x] **1.11** `StorageLike` protocol documented in extending-elements; reservoir adapter uses it consistently *(§14 in extending-elements; validated reservoir overrides; `register_reservoir`)*
 
 #### P1 — Units at the boundary
 
-- [ ] **1.12** Load `src/data/shrine_units.json` once; inject `UnitRegistry` via `RunContext` (not import-time load in `src/geometry/shape.py` — partial: package-relative path only)
-- [ ] **1.13** Validate input/output units in `Recorder` metadata
-- [ ] **1.14** Fail fast when adapter returns bare floats without unit metadata (configurable strict mode)
+- [x] **1.12** Load `src/data/shrine_units.json` once; inject `UnitRegistry` via `RunContext` (not import-time load in `src/geometry/shape.py` — partial: package-relative path only)
+- [x] **1.13** Validate input/output units in `Recorder` metadata
+- [x] **1.14** Fail fast when adapter returns bare floats without unit metadata (configurable strict mode)
 
 #### P1 — Testing
 
-- [ ] **1.15** Golden-run test: fixed scenario JSON → hash of `result.outputs` (regression guard)
-- [ ] **1.16** Property test or fuzz-light: mass balance holds for `SimpleStore` + constant inputs
+- [x] **1.15** Golden-run test: fixed scenario JSON → hash of `result.outputs` (regression guard)
+- [x] **1.16** Property test or fuzz-light: mass balance holds for `SimpleStore` + constant inputs
 - [x] **1.17** CI workflow: `pip install -e ".[dev]"` + `pytest tests/`, coverage ≥80% on `shrine` (`.github/workflows/test.yml` + Codecov)
 
 **Phase 1 exit criteria**
 
-- Three documented examples run headless from `pip install -e ".[dev]"` *(five scripts in `examples/`; verify README lists the three “official” quickstart paths)*
-- No recommended path uses `LegacyModel` / manual loops in `src/global_attributes/`
-- CI green on every PR to `master` *(enable **Require status checks** → `pytest` after first green run)*
+| Criterion | Status |
+|-----------|--------|
+| Three documented examples run headless after `pip install -e ".[dev]"` | **Met** — README: `climate_loop.py`, `watershed_run.py`, `catchment_run.py`, `run_from_scenario.py` |
+| No recommended path uses `LegacyModel` / manual loops in `global_attributes/` | **Met** — README points to `examples/` + `shrine.simulation` |
+| CI green on every PR (`pytest` required check) | **Met** — `.github/workflows/test.yml`; enable branch protection on `master` in GitHub settings |
 
 ---
 
@@ -178,16 +180,16 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P0 — Domain protocols (lightweight)
 
-- [ ] **2.1** Define `RunoffModel` protocol: `compute(precip, et) -> Quantity` in `src/hydrology/protocols.py`
-- [ ] **2.2** Refactor `Catchment` to accept `RunoffModel` instance (keep string factory for backward compat, deprecated)
-- [ ] **2.3** Add `RunoffMethod` enum (`SIMPLE`, `AWBM`, …)
-- [ ] **2.4** Define `StorageElement` protocol shared by `Store` / `Reservoir` / simulation adapters
+- [x] **2.1** Define `RunoffModel` protocol: `compute(precip, et) -> Quantity` in `src/hydrology/protocols.py` *(see [hydrology-contracts.md](hydrology-contracts.md); `Rational` / `Awbm` + `tests/hydrology/test_runoff_protocol.py`)*
+- [x] **2.2** Refactor `Catchment` to accept `RunoffModel` instance (keep string factory for backward compat, deprecated)
+- [x] **2.3** Add `RunoffMethod` enum (`SIMPLE`, `AWBM`, …) (`hydrology/enums.py`; default on `Catchment` / `CatchmentElement`)
+- [x] **2.4** Define `StorageElement` protocol shared by `Store` / `Reservoir` / simulation adapters (`water_manage/protocols.py`; `StorageLike` alias in shrine)
 
 #### P1 — Graph model clarity
 
-- [ ] **2.5** Typed node payload dataclass (`CatchmentNode`, `JunctionNode`, `SinkNode`) stored in `graph.nodes[n]["payload"]`
-- [ ] **2.6** Single source of truth: catchments live on graph nodes, not parallel dict (migrate `Watershed.catchments`)
-- [ ] **2.7** `node_type` as enum, not raw string in `flow_network.py`
+- [x] **2.5** Typed node payload dataclass (`CatchmentNode`, `JunctionNode`, `SinkNode`) stored in `graph.nodes[n]["payload"]` (`hydrology/graph_nodes.py`)
+- [x] **2.6** Single source of truth: catchments live on graph nodes, not parallel dict (migrate `Watershed.catchments`)
+- [x] **2.7** `node_type` as enum, not raw string in `flow_network.py` (`GraphNodeType` in `hydrology/enums.py`; `get_node_type` / `set_node_type` in `graph_nodes.py`)
 
 #### P1 — Encapsulation pass (module by module)
 

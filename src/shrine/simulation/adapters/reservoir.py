@@ -2,24 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Any, Protocol
+from typing import Any
+
+from water_manage.protocols import StorageElement
 
 from shrine.simulation.balance import MassBalanceTerm
 from shrine.simulation.context import RunContext, TimestepContext
+from shrine.simulation.errors import SimulationError, SimulationPhase
 
+# Scenario ``overrides`` keys allowed for :class:`ReservoirElement` (SCN-01).
+RESERVOIR_ELEMENT_OVERRIDE_KEYS = frozenset({"default_release", "inflow_key", "release_key"})
+# Keys applied to the wrapped storage object (``element.store``).
+STORAGE_OVERRIDE_KEYS = frozenset({"capacity", "quantity"})
 
-class StorageLike(Protocol):
-    """Minimal storage interface for the reservoir adapter."""
-
-    inflow: float
-    request: float
-    outflow: float
-    overflow: float
-
-    @property
-    def quantity(self) -> float: ...
-
-    def update(self) -> None: ...
+# Shrine public alias; canonical protocol is :class:`water_manage.protocols.StorageElement`.
+StorageLike = StorageElement
 
 
 class ReservoirElement:
@@ -29,7 +26,7 @@ class ReservoirElement:
 
     def __init__(
         self,
-        store: StorageLike,
+        store: StorageElement,
         *,
         element_id: str = "reservoir",
         inflow_key: str = "inflow",
@@ -83,3 +80,24 @@ class ReservoirElement:
 
     def finalize(self, run_context: RunContext) -> None:
         pass
+
+
+def apply_reservoir_element_override(
+    element: ReservoirElement,
+    key: str,
+    value: Any,
+) -> None:
+    """Apply one scenario override to a reservoir element or its storage (validated keys)."""
+    if key in RESERVOIR_ELEMENT_OVERRIDE_KEYS:
+        setattr(element, key, value)
+        return
+    if key in STORAGE_OVERRIDE_KEYS:
+        setattr(element.store, key, value)
+        return
+    allowed = sorted(RESERVOIR_ELEMENT_OVERRIDE_KEYS | STORAGE_OVERRIDE_KEYS)
+    raise SimulationError(
+        message=f"Unknown override {key!r} for reservoir element {element.element_id!r}; "
+        f"allowed: {allowed}",
+        phase=SimulationPhase.VALIDATE,
+        element_id=element.element_id,
+    )

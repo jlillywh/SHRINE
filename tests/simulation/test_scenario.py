@@ -210,6 +210,27 @@ class TestRunScenario:
         assert result.success
         assert store.request == pytest.approx(8.0)
 
+    def test_reservoir_override_unknown_key(self) -> None:
+        store = SimpleStore(50.0)
+        model = Model(clock=Clock("1/1/2019", "1/3/2019"))
+        model.register("res1", ReservoirElement(store, element_id="res1"))
+        sc = ScenarioConfig(
+            name="bad_override",
+            overrides={"res1": {"not_a_field": 1.0}},
+        )
+        with pytest.raises(SimulationError) as exc_info:
+            sc.apply_element_overrides(model)
+        assert exc_info.value.phase == SimulationPhase.VALIDATE
+        assert "not_a_field" in exc_info.value.message
+
+    def test_reservoir_override_store_capacity(self) -> None:
+        store = SimpleStore(50.0, capacity=200.0)
+        model = Model(clock=Clock("1/1/2019", "1/3/2019"))
+        model.register("res1", ReservoirElement(store, element_id="res1"))
+        sc = ScenarioConfig(name="cap", overrides={"res1": {"capacity": 80.0}})
+        sc.apply_element_overrides(model)
+        assert store.capacity == pytest.approx(80.0)
+
 
 class TestBundledScenarios:
     def test_baseline_json_scenario_file(self) -> None:
