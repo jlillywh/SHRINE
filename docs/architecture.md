@@ -91,10 +91,10 @@ Adapters implement **`initialize` / `update` / `finalize`** and call into domain
 
 | Layer | Primary locations | Examples |
 |-------|-------------------|----------|
-| Framework | `shrine/simulation/` | `Model`, `RunController`, `Clock`, `InputManager`, `Recorder`, `NetworkXFlowSolver`, `scenario.py` |
-| Adapters | `shrine/simulation/adapters/`, `elements.py` | `WatershedElement`, `ReservoirElement`, `ClimateRecorderElement` |
-| Domain | `hydrology/`, `water_manage/`, `geometry/`, `hydraulics/`, `inputs/`, `results/`, `data/`, `global_attributes/` | `Watershed`, `Catchment`, `Network`, `Store`, `TimeSeries`, `TimeHistory` |
-| Legacy shell | `global_attributes/` | `LegacyModel`, `LegacyClock` (deprecated; prefer framework types) |
+| Framework | `src/shrine/simulation/` | `Model`, `RunController`, `Clock`, `InputManager`, `Recorder`, `NetworkXFlowSolver`, `scenario.py` |
+| Adapters | `src/shrine/simulation/adapters/`, `elements.py` | `WatershedElement`, `ReservoirElement`, `ClimateRecorderElement` |
+| Domain | `src/hydrology/`, `src/water_manage/`, `src/geometry/`, … | `Watershed`, `Catchment`, `Network`, `Store`, `TimeHistory` |
+| Legacy shell | `src/global_attributes/` | `LegacyModel`, `LegacyClock` (deprecated; prefer framework types) |
 
 **Graph ownership (D2):** the directed graph lives on the **domain** `Watershed` / `Network` object. The framework **`FlowSolver`** operates on that graph when an adapter requests a solve—it does not duplicate topology at `Model` level.
 
@@ -150,7 +150,7 @@ flowchart LR
 
 | Goal | Where to work |
 |------|----------------|
-| New physics with existing class | New adapter under `shrine/simulation/adapters/` |
+| New physics with existing class | New adapter under `src/shrine/simulation/adapters/` |
 | New physics from scratch | New class implementing `Simulatable` (`protocols.py`) |
 | New input type | `InputProvider` in `inputs.py` |
 | New output sink | `Recorder` or wrap via `results.TimeHistory` |
@@ -165,7 +165,7 @@ See [extending-elements.md](extending-elements.md) for step-by-step patterns.
 | Kind | Location |
 |------|----------|
 | Framework unit / acceptance tests | `tests/simulation/` |
-| Domain tests (legacy layout) | `hydrology/`, `water_manage/`, `data/`, … beside modules |
+| Domain tests (legacy layout) | `src/hydrology/`, `src/water_manage/`, … beside modules |
 | Runnable demos | `examples/` |
 
 Run framework tests: `./scripts/run_tests.sh` or `pytest tests/simulation` — see [testing.md](testing.md).

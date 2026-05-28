@@ -12,7 +12,7 @@ bash scripts/run_tests.sh
 # Or manually (note: .venv/bin/python3, not bare pip/python3):
 python3 -m venv .venv
 .venv/bin/python3 -m pip install -U pip
-.venv/bin/python3 -m pip install -e ".[dev]"
+.venv/bin/python3 -m pip install -e ".[dev]"   # or ".[dev,viz,hydrology]" for legacy domain tests — see README
 .venv/bin/python3 -c "import pint; print(pint.__version__)"
 .venv/bin/python3 -m pytest tests/simulation -v
 ```
@@ -25,9 +25,23 @@ If you already have `venv/` from older work, either `source venv/bin/activate` o
 
 **WSL / Cursor:** If errors reference old line numbers (for example `catchment.py` line 1 importing `Awbm`),
 your WSL tree under `~/SHRINE` may still be an old copy. Pull or sync from the machine where you edited
-the repo, then ensure `validation/__init__.py` exists at the project root.
+the repo, then reinstall: `pip install -e ".[dev]"`.
 
-## Layout
+## Layout and imports
+
+Installable code lives under **`src/`** (framework and legacy domain packages). Tests, examples, and scenarios stay at the repo root.
+
+**Do not** set `PYTHONPATH=.` or add the repo root to `sys.path`. After `pip install -e ".[dev]"`, imports resolve via the editable install (see `pyproject.toml` → `[tool.setuptools.packages.find]` with `where = ["src"]`). Pytest is configured the same way (no `pythonpath` override).
+
+| Path | Purpose |
+|------|---------|
+| `src/shrine/simulation/` | Framework package |
+| `src/hydrology/`, `src/water_manage/`, … | Legacy domain packages |
+| `tests/` | Framework and integration tests |
+| `examples/` | Runnable demos |
+| `scenarios/` | Bundled scenario YAML/JSON |
+
+## Test modules
 
 | Path | Purpose |
 |------|---------|
@@ -59,13 +73,13 @@ the repo, then ensure `validation/__init__.py` exists at the project root.
 | [results-recording.md](results-recording.md) | `Recorder` / `TimeHistory` |
 | `tests/simulation/test_recorder.py` | Recorder API incl. `from_dataframe` |
 
-Legacy domain tests (hydrology, `water_manage`, etc.) live beside their modules (`hydrology/test_*.py`). Install project deps first (`pip install -e ".[dev]"`), then run:
+Legacy domain tests live beside their modules under `src/` (for example `src/hydrology/test_*.py`). Install project deps first (`pip install -e ".[dev]"`), then run:
 
 ```bash
-python3 -m pytest hydrology/ water_manage/ data/ inputs/ -q
+.venv/bin/python3 -m pytest src/hydrology/ src/water_manage/ src/data/ src/inputs/ -q
 ```
 
-Pytest uses `--import-mode=importlib` in `addopts` (see `pyproject.toml`) so `inputs/data.py` does not shadow the top-level `data/` package when collecting tests from multiple directories.
+Pytest uses `--import-mode=importlib` in `addopts` (see `pyproject.toml`) so `inputs/data.py` does not shadow the top-level `data` package when collecting tests from multiple directories.
 
 ## Coverage expectations
 
@@ -90,9 +104,9 @@ Pytest uses `--import-mode=importlib` in `addopts` (see `pyproject.toml`) so `in
 
 ```bash
 git status
-git add .gitignore pyproject.toml shrine/ tests/ examples/ docs/simulation-framework-requirements.md docs/testing.md scripts/run_tests.sh
-git add global_attributes/simulator.py global_attributes/test_legacy_simulator.py
-git add -u global_attributes/model.py         # if modified
+git add .gitignore pyproject.toml src/ tests/ examples/ docs/simulation-framework-requirements.md docs/testing.md scripts/run_tests.sh
+git add src/global_attributes/simulator.py src/global_attributes/test_legacy_simulator.py
+git add -u src/global_attributes/model.py         # if modified
 git commit -m "Add shrine.simulation framework with tests and examples.
 
 Introduce the simulation package (clock, model, run controller, flow solve,

@@ -24,18 +24,45 @@ dev = [
     "pytest-cov>=4.0",
     "pre-commit>=3.0",
 ]
-# Plotting (flow_network.draw, results charts) — not required for simulation tests
+# Plotting (flow_network.draw, results charts, legacy inputs.table) — not required for framework tests
 viz = [
     "matplotlib>=3.7",
 ]
+# USGS NWIS / hydrofunctions (src/hydrology/streamflow.py); not required for shrine.simulation tests
+hydrology = [
+    "hydrofunctions>=0.2.4",
+]
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["shrine*", "validation*"]
+where = ["src"]
+include = [
+    "shrine*",
+    "validation*",
+    # Legacy domain (see docs/modernization-roadmap.md §0.10–0.12)
+    "hydrology*",
+    "water_manage*",
+    "geometry*",
+    "inputs*",
+    "data*",
+    "results*",
+    "hydraulics*",
+    "numerical*",
+    "controllers*",
+    "utils*",
+    # Shared legacy support (imported by domain packages and validation shims)
+    "global_attributes*",
+    "testing*",
+]
+
+[tool.setuptools.package-data]
+data = ["*.json", "*.csv", "*.txt"]
+hydrology = ["test_data/*"]
+water_manage = ["test_data/*"]
+geometry = ["test_data/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+# Imports use the editable install (pip install -e ".[dev]"); do not add repo root to PYTHONPATH.
 addopts = "-ra --import-mode=importlib"
 filterwarnings = [
     "ignore::DeprecationWarning",

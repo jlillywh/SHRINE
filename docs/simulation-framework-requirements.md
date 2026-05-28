@@ -337,7 +337,7 @@ Requirements use **MUST** / **SHOULD** / **MAY** (RFC 2119 style).
 ### 10.3 Suggested package layout
 
 ```
-shrine/
+src/shrine/
   __init__.py
   simulation/
     __init__.py

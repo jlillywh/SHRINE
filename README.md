@@ -50,14 +50,15 @@ Requirements and phased delivery: [docs/simulation-framework-requirements.md](do
 
 | Area | Description |
 |------|-------------|
-| `shrine/simulation/` | Framework: clock, model, run controller, inputs, recorder, scenarios |
-| `hydrology/` | Catchments, watersheds, networks |
-| `water_manage/` | Storage, flow networks, operating rules |
-| `inputs/` | Tables, time series, data helpers |
-| `results/` | `TimeHistory` (wraps `Recorder`), charts |
+| `src/shrine/simulation/` | Framework: clock, model, run controller, inputs, recorder, scenarios |
+| `src/hydrology/` | Catchments, watersheds, networks |
+| `src/water_manage/` | Storage, flow networks, operating rules |
+| `src/inputs/`, `src/results/` | Tables, time series, `TimeHistory`, charts |
 | `examples/` | Runnable demos (climate, watershed, scenarios, stepping) |
 | `tests/simulation/` | Framework unit and acceptance tests |
 | `docs/` | Guides (see below) |
+
+Library code is under `src/`; run `pip install -e ".[dev]"` before tests or scripts (see [docs/testing.md](docs/testing.md)).
 
 ## Prerequisites
 
@@ -73,7 +74,30 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 ```
 
-Optional plotting (legacy charts, `flow_network.draw`):
+### Optional dependency extras
+
+Defined in `pyproject.toml` under `[project.optional-dependencies]`. Combine extras in one install (comma-separated inside the brackets).
+
+| Extra | Purpose | Typical command |
+|-------|---------|-----------------|
+| *(none)* | Core runtime: `shrine`, domain packages, scenarios (`numpy`, `pandas`, `pint`, …) | `pip install -e .` |
+| `dev` | `pytest`, coverage, `pre-commit` | `pip install -e ".[dev]"` |
+| `viz` | `matplotlib` — legacy charts, `flow_network.draw`, `inputs.table` plots | `pip install -e ".[viz]"` |
+| `hydrology` | `hydrofunctions` — USGS NWIS helpers (`src/hydrology/streamflow.py`) | `pip install -e ".[hydrology]"` |
+
+**Recommended for contributors** (framework tests + common legacy tooling):
+
+```bash
+pip install -e ".[dev,viz,hydrology]"
+```
+
+**Framework-only CI / quickstart** (matches `./scripts/run_tests.sh`):
+
+```bash
+pip install -e ".[dev]"
+```
+
+Plotting without NWIS:
 
 ```bash
 pip install -e ".[dev,viz]"

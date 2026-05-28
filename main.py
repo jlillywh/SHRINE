@@ -1,9 +1,9 @@
-from utils.unit_utils import load_units, ureg
-from geometry.shape import Shape
+from data import PACKAGE_DIR
 from geometry.cylinder import Cylinder
+from geometry.shape import Shape
+from utils.unit_utils import load_units, ureg
 
-# Load units from JSON file
-units = load_units("./data/shrine_units.json")
+units = load_units(str(PACKAGE_DIR / "shrine_units.json"))
 
 def main():
     # Create an instance of the Shape class
