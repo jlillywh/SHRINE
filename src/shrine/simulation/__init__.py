@@ -11,7 +11,7 @@ Import framework types from this package only — do not rely on submodules
 **Time and context:** :class:`Clock`, :class:`RunContext`, :class:`TimestepContext`
 
 **Elements:** :class:`Simulatable`, :class:`WatershedElement`, :class:`ReservoirElement`,
-:class:`ClimateRecorderElement`, :class:`StorageLike`, :class:`RegisteredElement`
+:class:`ClimateRecorderElement`, :class:`CatchmentElement`, :class:`StorageLike`, :class:`RegisteredElement`
 
 **Inputs:** :class:`InputManager`, :class:`InputProvider`, :class:`ConstantInput`,
 :class:`MonthlyLookupInput`, :class:`StochasticInput`
@@ -36,7 +36,12 @@ from shrine import __version__ as __framework_version__
 
 from shrine.simulation.version import API_VERSION as __api_version__
 
-from shrine.simulation.adapters import ReservoirElement, StorageLike, WatershedElement
+from shrine.simulation.adapters import (
+    CatchmentElement,
+    ReservoirElement,
+    StorageLike,
+    WatershedElement,
+)
 from shrine.simulation.balance import MassBalanceCheck, MassBalanceReport, MassBalanceTerm
 from shrine.simulation.clock import Clock
 from shrine.simulation.context import RunContext, TimestepContext
@@ -93,6 +98,7 @@ __all__ = [
     # Elements and adapters
     "Simulatable",
     "WatershedElement",
+    "CatchmentElement",
     "ReservoirElement",
     "ClimateRecorderElement",
     "StorageLike",

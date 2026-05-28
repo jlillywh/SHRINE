@@ -21,7 +21,7 @@ Related docs:
 
 Reference adapters (import from ``shrine.simulation``):
 
-- `WatershedElement`, `ReservoirElement`, `StorageLike`
+- `WatershedElement`, `CatchmentElement`, `ReservoirElement`, `StorageLike`
 - `ClimateRecorderElement` in `shrine/simulation/elements.py`
 
 ---

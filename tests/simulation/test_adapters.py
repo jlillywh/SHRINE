@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from shrine.simulation import (
+    CatchmentElement,
     Clock,
     ConstantInput,
     InputManager,
@@ -63,6 +64,51 @@ class TestWatershedElement:
             two_catchment_watershed.sink,
         )
         assert result.total_flow == pytest.approx(expected, rel=1e-5)
+
+
+class TestCatchmentElement:
+    def test_run_records_rational_outflow(self, short_clock: Clock) -> None:
+        model = Model(clock=short_clock)
+        model.register_catchment(
+            "c1",
+            CatchmentElement(element_id="c1", area=1000.0, runoff_method="simple"),
+        )
+        inputs = InputManager()
+        inputs.bind("precipitation", ConstantInput(10.0))
+        inputs.bind("evaporation", ConstantInput(1.0))
+        result = RunController(model, input_manager=inputs).run()
+        assert result.success
+        expected = Catchment(area=1000.0, runoff_method="simple").outflow(10.0, 1.0)
+        assert result.outputs["c1.outflow"].iloc[0] == pytest.approx(expected, rel=1e-5)
+
+    def test_balance_terms_close_rational(self) -> None:
+        element = CatchmentElement(element_id="c1", area=1000.0, runoff_method="simple")
+        precip, et = 10.0, 1.0
+        element._last_precip = precip
+        element._last_et = et
+        element._last_outflow = float(element.catchment.outflow(precip, et))
+        moisture_in = (precip - et) * element.catchment.area
+        element._last_moisture_in = moisture_in
+        element._last_internal_loss = moisture_in * element.catchment.runoff_method.loss
+
+        from shrine.simulation.context import RunContext, TimestepContext
+
+        clock = Clock()
+        run = RunContext(model_id="t", clock=clock)
+        terms = element.balance_terms(
+            TimestepContext(run=run, step_index=0, current_time=clock.current_date, dt=clock.time_step)
+        )
+        assert MassBalanceCheck().verify(terms).passed
+
+    def test_missing_evaporation_input(self, short_clock: Clock) -> None:
+        model = Model(clock=short_clock)
+        model.register_catchment("c1", CatchmentElement(element_id="c1"))
+        inputs = InputManager()
+        inputs.bind("precipitation", ConstantInput(1.0))
+        with pytest.raises(SimulationError) as exc_info:
+            RunController(model, input_manager=inputs).run()
+        assert exc_info.value.phase == SimulationPhase.INPUT
+        assert exc_info.value.element_id == "c1"
 
 
 class TestReservoirElement:

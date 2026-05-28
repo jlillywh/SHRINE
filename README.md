@@ -26,7 +26,7 @@ from shrine.simulation import Model, RunController, Clock, WatershedElement
 |----------|---------|
 | **Run** | `Model`, `RegisteredElement`, `RunController`, `RunResult`, `RunSession`, `StepResult`, `ElementScheduler` |
 | **Time** | `Clock`, `RunContext`, `TimestepContext` |
-| **Elements** | `Simulatable`, `WatershedElement`, `ReservoirElement`, `ClimateRecorderElement`, `StorageLike` |
+| **Elements** | `Simulatable`, `WatershedElement`, `CatchmentElement`, `ReservoirElement`, `ClimateRecorderElement`, `StorageLike` |
 | **Inputs** | `InputManager`, `InputProvider`, `ConstantInput`, `MonthlyLookupInput`, `StochasticInput` |
 | **Flow / balance** | `FlowSolver`, `NetworkXFlowSolver`, `FlowSolveResult`, `MassBalanceCheck`, `MassBalanceReport`, `MassBalanceTerm` |
 | **Outputs / scenarios** | `Recorder`, `ScenarioConfig`, `load_scenario_file`, `run_scenario`, `run_scenarios`, `load_and_run` |
@@ -132,6 +132,9 @@ python examples/climate_loop.py
 
 # Two catchments → junction → flow solve
 python examples/watershed_run.py
+
+# Single catchment, rational runoff (no network)
+python examples/catchment_run.py
 
 # Scenario file (JSON/YAML)
 python examples/run_from_scenario.py scenarios/baseline_watershed.json

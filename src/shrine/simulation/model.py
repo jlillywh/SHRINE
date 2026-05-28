@@ -61,6 +61,16 @@ class Model:
         meta = {"kind": "watershed", **metadata}
         self.register(element_id, element, metadata=meta)
 
+    def register_catchment(
+        self,
+        element_id: str,
+        element: Simulatable,
+        **metadata: Any,
+    ) -> None:
+        """Register a standalone catchment element (local runoff, no flow network)."""
+        meta = {"kind": "catchment", **metadata}
+        self.register(element_id, element, metadata=meta)
+
     def get(self, element_id: str) -> Simulatable:
         if element_id not in self._elements:
             raise SimulationError(

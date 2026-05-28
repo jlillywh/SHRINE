@@ -148,7 +148,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P1 — Adapters & elements
 
-- [ ] **1.9** Adapter for `Catchment` / rational runoff (minimal second element type)
+- [x] **1.9** Adapter for `Catchment` / rational runoff (minimal second element type)
 - [ ] **1.10** Document adapter **authoring** checklist in [extending-elements.md](extending-elements.md) *(§14 covers testing only; add pre-flight checklist for new adapters)*
 - [ ] **1.11** `StorageLike` protocol documented in extending-elements; reservoir adapter uses it consistently *(protocol exists in `adapters/reservoir.py`; expand docs + scenario overrides)*
 
