@@ -98,7 +98,25 @@ GitHub Actions (`.github/workflows/test.yml`) on every push/PR to `master`:
 - `pytest tests/ --cov=shrine --cov-report=xml` (80% floor from `pyproject.toml`)
 - Upload `coverage.xml` to Codecov (`CODECOV_TOKEN` repository secret)
 
-Requires **Codecov** repo secret `CODECOV_TOKEN` (see [codecov.io](https://app.codecov.io)).
+### Codecov on pull requests
+
+`codecov.yml` enables **blocking** status checks on each PR:
+
+| Check | Meaning |
+|-------|---------|
+| `codecov/project` | Overall `shrine` coverage vs 80% target (2% threshold) |
+| `codecov/patch` | Coverage on lines changed in the PR (80% target, 5% threshold) |
+
+**One-time setup (repo admin):**
+
+1. Add repository secret **`CODECOV_TOKEN`** from [Codecov → SHRINE → Settings](https://app.codecov.io).
+2. Install the **[Codecov GitHub App](https://github.com/apps/codecov)** on `jlillywh/SHRINE` (needed for check runs and PR comments).
+3. Under **Settings → Branches → `master` → Branch protection**, require status checks:
+   - `pytest` (GitHub Actions job name)
+   - `codecov/project`
+   - `codecov/patch`
+
+Until the token and app are configured, the upload step fails CI (`fail_ci_if_error: true`).
 
 ## Commit checklist
 
