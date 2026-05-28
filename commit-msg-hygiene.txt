@@ -1,0 +1,4 @@
+﻿Improve secret hygiene for optional Maps demo
+
+Ignore apikey.txt files, document a safe example template, load keys from
+GOOGLE_MAPS_API_KEY, and document history purge steps after key incidents.
