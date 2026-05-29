@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from shrine.simulation import Clock, Model, RunController, RunContext
+from shrine.simulation import (
+    Clock,
+    Model,
+    RunContext,
+    RunController,
+)
 from shrine.units import (
     SHRINE_UNITS_JSON,
     get_default_units,
