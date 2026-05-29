@@ -7,6 +7,7 @@ from shrine.simulation import (
     Model,
     RunController,
     ScenarioConfig,
+    build_run_manifest,
     scenario_content_hash,
 )
 from shrine.simulation.manifest import resolve_git_commit
@@ -70,3 +71,14 @@ def test_resolve_git_commit_in_repo() -> None:
     commit = resolve_git_commit()
     if commit is not None:
         assert len(commit) >= 7
+
+
+def test_build_run_manifest_explicit_git_commit() -> None:
+    model = Model(name="Basin", clock=Clock("1/1/2019", "1/2/2019"))
+    metadata = {"model_name": "Basin", "seed": 1}
+
+    with_commit = build_run_manifest(model, metadata, git_commit="deadbeef")
+    assert with_commit["git_commit"] == "deadbeef"
+
+    without_commit = build_run_manifest(model, metadata, git_commit=None)
+    assert without_commit["git_commit"] is None
