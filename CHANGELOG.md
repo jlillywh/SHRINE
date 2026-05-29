@@ -10,6 +10,10 @@ and [docs/releases.md](docs/releases.md).
 
 ## [Unreleased]
 
+### Added
+
+- Contributor guide ([CONTRIBUTING.md](CONTRIBUTING.md)), [Code of Conduct](CODE_OF_CONDUCT.md), and GitHub issue templates (roadmap 3.11)
+
 ## [0.2.0] - 2026-05-28
 
 ### Added

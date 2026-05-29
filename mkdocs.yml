@@ -115,6 +115,8 @@ nav:
       - Metadata, manifest, and RNG: api/autogen/metadata.md
       - Errors and deprecation: api/autogen/errors.md
   - Project:
+      - Contributing: https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md
+      - Code of Conduct: https://github.com/jlillywh/SHRINE/blob/master/CODE_OF_CONDUCT.md
       - Versioning & releases: releases.md
       - PyPI publishing: pypi.md
       - Comparison with other tools: comparison.md

@@ -1,10 +1,10 @@
 # Reference models
 
-Curated **reference scenarios** under [`scenarios/reference/`](../scenarios/reference/) support regression testing, reproducible examples, and future cross-tool comparison. Each case pairs:
+Curated **reference scenarios** under [`scenarios/reference/`](https://github.com/jlillywh/SHRINE/tree/master/scenarios/reference) support regression testing, reproducible examples, and future cross-tool comparison. Each case pairs:
 
 1. A **scenario file** (clock + climate inputs)
-2. A **model topology** in Python ([`tests/reference/models.py`](../tests/reference/models.py))
-3. A **golden output hash** ([`tests/golden/reference/`](../tests/golden/reference/))
+2. A **model topology** in Python ([`tests/reference/models.py`](https://github.com/jlillywh/SHRINE/blob/master/tests/reference/models.py))
+3. A **golden output hash** ([`tests/golden/reference/`](https://github.com/jlillywh/SHRINE/tree/master/tests/golden/reference))
 
 Roadmap item **3.10**.
 

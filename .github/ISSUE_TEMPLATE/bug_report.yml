@@ -1,0 +1,97 @@
+name: Bug report
+description: Report incorrect behavior, test failures, or documentation errors
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please search [existing issues](https://github.com/jlillywh/SHRINE/issues) first.
+        For setup and testing help, see [CONTRIBUTING.md](https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md).
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Clear description of the bug
+      placeholder: When I run X, Y happens instead of Z…
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal commands or code to reproduce
+      placeholder: |
+        1. bash scripts/bootstrap_venv.sh
+        2. .venv/bin/python3 -m pytest tests/simulation/test_foo.py -k …
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output / logs
+      description: Traceback, CI link, or screenshot
+      render: shell
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - shrine.simulation (framework)
+        - hydrology / water_manage (domain)
+        - scenarios / examples
+        - documentation / MkDocs
+        - CI / packaging
+        - other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: SHRINE version or git commit
+      placeholder: e.g. 0.2.0 or abc1234
+    validations:
+      required: false
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: e.g. 3.12.3
+    validations:
+      required: false
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux / WSL
+        - Windows
+        - macOS
+        - other
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I used a virtual environment (`.venv`) and `pip install -e ".[dev]"` per install docs
+          required: false
+        - label: I searched for duplicate issues before filing
+          required: true

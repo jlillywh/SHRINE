@@ -63,6 +63,8 @@ Documentation = "https://jlillywh.github.io/SHRINE/"
 Repository = "https://github.com/jlillywh/SHRINE"
 Issues = "https://github.com/jlillywh/SHRINE/issues"
 Changelog = "https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md"
+Contributing = "https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md"
+CodeOfConduct = "https://github.com/jlillywh/SHRINE/blob/master/CODE_OF_CONDUCT.md"
 
 [tool.setuptools.packages.find]
 where = ["src", "."]

@@ -105,7 +105,7 @@ Upgrade extras after pulling new commits:
 
 ---
 
-## Wheel vs Git clone — what you get
+## Wheel vs Git clone — what you get {#wheel-vs-git-clone--what-you-get}
 
 | Included | Editable clone | PyPI wheel *(future)* |
 |----------|----------------|------------------------|
