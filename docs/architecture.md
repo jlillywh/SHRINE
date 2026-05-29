@@ -10,6 +10,7 @@ Related:
 - [First watershed tutorial](tutorial/first-watershed-model.md) — end-to-end supported path
 - [Simulation framework requirements](simulation-framework-requirements.md) — requirements and phased delivery
 - [Extending elements](extending-elements.md) — adding `Simulatable` elements and adapters
+- [Architecture Decision Records](adr/README.md) — major design decisions (units, flow solver, protocols)
 - [Modernization roadmap](modernization-roadmap.md) — migration checklist
 
 ---

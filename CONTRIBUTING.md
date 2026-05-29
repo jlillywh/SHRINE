@@ -62,7 +62,7 @@ Runs [gitleaks](https://github.com/gitleaks/gitleaks) on staged files. See [docs
 6. Fill in the PR description: what changed, why, and how you tested it.
 7. Address review feedback; maintainers merge when CI is green.
 
-We use **lazy consensus** on non-controversial fixes; larger design changes should reference the [roadmap](docs/modernization-roadmap.md) or propose an ADR (roadmap **3.12**).
+We use **lazy consensus** on non-controversial fixes; larger design changes should reference the [roadmap](docs/modernization-roadmap.md) or add an [ADR](docs/adr/README.md) (roadmap **3.12**).
 
 ---
 

@@ -2,7 +2,7 @@
 
 Typed boundaries for legacy physics under `src/hydrology/` and `src/water_manage/`. The simulation framework (`shrine.simulation`) stays separate; adapters translate between framework context and these contracts.
 
-Related: [modernization-roadmap.md](modernization-roadmap.md) Phase 2, [architecture.md](architecture.md).
+Related: [modernization-roadmap.md](modernization-roadmap.md) Phase 2, [architecture.md](architecture.md), [ADR 0003 — protocol-based contracts](adr/0003-protocol-based-domain-contracts.md).
 
 ## RunoffModel (2.1)
 

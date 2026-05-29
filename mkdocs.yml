@@ -97,7 +97,6 @@ nav:
       - Hydrology contracts: hydrology-contracts.md
       - Extending elements: extending-elements.md
       - Scenarios: scenarios.md
-      - Reference models: reference-models.md
       - Step debugging: step-debugging.md
       - Results & recording: results-recording.md
       - Testing & CI: testing.md
@@ -115,6 +114,7 @@ nav:
       - Metadata, manifest, and RNG: api/autogen/metadata.md
       - Errors and deprecation: api/autogen/errors.md
   - Project:
+      - Architecture Decision Records: adr/README.md
       - Contributing: https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md
       - Code of Conduct: https://github.com/jlillywh/SHRINE/blob/master/CODE_OF_CONDUCT.md
       - Versioning & releases: releases.md
