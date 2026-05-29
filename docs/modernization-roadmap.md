@@ -48,7 +48,7 @@
 | **0** | 0.1–0.13, 0.14–0.16 (**complete**) | — |
 | **1** | 1.1–1.17 (**complete**) | Phase 1 exit criteria (examples, no LegacyModel path, CI) |
 | **2** | 2.1–2.14 (**complete**) | Phase 2 exit criteria |
-| **3** | **3.1**–**3.5**, **3.7**, **3.6** (packaging CI), **3.8**, **3.9** | **3.10**–**3.12** P1 → **3.6** first PyPI upload |
+| **3** | **3.1**–**3.5**, **3.7**, **3.6** (packaging CI), **3.8**, **3.9**, **3.11** | **3.10**, **3.12** P1 → **3.6** first PyPI upload |
 | **4** | — | Deferred |
 
 **Phase 0 exit criteria (status):**
@@ -243,7 +243,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 - [x] **3.8** Install & extras documentation: source path (`pip install -e ".[dev,viz,hydrology]"`, venv / PEP 668), wheel vs clone-for-`scenarios/`; README + [install.md](install.md) aligned for future `pip install shrine[…]` — **do before first PyPI upload**
 - [x] **3.9** Benchmark scenario (performance regression in CI, optional threshold) — `scenarios/benchmark/benchmark_watershed.yaml`, `tests/benchmark/`, `scripts/update_benchmark_baseline.py`
 - [ ] **3.10** Reference model library: `scenarios/reference/` (synthetic basin, published benchmark if available)
-- [ ] **3.11** Contributor guide: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, issue templates
+- [x] **3.11** Contributor guide: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, issue templates
 - [ ] **3.12** ADR folder: `docs/adr/` for major decisions (units, flow solver, protocols)
 
 #### P1 — Interoperability

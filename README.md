@@ -165,7 +165,7 @@ python examples/custom_element.py
 python examples/nwis_streamflow.py
 ```
 
-Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
+Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`, `scenarios/reference/` (see [docs/reference-models.md](docs/reference-models.md)).
 
 ## Documentation
 
@@ -226,6 +226,10 @@ print(result.outputs.head())
 ```
 
 Legacy scripts (e.g. `global_attributes/test_model.py`) remain for reference; prefer `examples/climate_loop.py` and the framework APIs for new work.
+
+## Contributing
+
+We welcome issues and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, and PR workflow. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 

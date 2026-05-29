@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://jlillywh.github.io/SHRINE/
+  - name: Contributing guide
+    url: https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md
