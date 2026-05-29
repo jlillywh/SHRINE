@@ -1,3 +1,11 @@
+"""DEPRECATED: Colocated unittest — migrate to tests/geometry/ (roadmap 2.11)."""
+
+from __future__ import annotations
+
+from testing.colocated import deprecate_colocated_module
+
+deprecate_colocated_module(path="geometry.test_bowl", migrated_to="tests/geometry/ (pending)")
+
 import unittest
 from geometry.bowl import Bowl
 
@@ -15,6 +23,5 @@ class TestBowl(unittest.TestCase):
 
     def testPlot(self):
         """Head loss should be correct"""
-        
+
         self.b.plot_elevation_volume()
- 

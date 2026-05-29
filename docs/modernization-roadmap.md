@@ -47,7 +47,7 @@
 |-------|------|-------------------------|
 | **0** | 0.1–0.13, 0.14–0.16 (**complete**) | — |
 | **1** | 1.1–1.17 (**complete**) | Phase 1 exit criteria (examples, no LegacyModel path, CI) |
-| **2** | 2.1–2.7 | **2.8**–**2.9** domain test migration |
+| **2** | 2.1–2.14 (**complete**) | Phase 2 exit criteria |
 | **3** | — | **3.1** doc site; **3.4** *partial* — [architecture.md](architecture.md) exists in-repo |
 | **4** | — | Deferred |
 
@@ -203,21 +203,21 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P2 — Test migration
 
-- [ ] **2.8** Move `src/hydrology/test_*.py` → `tests/hydrology/` (pytest style; fix `test_junction.py` API drift)
-- [ ] **2.9** Move `src/water_manage/test_*.py` → `tests/water_manage/`
-- [ ] **2.10** Shared fixtures in `tests/conftest.py` for watershed, reservoir, clock *(partial: `short_clock`, `two_catchment_watershed`, `SimpleStore` exist — extend for domain parity)*
-- [ ] **2.11** Mark colocated `unittest` files deprecated; delete when parity reached
+- [x] **2.8** Move `src/hydrology/test_*.py` → `tests/hydrology/` (pytest style; fix `test_junction.py` API drift)
+- [x] **2.9** Move `src/water_manage/test_*.py` → `tests/water_manage/`
+- [x] **2.10** Shared fixtures in `tests/conftest.py` for watershed, reservoir, clock *(partial: `short_clock`, `two_catchment_watershed`, `SimpleStore` exist — extend for domain parity)*
+- [x] **2.11** Mark colocated `unittest` files deprecated; delete when parity reached *(hydrology/water_manage deleted in 2.8–2.9; legacy Model/Simulator moved to `tests/global_attributes/`; remaining `src/*/test_*.py` warn via `testing.colocated`)*
 
 #### P2 — Type checking
 
-- [ ] **2.12** Add `mypy` (or `pyright`) config; strict on `src/shrine/`, basic on domain
-- [ ] **2.13** `from __future__ import annotations` in all domain modules
-- [ ] **2.14** Ruff (or flake8) + format with `ruff format` in CI
+- [x] **2.12** Add `mypy` (or `pyright`) config; strict on `src/shrine/`, basic on domain (`[tool.mypy]` in `pyproject.toml`, CI ``typecheck.yml``)
+- [x] **2.13** `from __future__ import annotations` in all domain modules (`scripts/add_future_annotations.py`; 80 files under `src/{hydrology,water_manage,…}/`)
+- [x] **2.14** Ruff (or flake8) + format with `ruff format` in CI (`[tool.ruff]` in `pyproject.toml`, CI ``lint.yml`` — lint `src/shrine` + `tests`; format check on `src/`, `tests/`, `examples/`, `scripts/`)
 
 **Phase 2 exit criteria**
 
 - `Catchment` and `Watershed` usable only through typed APIs in new tests
-- mypy clean on `src/shrine/`; &lt;N known ignores on domain (documented in `pyproject.toml`)
+- mypy clean on `src/shrine/` (strict, CI); domain uses `from __future__ import annotations` (**2.13**) with basic mypy profile until types are tightened
 
 ---
 

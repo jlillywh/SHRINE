@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from numbers import Real
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 import numpy as np
 import pandas as pd
@@ -13,7 +13,7 @@ from shrine.simulation.errors import SimulationError, SimulationPhase
 from shrine.units import get_unit_registry, unit_identity_key, validate_unit_string
 
 if TYPE_CHECKING:
-    from pint import Quantity, UnitRegistry
+    from pint import UnitRegistry
 
 
 def _is_bare_numeric(value: Any) -> bool:
@@ -98,8 +98,7 @@ class Recorder:
         self._set_unit_metadata(variable, unit)
         if self._strict_units and unit is None and variable not in self._units:
             raise SimulationError(
-                message=f"Output {variable!r} registered without unit metadata "
-                f"(strict_units=True)",
+                message=f"Output {variable!r} registered without unit metadata (strict_units=True)",
                 phase=SimulationPhase.RECORD,
                 details={"variable": variable},
             )
@@ -143,7 +142,7 @@ class Recorder:
             return pd.DataFrame()
         df = pd.DataFrame(self._rows).set_index("time")
         df.index.name = "time"
-        return df
+        return cast(pd.DataFrame, df)
 
     @property
     def units(self) -> dict[str, str]:
@@ -164,7 +163,7 @@ class Recorder:
                 frame = frame.rename(columns={frame.columns[0]: "time"})
             frame = frame.set_index("time")
         for ts, row in frame.iterrows():
-            self.begin_timestep(pd.Timestamp(ts))
+            self.begin_timestep(pd.Timestamp(cast(Any, ts)))
             for col, val in row.items():
                 if pd.notna(val):
                     self.record(str(col), val)

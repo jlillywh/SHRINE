@@ -2,8 +2,6 @@
 
 **S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**nvironments..
 
-![Athena's aegis (mythology)](https://upload.wikimedia.org/wikipedia/en/thumb/d/d6/Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg/330px-Douriscup_83d40m_Athene_aegisWingedLionessOwl_pythonVomitsJason_fleeceInTree_Vatican.jpg)
-
 Open-source integrated water-resources modeling library (Python). SHRINE combines legacy domain modules (hydrology, storage, flow networks) with **`shrine.simulation`** for calendar-driven runs, mass balance, scenario files, and structured outputs.
 
 Naming details: [docs/project-name.md](docs/project-name.md).

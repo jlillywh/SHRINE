@@ -63,12 +63,18 @@ class TimestepContext:
 
     @property
     def rng(self) -> np.random.Generator:
+        if self.run.rng is None:
+            raise RuntimeError("RunContext.rng is not initialized")
         return self.run.rng
 
     @property
     def units_registry(self) -> UnitRegistry:
+        if self.run.units_registry is None:
+            raise RuntimeError("RunContext.units_registry is not initialized")
         return self.run.units_registry
 
     @property
     def default_units(self) -> dict[str, str]:
+        if self.run.default_units is None:
+            raise RuntimeError("RunContext.default_units is not initialized")
         return self.run.default_units

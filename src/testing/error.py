@@ -1,21 +1,22 @@
+from __future__ import annotations
+
 
 class Error(Exception):
-    """Base class for exceptions found in SHRINE.
-    """
-    
+    """Base class for exceptions found in SHRINE."""
+
     pass
 
 
 class WrongUnits(Error):
     def __init__(self, m):
         self.message = m
-    
+
     pass
 
 
 class NodeNotFound(Error):
-    """Node is not found when searching a list
-    """
+    """Node is not found when searching a list"""
+
     pass
 
 
@@ -23,7 +24,7 @@ class NodeAlreadyExists(Error):
     """Node already exists and you are looking to create a
     unique one.
     """
-    
+
     pass
 
 

@@ -1,13 +1,25 @@
+"""DEPRECATED: Colocated unittest — migrate to tests/global_attributes/ (roadmap 2.11)."""
+
+from __future__ import annotations
+
+from testing.colocated import deprecate_colocated_module
+
+deprecate_colocated_module(
+    path="global_attributes.test_clock",
+    migrated_to="tests/global_attributes/ (pending)",
+)
+
 import unittest
 import numpy as np
 import pandas as pd
 from global_attributes.clock import Clock
 
+
 class TestClockCase(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
-        self.start_date = pd.Timestamp('4/28/1975')
-        self.end_date = pd.Timestamp('10/15/1988')
+        self.start_date = pd.Timestamp("4/28/1975")
+        self.end_date = pd.Timestamp("10/15/1988")
         self.duration = self.end_date - self.start_date
         self.c = Clock(self.start_date, self.end_date)
 
@@ -18,34 +30,33 @@ class TestClockCase(unittest.TestCase):
     def testEndTime(self):
         """End Time should be 100 days from start"""
         self.assertEqual(self.c.end_date, self.end_date)
-        
+
     def testClockReset(self):
         days = 17
         for d in range(0, days):
             self.c.advance()
-            
+
         self.c.reset()
         self.assertEqual(self.c.current_date, self.c.start_date)
-        
+
     def testAdvanceClock(self):
         """Make sure that the attributes are correct after
         advancing the clock for a while.
         """
-        clock = Clock('1/1/2019', '1/10/2019')
-        
+        clock = Clock("1/1/2019", "1/10/2019")
+
         realizations = 10
-        
+
         for r in range(0, realizations):
             clock.reset()
             while clock.running:
                 clock.advance()
-        
+
         self.assertEqual(clock.current_date, clock.end_date)
-        
 
     def testRemainingTime(self):
         """Check to see if remaining time is correct after one clock advancement"""
-        num_days = np.random.randint(1,50)
+        num_days = np.random.randint(1, 50)
         for t in range(num_days):
             self.c.advance()
         current_date = pd.Timestamp(self.start_date + pd.Timedelta(days=num_days))
@@ -55,14 +66,14 @@ class TestClockCase(unittest.TestCase):
 
     def testChangeDuration(self):
         """Make sure the end time is correct after changing the duration"""
-        self.c.set_duration('10 days')
+        self.c.set_duration("10 days")
         end_date = self.start_date + pd.Timedelta(days=10)
-        self.assertEqual(self.c.remaining_time, pd.Timedelta('10 days'))
+        self.assertEqual(self.c.remaining_time, pd.Timedelta("10 days"))
         self.assertEqual(self.c.end_date, end_date)
 
     def testChangeStart(self):
         """Make sure the end date is correct after changing the start date"""
-        start_date = '4/15/2010'
+        start_date = "4/15/2010"
         self.c.set_start_date(start_date)
         num_days = np.random.randint(1, 50)
         for t in range(num_days):
@@ -71,6 +82,5 @@ class TestClockCase(unittest.TestCase):
         self.assertEqual(current_date, self.c.current_date)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

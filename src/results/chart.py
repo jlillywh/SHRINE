@@ -1,4 +1,8 @@
-import matplotlib.pyplot as plt; plt.rcdefaults()
+from __future__ import annotations
+
+import matplotlib.pyplot as plt
+
+plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
 from global_attributes.shrine_object import ShrineObject
@@ -6,35 +10,35 @@ from pandas import Series
 
 
 class Chart(ShrineObject):
-    """Class to create a generic charting object
-    """
+    """Class to create a generic charting object"""
+
     def __init__(self):
         ShrineObject.__init__(self)
-        self.update_title(self.name + ' Chart')
-        self.ylabel = ''
-        self.xlabel = ''
-        self.unit = ''
+        self.update_title(self.name + " Chart")
+        self.ylabel = ""
+        self.xlabel = ""
+        self.unit = ""
         self.outputs = []
         self.output_names = []
         self.num_outputs = 0
-        self.rotate_labels = 'horizontal'
+        self.rotate_labels = "horizontal"
         self.space_bottom = 0.1
-        
+
     def show(self):
         self.num_outputs = len(self.outputs)
         self.y_pos = np.arange(self.num_outputs)
         plt.ylabel(self.ylabel)
         plt.xlabel(self.xlabel)
-        
+
         plt.show()
 
     def update_title(self, new_title):
         self.title = new_title
         plt.title(new_title)
-        
+
     def rotation(self, list_of_labels):
         """Determins rotation based on longest item
-            in the list
+        in the list
         """
         try:
             lst_sorted = sorted(list_of_labels, key=len)

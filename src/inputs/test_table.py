@@ -1,5 +1,14 @@
+"""DEPRECATED: Colocated unittest — migrate to tests/inputs/ (roadmap 2.11)."""
+
+from __future__ import annotations
+
+from testing.colocated import deprecate_colocated_module
+
+deprecate_colocated_module(path="inputs.test_table", migrated_to="tests/inputs/ (pending)")
+
 import unittest
-#from data.fileman import FileManager
+
+# from data.fileman import FileManager
 from inputs.table import Table
 
 
@@ -10,12 +19,12 @@ class TestAllocator(unittest.TestCase):
         y = [0.0, 35.0, 48.0]
         self.table = Table(x, y)
         self.decimals = 3
-        
+
     def tearDown(self):
         """Destroy the object after running tests"""
         del self.table
         self.decimals
-        
+
     def test_Interpolate_Y(self):
         x_value = 12.0
         y_expected = 37.60
@@ -27,6 +36,7 @@ class TestAllocator(unittest.TestCase):
         x_expected = 3.4286
         x_result = self.table.lookup_x(y_value)
         self.assertAlmostEqual(x_expected, x_result, self.decimals)
+
 
 # fm = FileManager(REPO_ROOT / "data_external")
 # filename = 'data.xlsx'

@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pytest
 
+from hydrology.catchment import Catchment
+from hydrology.watershed import Watershed
 from shrine.simulation import (
     Clock,
     Model,
@@ -17,11 +19,9 @@ from shrine.simulation import (
     run_scenario,
     run_scenarios,
 )
-from shrine.simulation.errors import SimulationError, SimulationPhase
-from hydrology.catchment import Catchment
-from hydrology.watershed import Watershed
-from tests.conftest import SimpleStore
 from shrine.simulation.adapters import ReservoirElement
+from shrine.simulation.errors import SimulationError, SimulationPhase
+from tests.conftest import SimpleStore
 
 
 def _watershed_model() -> Model:
@@ -195,7 +195,10 @@ class TestRunScenario:
         assert len(results) == 2
         assert results[0].metadata["scenario_name"] == "a"
         assert results[1].metadata["scenario_name"] == "b"
-        assert results[0].outputs["basin.outflow"].iloc[0] != results[1].outputs["basin.outflow"].iloc[0]
+        assert (
+            results[0].outputs["basin.outflow"].iloc[0]
+            != results[1].outputs["basin.outflow"].iloc[0]
+        )
 
     def test_element_override_release(self) -> None:
         store = SimpleStore(50.0)

@@ -8,7 +8,7 @@ import re
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
     from pint import UnitRegistry
@@ -28,7 +28,7 @@ SHRINE_UNITS_TXT = _DATA_DIR / "shrine_units.txt"
 def get_default_units() -> dict[str, str]:
     """Load default unit strings from ``shrine_units.json`` (once per process)."""
     with SHRINE_UNITS_JSON.open(encoding="utf-8") as file:
-        data: dict[str, str] = json.load(file)
+        data = cast(dict[str, str], json.load(file))
     return data
 
 
@@ -52,7 +52,7 @@ def load_units(filepath: str | Path | None = None) -> dict[str, str]:
     if path.resolve() == SHRINE_UNITS_JSON.resolve():
         return dict(get_default_units())
     with path.open(encoding="utf-8") as file:
-        return json.load(file)
+        return cast(dict[str, str], json.load(file))
 
 
 def reset_unit_caches() -> None:

@@ -6,8 +6,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from shrine.simulation import Model, WatershedElement, load_and_run
 from hydrology.watershed import Watershed
+from shrine.simulation import Model, WatershedElement, load_and_run
 
 
 def build_model() -> Model:

@@ -1,17 +1,19 @@
+from __future__ import annotations
+
 from water_manage.store import Store
 
 
 class StoreArray:
     """Create an array of store objects
-    
-        Attributes
-        ----------
-        
-        Methods
-        -------
-        update()
-        set_quantities()
-        set_capacity()
+
+    Attributes
+    ----------
+
+    Methods
+    -------
+    update()
+    set_quantities()
+    set_capacity()
     """
 
     def __init__(self, count=3):
@@ -20,7 +22,7 @@ class StoreArray:
         """
         self.stores = []
         self.count = count
-    
+
         i = 0
         while i < self.count:
             self.stores.append(Store(0.0))
@@ -40,9 +42,9 @@ class StoreArray:
     def set_quantities(self, quantity_array):
         """Set the quantities all at once using an array input.
 
-            Parameters
-            ----------
-            quantity_array : Array[float]
+        Parameters
+        ----------
+        quantity_array : Array[float]
         """
         for i in range(self.count):
             self.stores[i].quantity = quantity_array[i]
@@ -89,15 +91,15 @@ class StoreArray:
     def transfer(self, from_index, to_index, amount):
         """Used to transfer material from one store in the array to another
 
-            Parameters
-            ----------
-            from_index : int
-                The index of the array of the store that you want to move
-                material from
-            to_index : int
-                The index that you want material moved to.
-            amount : Quantity (rate)
-            
+        Parameters
+        ----------
+        from_index : int
+            The index of the array of the store that you want to move
+            material from
+        to_index : int
+            The index that you want material moved to.
+        amount : Quantity (rate)
+
         """
         i = 0
         while i < self.count:

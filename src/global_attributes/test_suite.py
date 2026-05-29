@@ -1,59 +1,30 @@
-import unittest   # second test
+"""DEPRECATED legacy unittest aggregator (roadmap 2.11).
 
-# Import all tests here
-from global_attributes.test_shrine_object import TestShrineObject
-from global_attributes.test_clock import TestClockCase
-from controllers.test_controller import TestController
-from geometry.test_shape import TestShape, TestPoint
-from geometry.test_bowl import TestBowl
-from geometry.test_circle import TestCircle
-from hydraulics.test_pipe import TestPipe
-from hydrology.test_awbm import TestBucketCase, TestSurfaceStore
-from hydrology.test_catchment import TestCatchment
-# TODO add test for: from hydrology.test_junction import ________
-from hydrology.test_watershed import TestWatershed
-from hydrology.test_wgen import TestWGEN
-from inputs.test_data import TestScalar, TestVector
-# TODO add test for: from inputs.test_table import _______
-# TODO - add new test for: from inputs.test_timeseries import _______
-from water_manage.test_allocator import TestAllocator
-from water_manage.test_network import TestMyNetwork
-from water_manage.test_reservoir import TestReservoir
-from water_manage.test_store import TestOutflowsCase
-from water_manage.test_stores_array import TestStoresCase
+Hydrology and water_manage colocated tests were removed after migration to
+``tests/hydrology/`` and ``tests/water_manage/``. Other ``src/*/test_*.py``
+modules remain deprecated until migrated.
+
+Run the canonical suite::
+
+    pytest tests/
+"""
+
+from __future__ import annotations
+
+import sys
+
+from testing.colocated import deprecate_colocated_module
+
+deprecate_colocated_module(
+    path="global_attributes.test_suite",
+    migrated_to="tests/hydrology/, tests/water_manage/, tests/global_attributes/",
+)
 
 
-def suite():
-    """
-        Gather all the tests from this module in a test suite.
-    """
-    test_suite = unittest.TestSuite()
-    test_suite.addTest(unittest.makeSuite(TestShrineObject))
-    test_suite.addTest(unittest.makeSuite(TestClockCase))
-    test_suite.addTest(unittest.makeSuite(TestController))
-    test_suite.addTest(unittest.makeSuite(TestShape))
-    test_suite.addTest(unittest.makeSuite(TestBowl))
-    test_suite.addTest(unittest.makeSuite(TestCircle))
-    test_suite.addTest(unittest.makeSuite(TestPoint))
-    test_suite.addTest(unittest.makeSuite(TestPipe))
-    test_suite.addTest(unittest.makeSuite(TestBucketCase))
-    test_suite.addTest(unittest.makeSuite(TestSurfaceStore))
-    test_suite.addTest(unittest.makeSuite(TestCatchment))
-    test_suite.addTest(unittest.makeSuite(TestWatershed))
-    test_suite.addTest(unittest.makeSuite(TestWGEN))
-    test_suite.addTest(unittest.makeSuite(TestScalar))
-    test_suite.addTest(unittest.makeSuite(TestVector))
-    test_suite.addTest(unittest.makeSuite(TestReservoir))
-    test_suite.addTest(unittest.makeSuite(TestStoresCase))
-    test_suite.addTest(unittest.makeSuite(TestOutflowsCase))
-    test_suite.addTest(unittest.makeSuite(TestAllocator))
-    test_suite.addTest(unittest.makeSuite(TestMyNetwork))
-    return test_suite
+def main() -> int:
+    print(__doc__)
+    return 1
 
 
-mySuit = suite()
-
-runner = unittest.TextTestRunner(verbosity=3)
-runner.run(mySuit)
-
-
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,3 +1,11 @@
+"""DEPRECATED: Colocated pytest — migrate to tests/data/ (roadmap 2.11)."""
+
+from __future__ import annotations
+
+from testing.colocated import deprecate_colocated_module
+
+deprecate_colocated_module(path="data.test_fileManager", migrated_to="tests/data/ (pending)")
+
 from pathlib import Path
 
 import pytest

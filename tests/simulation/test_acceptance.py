@@ -5,6 +5,8 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
+from hydrology.catchment import Catchment
+from hydrology.watershed import Watershed
 from shrine.simulation import (
     Clock,
     ConstantInput,
@@ -15,10 +17,6 @@ from shrine.simulation import (
     SimulationPhase,
     WatershedElement,
 )
-from hydrology.catchment import Catchment
-from hydrology.watershed import Watershed
-from tests.conftest import SimpleStore
-from shrine.simulation.adapters import ReservoirElement
 
 
 class _CounterElement:
@@ -59,6 +57,7 @@ def test_at02_dummy_element_output_count() -> None:
 
 
 # AT-04 / AT-05 covered in test_adapters
+
 
 # AT-06
 def test_at06_duplicate_id_fails_validate() -> None:

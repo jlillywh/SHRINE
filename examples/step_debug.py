@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from hydrology.watershed import Watershed
 from shrine.simulation import (
     Clock,
     ConstantInput,
@@ -11,7 +12,6 @@ from shrine.simulation import (
     RunController,
     WatershedElement,
 )
-from hydrology.watershed import Watershed
 
 
 def main() -> None:

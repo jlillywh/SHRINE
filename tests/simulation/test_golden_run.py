@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
+from hydrology.watershed import Watershed
 from shrine.simulation import (
     Clock,
     Model,
@@ -14,7 +13,6 @@ from shrine.simulation import (
     run_scenario,
 )
 from shrine.simulation.golden import outputs_content_hash
-from hydrology.watershed import Watershed
 from tests.path_fixtures import REPO_ROOT
 
 GOLDEN_DIR = Path(__file__).resolve().parent.parent / "golden"

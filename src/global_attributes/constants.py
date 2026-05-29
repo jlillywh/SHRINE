@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 import pint
@@ -7,7 +9,7 @@ from global_attributes.set_label import SetLabel
 
 # Set up the array label sets used for the model
 ArrayLabelSet = SetLabel()
-Months = ArrayLabelSet.get_list('Months')
+Months = ArrayLabelSet.get_list("Months")
 
 # Set up the units of measurement database
 # I am using auto reduction of dimensions but this could be expensive so be aware!
@@ -22,11 +24,11 @@ if _units_txt.is_file():
 WATER_DENSITY = 1.102 * U.g / U.cm**3
 
 # Water kinematic viscosity at 60 deg F
-water_temp = U.Quantity(60.0, 'degF').to('degC')
-water=IAPWS97(T=water_temp.magnitude+273.15, x=0.0)
+water_temp = U.Quantity(60.0, "degF").to("degC")
+water = IAPWS97(T=water_temp.magnitude + 273.15, x=0.0)
 
 # Kinematic viscosity in units of m2/s
-nu = U.Quantity(water.Liquid.nu, 'm^2/s').magnitude
+nu = U.Quantity(water.Liquid.nu, "m^2/s").magnitude
 
 # Default time step
 TS = 1 * U.day

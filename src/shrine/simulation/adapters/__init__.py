@@ -2,8 +2,8 @@
 
 from shrine.simulation.adapters.catchment import CatchmentElement
 from shrine.simulation.adapters.reservoir import ReservoirElement, StorageLike
-from water_manage.protocols import StorageElement
 from shrine.simulation.adapters.watershed import WatershedElement
+from water_manage.protocols import StorageElement
 
 __all__ = [
     "CatchmentElement",

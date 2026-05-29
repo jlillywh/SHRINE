@@ -10,8 +10,7 @@ from shrine.simulation.context import TimestepContext
 class InputProvider(Protocol):
     """Provides a value at the current simulation time."""
 
-    def value_at(self, context: TimestepContext) -> Any:
-        ...
+    def value_at(self, context: TimestepContext) -> Any: ...
 
 
 class ConstantInput:
@@ -46,7 +45,7 @@ class StochasticInput:
         self.high = high
 
     def value_at(self, context: TimestepContext) -> float:
-        rng = context.run.rng
+        rng = context.rng
         if self.distribution == "normal":
             return float(rng.normal(self.loc, self.scale))
         if self.distribution == "uniform":

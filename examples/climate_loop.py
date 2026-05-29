@@ -7,15 +7,15 @@ Uses synthetic monthly evaporation and precipitation (no Excel required).
 
 from __future__ import annotations
 
+from results.time_history import TimeHistory
 from shrine.simulation import (
-    Clock,
     ClimateRecorderElement,
+    Clock,
     InputManager,
     Model,
     MonthlyLookupInput,
     RunController,
 )
-from results.time_history import TimeHistory
 
 # Example monthly rates (inches/day), keyed by month name — same pattern as Vector + Months labels.
 EVAPORATION_BY_MONTH = {

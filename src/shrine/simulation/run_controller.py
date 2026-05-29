@@ -2,23 +2,27 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
-from shrine.simulation.balance import MassBalanceCheck, MassBalanceReport, MassBalanceTerm
-from shrine.simulation.step import StepResult
+from shrine.simulation.balance import (
+    MassBalanceCheck,
+    MassBalanceReport,
+    MassBalanceTerm,
+)
 from shrine.simulation.context import RunContext, TimestepContext
-from shrine.units import get_default_units, get_unit_registry
 from shrine.simulation.errors import SimulationError, SimulationPhase
 from shrine.simulation.inputs import InputManager
+from shrine.simulation.manifest import build_run_manifest
+from shrine.simulation.metadata import RunTimer, build_run_metadata, enrich_run_metadata
 from shrine.simulation.model import Model
 from shrine.simulation.recorder import Recorder
 from shrine.simulation.scheduler import ElementScheduler
-from shrine.simulation.metadata import RunTimer, build_run_metadata, enrich_run_metadata
-from shrine.simulation.manifest import build_run_manifest
+from shrine.simulation.step import StepResult
+from shrine.units import get_default_units, get_unit_registry
 
 if TYPE_CHECKING:
     from shrine.simulation.scenario import ScenarioConfig
@@ -108,9 +112,7 @@ class RunController:
                 status="success",
             )
             metadata["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
-            manifest = build_run_manifest(
-                self.model, metadata, scenario=self.scenario
-            )
+            manifest = build_run_manifest(self.model, metadata, scenario=self.scenario)
             metadata["manifest"] = manifest
             return RunResult(
                 success=True,
@@ -126,9 +128,7 @@ class RunController:
                 status="failed",
             )
             metadata["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
-            manifest = build_run_manifest(
-                self.model, metadata, scenario=self.scenario
-            )
+            manifest = build_run_manifest(self.model, metadata, scenario=self.scenario)
             metadata["manifest"] = manifest
             result = RunResult(
                 success=False,
