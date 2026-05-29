@@ -165,7 +165,7 @@ python examples/custom_element.py
 python examples/nwis_streamflow.py
 ```
 
-Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
+Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`, `scenarios/reference/` (see [docs/reference-models.md](docs/reference-models.md)).
 
 ## Documentation
 

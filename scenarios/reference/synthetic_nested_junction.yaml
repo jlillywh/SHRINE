@@ -1,0 +1,21 @@
+# REF-NJ: nested junctions C1→J1, C2→J5→J1 → sink
+
+name: synthetic_nested_junction
+seed: 42
+
+clock:
+  start_date: "1/1/2019"
+  end_date: "1/14/2019"
+  time_step: "1 days"
+
+inputs:
+  precipitation:
+    type: constant
+    value: 12.0
+  evaporation:
+    type: constant
+    value: 0.5
+
+metadata:
+  description: "Synthetic nested-junction routing reference"
+  reference_id: REF-NJ

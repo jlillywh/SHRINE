@@ -6,6 +6,8 @@ Regression digests for `result.outputs` from fixed scenario files under `scenari
 |----------|-----------|
 | `baseline_watershed.json` | `baseline_watershed.outputs.sha256` |
 
+Reference scenarios (`scenarios/reference/`): hashes under `reference/` — see [reference/README.md](reference/README.md).
+
 Regenerate after intentional output changes:
 
 ```bash
