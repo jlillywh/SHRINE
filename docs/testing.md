@@ -141,6 +141,18 @@ Configured in `pyproject.toml` (roadmap **2.14**):
 
 CI: `.github/workflows/lint.yml` on every push/PR.
 
+### Documentation site (MkDocs)
+
+Configured in `mkdocs.yml` (roadmap **3.1**):
+
+```bash
+pip install -e ".[docs]"
+mkdocs serve                    # http://127.0.0.1:8000
+./scripts/build_docs.sh         # strict build to site/
+```
+
+CI: `.github/workflows/docs.yml` builds on every PR; deploys to GitHub Pages on push to `master`.
+
 ## Coverage expectations
 
 - **`shrine.simulation`**: target **≥ 85%** line coverage before merging simulation work.
