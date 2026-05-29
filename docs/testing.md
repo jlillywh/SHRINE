@@ -156,6 +156,15 @@ API reference pages under `docs/api/autogen/` are generated from `shrine.simulat
 
 CI: `.github/workflows/docs.yml` builds on every PR; deploys to GitHub Pages on push to `master`.
 
+### PyPI package (roadmap **3.6**)
+
+| Workflow | Purpose |
+|----------|---------|
+| `.github/workflows/package.yml` | Build wheel/sdist; smoke install on Ubuntu, Windows, macOS |
+| `.github/workflows/publish.yml` | Upload to PyPI when a GitHub Release is published |
+
+See [PyPI & releases](pypi.md) for `pip install shrine` and maintainer trusted-publisher setup.
+
 ## Coverage expectations
 
 - **`shrine.simulation`**: target **≥ 85%** line coverage before merging simulation work.

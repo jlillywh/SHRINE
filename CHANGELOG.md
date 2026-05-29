@@ -1,22 +1,39 @@
 # Changelog
 
-All notable changes to this project are documented here.
+All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 for `shrine.__version__`. The simulation public API (`shrine.simulation.__all__`) is
-versioned separately as `shrine.simulation.__api_version__`; see [docs/api-stability.md](docs/api-stability.md).
+versioned separately as `shrine.simulation.__api_version__`; see [docs/api-stability.md](docs/api-stability.md)
+and [docs/releases.md](docs/releases.md).
 
 ## [Unreleased]
+
+## [0.2.0] - 2026-05-28
 
 ### Added
 
 - `RunSession` context manager for step-mode runs (`with RunSession(controller):` / `controller.session()`)
-- Run manifest on `RunResult` (`manifest` field: git commit, scenario hash, element list, timestamps)
-- Scenario load-time validation: unknown keys rejected; optional `unit` fields checked with pint (`scenario.py`)
-- API stability policy ([docs/api-stability.md](docs/api-stability.md))
-- `warn_api_deprecated()` helper in `shrine.simulation`
+- Run manifest on `RunResult` (`manifest`: git commit, scenario hash, element list, timestamps)
+- Scenario load-time validation: unknown keys rejected; optional `unit` fields checked with pint
+- API stability policy ([docs/api-stability.md](docs/api-stability.md)); `warn_api_deprecated()` helper
 - Published public API in `shrine.simulation.__init__` (`__api_version__` = `1.0`)
+- MkDocs Material documentation site ([https://jlillywh.github.io/SHRINE/](https://jlillywh.github.io/SHRINE/)); `docs` extra and `docs.yml` CI
+- Auto-generated API reference under `docs/api/autogen/` (`scripts/gen_api_reference.py`, mkdocstrings)
+- Tutorial: [Build your first watershed model](docs/tutorial/first-watershed-model.md) (`examples/tutorial_watershed.py`, `scenarios/tutorial_watershed.yaml`)
+- Architecture and [comparison](docs/comparison.md) pages on the doc site
+- Hydrology contracts: `RunoffModel` protocol, `RunoffMethod` enum; `Catchment` accepts injectable runoff models
+- Water-management contracts: `StorageElement` protocol; typed graph node payloads; `GraphNodeType` enum
+- Domain tests under `tests/hydrology/` and `tests/water_manage/` (pytest; colocated `src/*/test_*.py` deprecated)
+- CI: mypy strict on `src/shrine/`, Ruff lint/format, Codecov coverage, cross-platform package smoke install (`package.yml`)
+- Versioning and release policy ([docs/releases.md](docs/releases.md))
+- PyPI packaging metadata and build workflows ([docs/pypi.md](docs/pypi.md)); first PyPI upload deferred
+
+### Changed
+
+- `Watershed` catchments live on NetworkX graph nodes (single source of truth; migrates parallel dict)
+- `flow_network` node types use `GraphNodeType` instead of raw strings
 
 ### Removed
 
@@ -26,13 +43,18 @@ versioned separately as `shrine.simulation.__api_version__`; see [docs/api-stabi
 
 - `global_attributes.Model` — use `LegacyModel` or `shrine.simulation.Model` (warns on `Model()`)
 - `global_attributes.Clock` — use `LegacyClock` or `shrine.simulation.Clock` (when alias exists)
+- String-based runoff factory on `Catchment` — prefer `RunoffMethod` or a `RunoffModel` instance
 
 ## [0.1.0] - 2026-05-25
+
+Initial alpha release of the simulation framework.
 
 ### Added
 
 - `shrine.simulation` framework: `Model`, `RunController`, inputs, recorder, scenarios, adapters
-- Examples under `examples/` and tests under `tests/simulation/`
+- Examples under `examples/` and framework tests under `tests/simulation/`
+- Golden-run regression tests (`tests/golden/`)
 
-[Unreleased]: https://github.com/your-org/SHRINE/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/your-org/SHRINE/releases/tag/v0.1.0
+[Unreleased]: https://github.com/jlillywh/SHRINE/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/jlillywh/SHRINE/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/jlillywh/SHRINE/releases/tag/v0.1.0

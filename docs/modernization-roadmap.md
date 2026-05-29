@@ -39,7 +39,7 @@
 | `src/shrine/simulation/` | **Strong** | Public API, scenarios, manifest, `RunSession`, 100+ framework tests |
 | Legacy domain (`src/hydrology/`, `src/water_manage/`, …) | **Mixed** | Installable under `src/`; colocated `unittest` tests often stale (matplotlib, API drift) |
 | Packaging | **Good** | `src/` layout; extras `dev`, `viz`, `hydrology` documented in README |
-| Open-source polish | **Early** | GPL, README, examples; CI (pytest, mypy, ruff, docs build); doc site scaffold (**3.1**); no PyPI yet |
+| Open-source polish | **Early** | GPL, docs site, CI; PyPI packaging workflow (**3.6**); first PyPI release pending maintainer setup |
 
 ### 2.1 Progress snapshot (2026-05-28)
 
@@ -48,7 +48,7 @@
 | **0** | 0.1–0.13, 0.14–0.16 (**complete**) | — |
 | **1** | 1.1–1.17 (**complete**) | Phase 1 exit criteria (examples, no LegacyModel path, CI) |
 | **2** | 2.1–2.14 (**complete**) | Phase 2 exit criteria |
-| **3** | **3.1**–**3.5** doc site through comparison note | **3.6** PyPI |
+| **3** | **3.1**–**3.5** doc site through comparison | **3.6** PyPI publish (CI ready) |
 | **4** | — | Deferred |
 
 **Phase 0 exit criteria (status):**
@@ -235,8 +235,8 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P0 — Packaging & releases
 
-- [ ] **3.6** Publish to PyPI (`shrine-wrm` or `shrine-water` if name taken)
-- [ ] **3.7** Versioning policy (SemVer); changelog (`CHANGELOG.md`, Keep a Changelog)
+- [ ] **3.6** Task is skipped for now. Publish to PyPI (`shrine` on PyPI; fallbacks `shrine-wrm` / `shrine-water` documented in [pypi.md](pypi.md)) — package metadata, `package.yml` cross-platform smoke install, `publish.yml` on GitHub Release; **first upload** requires PyPI trusted publisher (see [pypi.md](pypi.md))
+- [x] **3.7** Versioning policy (SemVer); changelog (`CHANGELOG.md`, Keep a Changelog) — [releases.md](releases.md)
 - [ ] **3.8** `pip install shrine[hydrology,viz,dev]` documented *(depends on **0.13** / PyPI **3.6**)*
 
 #### P1 — Engineering quality
@@ -311,7 +311,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 | CI | Green on 3.10–3.12, Linux + Windows |
 | Install | `pip install shrine` &lt;2 min on fresh venv |
 | Time to first run | &lt;15 min following Quickstart |
-| API stability | SemVer; deprecation warnings documented — [api-stability.md](api-stability.md) |
+| API stability | SemVer; deprecation warnings documented — [api-stability.md](api-stability.md); [CHANGELOG.md](https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md) |
 | Adapters | ≥4 element types (watershed, reservoir, catchment, custom example) |
 | Docs | Published site + API reference + 3 tutorials |
 | Issues | Critical bugs &lt;7 days median response (aspirational) |

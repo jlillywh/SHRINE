@@ -5,6 +5,7 @@ This document defines versioning and deprecation rules for **`shrine.simulation`
 Related:
 
 - [README](https://github.com/jlillywh/SHRINE/blob/master/README.md) — public API table
+- [Versioning & releases](releases.md) — SemVer, changelog, maintainer release checklist
 - [modernization-roadmap.md](modernization-roadmap.md) — Phase 1 hardening
 - [architecture.md](architecture.md) — framework vs domain layers
 
@@ -121,9 +122,11 @@ Legacy `global_attributes` aliases (`Model`, `Clock`) follow the same **user-vis
 
 ## Changelog and releases
 
-Every release that deprecates or removes API surface must update **[CHANGELOG](https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md)** with:
+Every release that deprecates or removes API surface must update **[CHANGELOG.md](https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md)** with:
 
 - `Added` / `Changed` / `Deprecated` / `Removed` / `Fixed`
 - Affected `__api_version__` when simulation public API changes
+
+Maintainer workflow (tagging, version bumps, GitHub Release): [Versioning & releases](releases.md).
 
 Git tags should match `shrine.__version__` (e.g. `v0.2.0`).

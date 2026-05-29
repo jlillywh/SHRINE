@@ -4,10 +4,24 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shrine"
-version = "0.1.0"
+version = "0.2.0"
 description = "SHRINE — Simulation of Hydrology, Reservoirs, and Integrated Network Engine"
 readme = "README.md"
 requires-python = ">=3.10"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "SHRINE contributors" }]
+keywords = ["hydrology", "water-resources", "simulation", "reservoir", "watershed"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
 dependencies = [
     "networkx>=3.0",
     "numpy",
@@ -42,6 +56,13 @@ docs = [
     "mkdocs-material>=9.5",
     "mkdocstrings[python]>=0.27",
 ]
+
+[project.urls]
+Homepage = "https://github.com/jlillywh/SHRINE"
+Documentation = "https://jlillywh.github.io/SHRINE/"
+Repository = "https://github.com/jlillywh/SHRINE"
+Issues = "https://github.com/jlillywh/SHRINE/issues"
+Changelog = "https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src", "."]
