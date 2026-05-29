@@ -16,7 +16,7 @@ import shrine.simulation as sim
 from shrine.simulation import Model, RunController, Clock, WatershedElement
 ```
 
-**Package versions:** `shrine.__version__` (distribution) and `shrine.simulation.__api_version__` (stable simulation API surface, currently **1.0**). Stability and deprecation rules: [docs/api-stability.md](docs/api-stability.md). Submodules outside `__all__` are internal unless noted in [extending-elements.md](docs/extending-elements.md).
+**Package versions:** `shrine.__version__` (distribution) and `shrine.simulation.__api_version__` (stable simulation API surface, currently **1.0**). Stability and deprecation rules: [docs/api-stability.md](docs/api-stability.md). Release history: [CHANGELOG.md](CHANGELOG.md); SemVer and maintainer checklist: [docs/releases.md](docs/releases.md). Submodules outside `__all__` are internal unless noted in [extending-elements.md](docs/extending-elements.md).
 
 ### Public API
 
@@ -66,7 +66,15 @@ Library code is under `src/`; run `pip install -e ".[dev]"` before tests or scri
 ## Install
 
 ```bash
-cd SHRINE   # or your clone directory (GitHub repo may still be named Aegis)
+pip install shrine
+pip install "shrine[dev,viz,hydrology]"   # contributors + plotting + NWIS demo
+```
+
+From source (development):
+
+```bash
+git clone https://github.com/jlillywh/SHRINE.git
+cd SHRINE
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
@@ -78,7 +86,7 @@ Defined in `pyproject.toml` under `[project.optional-dependencies]`. Combine ext
 
 | Extra | Purpose | Typical command |
 |-------|---------|-----------------|
-| *(none)* | Core runtime: `shrine`, domain packages, scenarios (`numpy`, `pandas`, `pint`, …) | `pip install -e .` |
+| *(none)* | Core runtime: `shrine`, domain packages (`numpy`, `pandas`, `pint`, …) | `pip install shrine` or `pip install -e .` |
 | `dev` | `pytest`, coverage, `pre-commit` | `pip install -e ".[dev]"` |
 | `docs` | MkDocs Material documentation site | `pip install -e ".[docs]"` |
 | `viz` | `matplotlib` — legacy charts, `flow_network.draw`, `inputs.table` plots | `pip install -e ".[viz]"` |
@@ -172,6 +180,8 @@ mkdocs serve          # http://127.0.0.1:8000
 | [docs/project-name.md](docs/project-name.md) | **SHRINE** naming and acronym |
 | [docs/modernization-roadmap.md](docs/modernization-roadmap.md) | Strategic checklist: pythonic OOP, OSS excellence |
 | [docs/api-stability.md](docs/api-stability.md) | SemVer, deprecation cycle, public API policy |
+| [CHANGELOG.md](CHANGELOG.md) | Release history ([Keep a Changelog](https://keepachangelog.com/)) |
+| [docs/releases.md](docs/releases.md) | Versioning policy and maintainer release checklist |
 | [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
 | [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |
 | [docs/scenarios.md](docs/scenarios.md) | Scenario YAML/JSON |

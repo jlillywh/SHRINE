@@ -2,7 +2,16 @@
 
 SHRINE requires **Python 3.10+**. WSL or Linux is recommended for running the bundled test scripts; Windows works with a normal virtual environment.
 
-## Core install
+## Install from PyPI
+
+```bash
+pip install shrine
+pip install "shrine[dev,viz]"    # contributors: tests + plotting
+```
+
+See [PyPI publishing](pypi.md) for extras, TestPyPI, and maintainer release steps (roadmap **3.6**).
+
+## Install from source
 
 From a clone of the repository:
 

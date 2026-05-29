@@ -175,7 +175,7 @@ class TestRunScenario:
         assert result.manifest["scenario_hash"] is not None
         assert result.manifest["elements"]
         assert "git_commit" in result.manifest
-        assert result.metadata["framework_version"] == "0.1.0"
+        assert result.metadata["framework_version"] == "0.2.0"
         assert "run_timestamp_utc" in result.metadata
 
     def test_run_scenarios_isolated(self) -> None:

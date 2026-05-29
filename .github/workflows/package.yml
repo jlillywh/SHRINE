@@ -1,0 +1,68 @@
+# Build wheel/sdist and smoke-test install (roadmap 3.6, Phase 3 exit criteria).
+name: Package
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build distributions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tooling
+        run: python -m pip install -U pip build
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: shrine-dist
+          path: dist/
+
+  smoke-install:
+    name: smoke install (${{ matrix.os }})
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.12"]
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: shrine-dist
+          path: dist/
+
+      - name: Install wheel
+        shell: bash
+        run: |
+          python -m pip install -U pip
+          WHEEL=$(ls dist/*.whl | head -1)
+          python -m pip install "$WHEEL"
+
+      - name: Verify import
+        run: |
+          python -c "import shrine; import shrine.simulation as sim; print(shrine.__version__, sim.__api_version__)"

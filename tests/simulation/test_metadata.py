@@ -59,7 +59,7 @@ class TestRunMetadata:
 
     def test_enrich_adds_framework_fields(self) -> None:
         meta = enrich_run_metadata({"seed": 1})
-        assert meta["framework_version"] == "0.1.0"
+        assert meta["framework_version"] == "0.2.0"
         assert "run_timestamp_utc" in meta
 
     def test_run_result_metadata(self) -> None:

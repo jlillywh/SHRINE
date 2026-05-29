@@ -15,7 +15,7 @@ Do **not** depend on undocumented submodule paths (`shrine.simulation.run_contro
 | `shrine.__version__` | Package / distribution version |
 | `shrine.simulation.__api_version__` | Simulation API contract (currently **1.0**) |
 
-Deprecation rules and SemVer policy: [API stability](../api-stability.md).
+Deprecation rules and SemVer policy: [API stability](../api-stability.md). Changelog and releases: [Versioning & releases](../releases.md).
 
 ## Auto-generated reference
 

@@ -39,7 +39,7 @@ Legacy domain packages (`hydrology`, `water_manage`, …) remain available and a
 | `shrine.__version__` | Distribution version (PyPI package) |
 | `shrine.simulation.__api_version__` | Stable simulation API (`1.0`) |
 
-See [API stability](api-stability.md) for deprecation policy.
+See [API stability](api-stability.md) for deprecation policy and [Versioning & releases](releases.md) for SemVer and the [changelog](https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md).
 
 ## License
 
