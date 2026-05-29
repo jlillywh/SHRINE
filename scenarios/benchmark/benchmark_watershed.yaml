@@ -1,0 +1,21 @@
+# CI performance benchmark (roadmap 3.9): twin catchments, daily timesteps, full calendar year.
+# Not a golden-run fixture — timing only. See tests/benchmark/ and test_benchmark_run.py.
+
+name: benchmark_watershed
+seed: 42
+
+clock:
+  start_date: "1/1/2019"
+  end_date: "12/31/2019"
+  time_step: "1 days"
+
+inputs:
+  precipitation:
+    type: constant
+    value: 10.0
+  evaporation:
+    type: constant
+    value: 1.0
+
+metadata:
+  description: "Benchmark — 365 daily steps, two catchments, constant climate"
