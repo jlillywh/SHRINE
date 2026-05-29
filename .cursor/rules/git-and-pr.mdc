@@ -1,0 +1,23 @@
+---
+description: Batch git commit and PR creation into one approval when the user asks to commit or open a PR
+alwaysApply: true
+---
+
+# Git commit and PR workflow
+
+When the user asks to **commit**, **push**, or **open a PR**:
+
+1. **One shell invocation** — run status, diff, branch, commit, push, and `gh pr create` in a **single** bash script (via WSL: `wsl bash -lc '...'`), not as many separate tool calls.
+2. **Do not use the Task subagent** for routine git/gh unless a command failed and needs isolation.
+3. **Do not** run exploratory `git status` / `git diff` / `git log` as separate steps before the script unless the user only asked for status.
+4. **Exclude** from commits: `.pr-body*.md`, `tools/`, `.commit-msg.tmp`, secrets.
+5. **Default branch flow**: `git fetch origin` → checkout/update feature branch from `master` → stage → commit (HEREDOC message) → `git push -u origin HEAD` → `gh pr create --base master`.
+6. Return the **PR URL** and commit hash in the final reply.
+
+For SHRINE on WSL, prefer:
+
+```bash
+wsl bash -lc 'cd ~/SHRINE && ...single script...'
+```
+
+Local permissions: `.cursor/permissions.json` allowlists `git`, `gh`, and `wsl` for this repo.

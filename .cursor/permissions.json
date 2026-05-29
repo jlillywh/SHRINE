@@ -1,0 +1,24 @@
+{
+  "terminalAllowlist": [
+    "git",
+    "gh",
+    "wsl",
+    ".venv/bin/python3",
+    ".venv/bin/ruff",
+    ".venv/bin/pip",
+    "pytest",
+    "bash scripts/",
+    "./scripts/"
+  ],
+  "autoRun": {
+    "allow_instructions": [
+      "Read-only git (status, diff, log, fetch, branch) is always fine.",
+      "Running pytest, ruff, mkdocs build, and bootstrap_venv in this repo is fine.",
+      "Commit and push on feature branches for jlillywh/SHRINE is fine when the user asked for a commit or PR."
+    ],
+    "block_instructions": [
+      "Ask before git push --force, git reset --hard, git clean, or any destructive git.",
+      "Ask before npm publish / twine upload / PyPI release unless the user explicitly requested a release."
+    ]
+  }
+}

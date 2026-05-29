@@ -40,7 +40,11 @@ coverage.xml
 # IDE & editors
 .idea/
 .vscode/
-.cursor/
+# Cursor: ignore local IDE state; keep shared agent config (permissions, rules)
+.cursor/*
+!.cursor/permissions.json
+!.cursor/rules/
+!.cursor/rules/**
 *.swp
 *.swo
 *conflicted copy*
