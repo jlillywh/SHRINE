@@ -26,8 +26,8 @@ Bundled **scenario YAML/JSON** and the full **tutorial** paths live in the [GitH
 
 | Workflow | Purpose |
 |----------|---------|
-| [`.github/workflows/package.yml`](../.github/workflows/package.yml) | Build wheel/sdist; smoke `pip install` on Ubuntu, Windows, macOS |
-| [`.github/workflows/publish.yml`](../.github/workflows/publish.yml) | Upload to PyPI when a GitHub **Release** is published |
+| [`package.yml`](https://github.com/jlillywh/SHRINE/blob/master/.github/workflows/package.yml) | Build wheel/sdist; smoke `pip install` on Ubuntu, Windows, macOS |
+| [`publish.yml`](https://github.com/jlillywh/SHRINE/blob/master/.github/workflows/publish.yml) | Upload to PyPI when a GitHub **Release** is published |
 
 Local build:
 
