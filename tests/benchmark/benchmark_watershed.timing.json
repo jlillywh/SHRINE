@@ -2,7 +2,8 @@
   "name": "benchmark_watershed",
   "scenario": "scenarios/benchmark/benchmark_watershed.yaml",
   "baseline_seconds": 0.0825,
+  "ci_baseline_seconds": 0.2504,
   "max_regression_ratio": 1.5,
   "repeats": 3,
-  "notes": "baseline_seconds = median \u00d7 1.15 from update_benchmark_baseline.py"
+  "notes": "baseline_seconds = local dev median × 1.15; ci_baseline_seconds = GHA ubuntu-latest median × 1.15 (2025-05-29)"
 }

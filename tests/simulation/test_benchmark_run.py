@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import statistics
 import time
 from pathlib import Path
@@ -21,6 +22,13 @@ TIMING_FILE = BENCHMARK_DIR / "benchmark_watershed.timing.json"
 def _load_timing_config() -> dict[str, Any]:
     assert TIMING_FILE.is_file(), f"missing timing config: {TIMING_FILE}"
     return json.loads(TIMING_FILE.read_text(encoding="utf-8"))
+
+
+def _effective_baseline(cfg: dict[str, Any]) -> tuple[float, str]:
+    """Return (baseline_seconds, label) for the current environment."""
+    if os.environ.get("CI") and "ci_baseline_seconds" in cfg:
+        return float(cfg["ci_baseline_seconds"]), "ci_baseline"
+    return float(cfg["baseline_seconds"]), "baseline"
 
 
 def _run_benchmark_once(scenario_path: Path) -> float:
@@ -46,13 +54,14 @@ class TestBenchmarkRun:
         samples = [_run_benchmark_once(scenario_path) for _ in range(repeats)]
         elapsed = statistics.median(samples)
 
-        baseline = float(cfg["baseline_seconds"])
+        baseline, baseline_label = _effective_baseline(cfg)
         ratio_limit = float(cfg.get("max_regression_ratio", 1.5))
         limit = baseline * ratio_limit
 
         assert elapsed <= limit, (
             f"benchmark slower than threshold: median {elapsed:.3f}s "
             f"(samples {samples}) > {limit:.3f}s "
-            f"(baseline {baseline:.3f}s × {ratio_limit}). "
-            "If intentional, run: python scripts/update_benchmark_baseline.py"
+            f"({baseline_label} {baseline:.3f}s × {ratio_limit}). "
+            "If intentional, run: python scripts/update_benchmark_baseline.py "
+            "(--target ci on GitHub Actions, default locally)"
         )

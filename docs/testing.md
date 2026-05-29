@@ -171,13 +171,14 @@ See [PyPI & releases](pypi.md) for `pip install shrine` and maintainer trusted-p
 | Path | Purpose |
 |------|---------|
 | `scenarios/benchmark/benchmark_watershed.yaml` | 365-day twin-catchment scenario |
-| `tests/benchmark/benchmark_watershed.timing.json` | Baseline wall time + `max_regression_ratio` (default **1.5×**) |
+| `tests/benchmark/benchmark_watershed.timing.json` | `baseline_seconds` (local) + `ci_baseline_seconds` (GHA) + `max_regression_ratio` (default **1.5×**) |
 | `tests/simulation/test_benchmark_run.py` | Median of 3 timed runs after warmup; fails if over threshold |
 
-Refresh baseline after intentional performance changes:
+Refresh baseline after intentional performance changes (local vs CI runners differ):
 
 ```bash
-.venv/bin/python3 scripts/update_benchmark_baseline.py
+.venv/bin/python3 scripts/update_benchmark_baseline.py              # local dev
+.venv/bin/python3 scripts/update_benchmark_baseline.py --target ci  # GitHub Actions
 ```
 
 CI runs the benchmark via the main **Tests** workflow (`pytest tests/`).
