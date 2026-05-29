@@ -2,11 +2,17 @@
 
 from __future__ import annotations
 
-from shrine.simulation import Clock, Model, RunContext, RunController
+from shrine.simulation import (
+    Clock,
+    Model,
+    RunContext,
+    RunController,
+)
 from shrine.units import (
     SHRINE_UNITS_JSON,
     get_default_units,
     get_unit_registry,
+    load_units,
     reset_unit_caches,
     validate_unit_string,
 )
@@ -40,6 +46,12 @@ class TestShrineUnits:
         assert run.units_registry is get_unit_registry()
         assert run.default_units is get_default_units()
         assert run.default_units["mass"] == "kg"
+
+    def test_load_units_custom_file(self, tmp_path) -> None:
+        path = tmp_path / "units.json"
+        path.write_text('{"length": "ft", "time": "hour"}', encoding="utf-8")
+        loaded = load_units(path)
+        assert loaded == {"length": "ft", "time": "hour"}
 
 
 class TestRunControllerUnits:
