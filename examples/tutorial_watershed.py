@@ -12,9 +12,7 @@ from pathlib import Path
 from hydrology.watershed import Watershed
 from shrine.simulation import Model, WatershedElement, load_and_run
 
-DEFAULT_SCENARIO = (
-    Path(__file__).resolve().parent.parent / "scenarios" / "tutorial_watershed.yaml"
-)
+DEFAULT_SCENARIO = Path(__file__).resolve().parent.parent / "scenarios" / "tutorial_watershed.yaml"
 
 
 def build_tutorial_model() -> Model:
@@ -39,7 +37,7 @@ def plot_watershed_results(
         import matplotlib.pyplot as plt
     except ImportError as exc:
         raise SystemExit(
-            "Plotting requires matplotlib. Install with: pip install -e \".[viz]\""
+            'Plotting requires matplotlib. Install with: pip install -e ".[viz]"'
         ) from exc
 
     outputs = result.outputs

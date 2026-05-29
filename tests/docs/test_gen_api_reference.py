@@ -28,5 +28,7 @@ def test_gen_api_reference_covers_public_api() -> None:
     for name in sim.__all__:
         if name.startswith("__"):
             continue
-        text = " ".join(p.read_text(encoding="utf-8") for p in AUTOGEN.glob("*.md") if p.name != "README.md")
+        text = " ".join(
+            p.read_text(encoding="utf-8") for p in AUTOGEN.glob("*.md") if p.name != "README.md"
+        )
         assert name in text, f"{name!r} missing from generated API pages"
