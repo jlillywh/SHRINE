@@ -46,6 +46,7 @@ Installable code lives under **`src/`** (framework and legacy domain packages). 
 | Path | Purpose |
 |------|---------|
 | `tests/conftest.py` | Shared fixtures (`short_clock`, `two_catchment_watershed`, `SimpleStore`, …) |
+| `tests/benchmark/` | Performance baseline for `scenarios/benchmark/` (see `test_benchmark_run.py`) |
 | `tests/golden/` | Expected SHA-256 of `result.outputs` for bundled scenarios (see `test_golden_run.py`) |
 | `tests/simulation/test_mass_balance_property.py` | Fuzz-light mass balance for `SimpleStore` + `ReservoirElement` (seed `20240528`) |
 | `tests/hydrology/` | Phase 2 hydrology contract tests (`RunoffModel`, `RunoffMethod`, graph payloads) |
@@ -164,6 +165,22 @@ CI: `.github/workflows/docs.yml` builds on every PR; deploys to GitHub Pages on 
 | `.github/workflows/publish.yml` | Upload to PyPI when a GitHub Release is published |
 
 See [PyPI & releases](pypi.md) for `pip install shrine` and maintainer trusted-publisher setup.
+
+### Performance benchmark (roadmap **3.9**)
+
+| Path | Purpose |
+|------|---------|
+| `scenarios/benchmark/benchmark_watershed.yaml` | 365-day twin-catchment scenario |
+| `tests/benchmark/benchmark_watershed.timing.json` | Baseline wall time + `max_regression_ratio` (default **1.5×**) |
+| `tests/simulation/test_benchmark_run.py` | Median of 3 timed runs after warmup; fails if over threshold |
+
+Refresh baseline after intentional performance changes:
+
+```bash
+.venv/bin/python3 scripts/update_benchmark_baseline.py
+```
+
+CI runs the benchmark via the main **Tests** workflow (`pytest tests/`).
 
 ## Coverage expectations
 

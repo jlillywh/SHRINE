@@ -96,6 +96,9 @@ geometry = ["test_data/*"]
 testpaths = ["tests"]
 # Imports use the editable install (pip install -e ".[dev]"); do not add repo root to PYTHONPATH.
 addopts = "-ra --import-mode=importlib"
+markers = [
+    "benchmark: performance regression tests (roadmap 3.9)",
+]
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]

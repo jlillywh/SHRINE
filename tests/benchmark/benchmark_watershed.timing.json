@@ -1,0 +1,8 @@
+{
+  "name": "benchmark_watershed",
+  "scenario": "scenarios/benchmark/benchmark_watershed.yaml",
+  "baseline_seconds": 0.0825,
+  "max_regression_ratio": 1.5,
+  "repeats": 3,
+  "notes": "baseline_seconds = median \u00d7 1.15 from update_benchmark_baseline.py"
+}
