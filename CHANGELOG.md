@@ -13,6 +13,7 @@ and [docs/releases.md](docs/releases.md).
 ### Added
 
 - Contributor guide ([CONTRIBUTING.md](CONTRIBUTING.md)), [Code of Conduct](CODE_OF_CONDUCT.md), and GitHub issue templates (roadmap 3.11)
+- Architecture Decision Records under [docs/adr/](docs/adr/) — units (pint), NetworkX flow solver, protocol-based domain contracts (roadmap 3.12)
 
 ## [0.2.0] - 2026-05-28
 
