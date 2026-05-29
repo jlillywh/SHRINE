@@ -143,13 +143,16 @@ CI: `.github/workflows/lint.yml` on every push/PR.
 
 ### Documentation site (MkDocs)
 
-Configured in `mkdocs.yml` (roadmap **3.1**):
+Configured in `mkdocs.yml` (roadmap **3.1**–**3.2**):
 
 ```bash
 pip install -e ".[docs]"
-mkdocs serve                    # http://127.0.0.1:8000
-./scripts/build_docs.sh         # strict build to site/
+python scripts/gen_api_reference.py   # regenerate API pages from docstrings
+mkdocs serve                          # http://127.0.0.1:8000
+./scripts/build_docs.sh               # gen + strict build to site/
 ```
+
+API reference pages under `docs/api/autogen/` are generated from `shrine.simulation.__all__`; do not edit by hand.
 
 CI: `.github/workflows/docs.yml` builds on every PR; deploys to GitHub Pages on push to `master`.
 

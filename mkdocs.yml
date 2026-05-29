@@ -45,6 +45,7 @@ plugins:
           paths: [src]
           options:
             docstring_style: google
+            docstring_section_style: spacy
             show_source: true
             show_root_heading: true
             show_root_full_path: false
@@ -52,6 +53,10 @@ plugins:
             show_symbol_type_toc: true
             members_order: source
             separate_signature: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+            summary: true
+            merge_init_into_class: true
             filters: ["!^__"]
 
 markdown_extensions:
@@ -84,6 +89,8 @@ nav:
       - Install: install.md
       - Quickstart: quickstart.md
       - Concepts: concepts.md
+  - Tutorials:
+      - First watershed model: tutorial/first-watershed-model.md
   - Guides:
       - Architecture: architecture.md
       - Simulation requirements: simulation-framework-requirements.md
@@ -97,6 +104,15 @@ nav:
   - API reference:
       - Overview: api/index.md
       - shrine.simulation: api/simulation.md
+      - Run orchestration: api/autogen/run-orchestration.md
+      - Time and context: api/autogen/time-and-context.md
+      - Units: api/autogen/units.md
+      - Elements and adapters: api/autogen/elements.md
+      - Inputs: api/autogen/inputs.md
+      - Flow and mass balance: api/autogen/flow-balance.md
+      - Scenarios and recording: api/autogen/scenarios.md
+      - Metadata, manifest, and RNG: api/autogen/metadata.md
+      - Errors and deprecation: api/autogen/errors.md
   - Project:
       - Modernization roadmap: modernization-roadmap.md
       - Project name: project-name.md

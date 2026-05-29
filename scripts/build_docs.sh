@@ -9,6 +9,7 @@ if [[ ! -x .venv/bin/python3 ]]; then
 fi
 
 .venv/bin/python3 -m pip install -q -e ".[docs]"
+.venv/bin/python3 scripts/gen_api_reference.py
 .venv/bin/mkdocs build --strict "$@"
 
 echo "Site written to site/ — open with: .venv/bin/mkdocs serve"

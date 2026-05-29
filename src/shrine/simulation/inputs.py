@@ -10,7 +10,9 @@ from shrine.simulation.context import TimestepContext
 class InputProvider(Protocol):
     """Provides a value at the current simulation time."""
 
-    def value_at(self, context: TimestepContext) -> Any: ...
+    def value_at(self, context: TimestepContext) -> Any:
+        """Return the input value for ``context.current_time``."""
+        ...
 
 
 class ConstantInput:
@@ -74,7 +76,9 @@ class InputManager:
         self._bindings: dict[str, InputProvider] = {}
 
     def bind(self, name: str, provider: InputProvider) -> None:
+        """Register ``provider`` under ``name`` for the run."""
         self._bindings[name] = provider
 
     def values_for_timestep(self, context: TimestepContext) -> dict[str, Any]:
+        """Evaluate all bound providers at the current timestep."""
         return {name: provider.value_at(context) for name, provider in self._bindings.items()}
