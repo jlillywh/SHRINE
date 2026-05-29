@@ -23,6 +23,11 @@ dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "pre-commit>=3.0",
+    "mypy>=1.8",
+    "types-PyYAML",
+    "pandas-stubs",
+    "types-networkx",
+    "ruff>=0.8",
 ]
 # Plotting (flow_network.draw, results charts, legacy inputs.table) — not required for framework tests
 viz = [
@@ -81,3 +86,97 @@ show_missing = true
 skip_covered = false
 fail_under = 80
 include_namespace_packages = true
+
+# --- mypy (roadmap 2.12): strict ``shrine``; basic domain with documented debt ---
+[tool.mypy]
+python_version = "3.10"
+mypy_path = "src"
+namespace_packages = true
+explicit_package_bases = true
+warn_unused_ignores = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = "shrine.*"
+strict = true
+follow_imports = "silent"
+
+[[tool.mypy.overrides]]
+module = [
+    "shrine.units",
+    "shrine.simulation.recorder",
+    "shrine.simulation.context",
+]
+disable_error_code = ["type-arg", "var-annotated"]
+
+[[tool.mypy.overrides]]
+module = "shrine.simulation.adapters.*"
+disable_error_code = ["no-untyped-call"]
+
+[[tool.mypy.overrides]]
+module = [
+    "pint",
+    "pint.*",
+    "iapws",
+    "iapws.*",
+    "matplotlib",
+    "matplotlib.*",
+    "scipy",
+    "scipy.*",
+    "seaborn",
+    "seaborn.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "hydrology.*",
+    "water_manage.*",
+    "geometry.*",
+    "inputs.*",
+    "data.*",
+    "results.*",
+    "hydraulics.*",
+    "numerical.*",
+    "controllers.*",
+    "utils.*",
+    "global_attributes.*",
+    "testing.*",
+]
+# Basic checks only; full strict typing tracked in 2.13. Baseline ~120 errors (May 2026).
+disallow_untyped_defs = false
+check_untyped_defs = false
+warn_return_any = true
+follow_imports = "silent"
+disable_error_code = [
+    "no-untyped-def",
+    "no-untyped-call",
+    "type-arg",
+    "no-any-return",
+    "import-not-found",
+    "attr-defined",
+    "var-annotated",
+    "assignment",
+    "union-attr",
+    "arg-type",
+    "unused-ignore",
+]
+
+# --- ruff (roadmap 2.14): lint shrine + tests in CI; format entire src tree ---
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests", "examples", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Deprecated colocated unittest modules (roadmap 2.11): shim before imports.
+"src/**/test_*.py" = ["E402", "F821", "F841", "E741"]
+
+[tool.ruff.format]
+quote-style = "double"

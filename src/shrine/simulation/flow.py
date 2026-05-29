@@ -34,7 +34,7 @@ class NetworkXFlowSolver:
 
     def solve(
         self,
-        graph: nx.DiGraph,
+        graph: nx.DiGraph[Any],
         source: str,
         sink: str,
         *,
@@ -55,15 +55,13 @@ class NetworkXFlowSolver:
 
     def _solve_max_flow(
         self,
-        graph: nx.DiGraph,
+        graph: nx.DiGraph[Any],
         source: str,
         sink: str,
         capacity_attr: str,
         element_id: str | None,
     ) -> FlowSolveResult:
-        flow_value, flow_dict = nx.maximum_flow(
-            graph, source, sink, capacity=capacity_attr
-        )
+        flow_value, flow_dict = nx.maximum_flow(graph, source, sink, capacity=capacity_attr)
         edge_flows = self._flatten_flow_dict(flow_dict)
         total_at_sink = sum(flow_dict[pred][sink] for pred in graph.predecessors(sink))
         return FlowSolveResult(
@@ -78,7 +76,7 @@ class NetworkXFlowSolver:
 
     def _solve_min_cost(
         self,
-        graph: nx.DiGraph,
+        graph: nx.DiGraph[Any],
         source: str,
         sink: str,
         element_id: str | None,
@@ -96,7 +94,9 @@ class NetworkXFlowSolver:
         )
 
     @staticmethod
-    def _flatten_flow_dict(flow_dict: dict[str, dict[str, float]]) -> dict[tuple[str, str], float]:
+    def _flatten_flow_dict(
+        flow_dict: dict[str, dict[str, float]],
+    ) -> dict[tuple[str, str], float]:
         edge_flows: dict[tuple[str, str], float] = {}
         for upstream, targets in flow_dict.items():
             for downstream, flow in targets.items():

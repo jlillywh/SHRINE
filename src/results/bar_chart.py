@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 import matplotlib.pyplot as plt
 from results.chart import Chart
@@ -7,17 +9,17 @@ from inputs.data import Vector
 
 class Bar(Chart):
     """Bar chart class
-    
-        Properties
-        ----------
-        rotate_labels : str (default = 'horizontal')
-            A flag used to rotate the labels on the x axis
-            This is set to true if crowding occurs.
-        space_bottom : float (default = 0.1)
-            Increase this value to provide more space at
-            the bottom of the chart for rotated xaxis labels
+
+    Properties
+    ----------
+    rotate_labels : str (default = 'horizontal')
+        A flag used to rotate the labels on the x axis
+        This is set to true if crowding occurs.
+    space_bottom : float (default = 0.1)
+        Increase this value to provide more space at
+        the bottom of the chart for rotated xaxis labels
     """
-    
+
     def __init__(self):
         Chart.__init__(self)
         self.values = []
@@ -38,7 +40,7 @@ class Bar(Chart):
             self.values = output._magnitude
             self.output_names = output.index
             self.xlabel = output.listSet
-            self.ylabel = '[' + output.unit + ']'
+            self.ylabel = "[" + output.unit + "]"
         elif type(output) == dict:
             for key, value in output.data.items():
                 self.output_names.append(key)
@@ -52,25 +54,21 @@ class Bar(Chart):
                 self.xlabel = output.name
                 self.ylabel = "[" + str(self.outputs[0].unit) + "]"
         else:
-            raise TypeError(
-                'Parameter should be a Scalar or list of Scalar')
+            raise TypeError("Parameter should be a Scalar or list of Scalar")
         self.num_outputs = len(self.output_names)
         self.rotation(self.output_names)
         self.y_pos = np.arange(self.num_outputs)
-    
+
     def show(self):
         plt.title(self.title)
         plt.ylabel(self.ylabel)
         plt.xlabel(self.xlabel)
         plt.xticks(self.y_pos, self.output_names, rotation=self.rotate_labels)
         plt.subplots_adjust(bottom=self.space_bottom)
-        plt.bar(self.y_pos, self.values, align='center')
+        plt.bar(self.y_pos, self.values, align="center")
         plt.show()
         plt.close()
-        
-    
-        
-    
+
 
 # bar_width = 0.35
 #

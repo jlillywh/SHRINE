@@ -5,15 +5,15 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
-from datetime import datetime, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from shrine import __version__ as SHRINE_VERSION
 
 if TYPE_CHECKING:
     from shrine.simulation.model import Model
     from shrine.simulation.scenario import ScenarioConfig
+
 
 def _repo_root() -> Path:
     here = Path(__file__).resolve()
@@ -93,7 +93,7 @@ def build_run_manifest(
     if git_commit is ...:
         commit = resolve_git_commit()
     else:
-        commit = git_commit
+        commit = cast(str | None, git_commit)
 
     scenario_hash: str | None = None
     scenario_source: str | None = None

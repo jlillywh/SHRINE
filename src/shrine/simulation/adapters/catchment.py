@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from hydrology.enums import RunoffMethod
+from hydrology.protocols import RunoffModel
 from shrine.simulation.balance import MassBalanceTerm
 from shrine.simulation.context import RunContext, TimestepContext
 from shrine.simulation.errors import SimulationError, SimulationPhase
-from hydrology.enums import RunoffMethod
-from hydrology.protocols import RunoffModel
 
 if TYPE_CHECKING:
     from hydrology.catchment import Catchment

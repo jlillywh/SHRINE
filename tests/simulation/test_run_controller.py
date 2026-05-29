@@ -4,10 +4,15 @@ from __future__ import annotations
 
 import pandas as pd
 import pytest
+from examples.climate_loop import (
+    EVAPORATION_BY_MONTH,
+    PRECIPITATION_BY_MONTH,
+    build_climate_model,
+)
 
 from shrine.simulation import (
-    Clock,
     ClimateRecorderElement,
+    Clock,
     InputManager,
     Model,
     MonthlyLookupInput,
@@ -17,11 +22,6 @@ from shrine.simulation import (
 )
 from shrine.simulation.balance import MassBalanceTerm
 from shrine.simulation.context import RunContext, TimestepContext
-from examples.climate_loop import (
-    EVAPORATION_BY_MONTH,
-    PRECIPITATION_BY_MONTH,
-    build_climate_model,
-)
 
 
 class _CounterElement:
@@ -147,7 +147,10 @@ class TestRunController:
         inputs.bind("precipitation", MonthlyLookupInput(PRECIPITATION_BY_MONTH))
         result = RunController(model, input_manager=inputs, raise_on_error=False).run()
         assert result.success
-        assert result.outputs.loc[pd.Timestamp("2019-01-01"), "evaporation"] == EVAPORATION_BY_MONTH["January"]
+        assert (
+            result.outputs.loc[pd.Timestamp("2019-01-01"), "evaporation"]
+            == EVAPORATION_BY_MONTH["January"]
+        )
 
     def test_step_and_finalize(self) -> None:
         clock = Clock("1/1/2019", "1/4/2019")

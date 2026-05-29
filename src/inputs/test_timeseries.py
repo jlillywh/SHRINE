@@ -1,3 +1,11 @@
+"""DEPRECATED: Colocated unittest — migrate to tests/inputs/ (roadmap 2.11)."""
+
+from __future__ import annotations
+
+from testing.colocated import deprecate_colocated_module
+
+deprecate_colocated_module(path="inputs.test_timeseries", migrated_to="tests/inputs/ (pending)")
+
 import datetime
 from datetime import timedelta
 from unittest import TestCase
@@ -8,7 +16,7 @@ from inputs.time_series import TimeSeries
 class TestTimeSeries(TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
-        self.ts = TimeSeries('1/1/19', periods=365)
+        self.ts = TimeSeries("1/1/19", periods=365)
         self.dec_places = 3
 
     def tearDown(self):

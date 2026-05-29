@@ -1,28 +1,31 @@
+from __future__ import annotations
+
 import pandas as pd
 from global_attributes.shrine_object import ShrineObject
 
 
 class Clock(ShrineObject):
     """Clock objects for keeping track of time during a simulation
-        ...
+    ...
 
-        Attributes
-        ----------
-            start_date : pandas Timestamp
-            duration :
-            periods : int
-            current_date : Timestamp
-            day_of_year: int
-                Day of year starting with Jan 1 = 1
+    Attributes
+    ----------
+        start_date : pandas Timestamp
+        duration :
+        periods : int
+        current_date : Timestamp
+        day_of_year: int
+            Day of year starting with Jan 1 = 1
 
-        Methods
-        -------
-            current_date
-                setter function
-            reset
-            advance
-        """
-    def __init__(self, start_date='1/1/2019', end_date='1/1/2020', time_step='1 days'):
+    Methods
+    -------
+        current_date
+            setter function
+        reset
+        advance
+    """
+
+    def __init__(self, start_date="1/1/2019", end_date="1/1/2020", time_step="1 days"):
         ShrineObject.__init__(self)
         self.description = "Clock to keep track of simulation time."
         ## Static time variables
@@ -37,11 +40,11 @@ class Clock(ShrineObject):
         self.day_of_year = self._current_date.dayofyear
         self.remaining_time = self.end_date - self._current_date
         self.running = True
-     
+
     def reset(self):
         """Reset the clock settings back to their original state.
-        
-            This is useful when performing multiple simulations
+
+        This is useful when performing multiple simulations
         """
         self._current_date = self.start_date
         self.remaining_time = self.end_date - self._current_date
@@ -63,21 +66,21 @@ class Clock(ShrineObject):
 
     def set_start_date(self, new_date):
         """Change the start date before running a new simulation
-            It is assumed that you want the end date to also change when
-            you change the start date because the duration would be held
-            constant. Therefore, the end_date is also adjusted here. The
-            current date is also reset to the start date.
+        It is assumed that you want the end date to also change when
+        you change the start date because the duration would be held
+        constant. Therefore, the end_date is also adjusted here. The
+        current date is also reset to the start date.
 
-            The "running" state is also set to True.
+        The "running" state is also set to True.
 
-            Parameters
-            ----------
-            new_date : str
-                string formats allowed: 'mm/dd/yyyy'; 'mm-dd-yyyy'
+        Parameters
+        ----------
+        new_date : str
+            string formats allowed: 'mm/dd/yyyy'; 'mm-dd-yyyy'
 
-            Returns
-            -------
-            """
+        Returns
+        -------
+        """
         span = self.end_date - self.start_date
         self.start_date = pd.Timestamp(new_date)
         self._current_date = self.start_date
@@ -87,20 +90,20 @@ class Clock(ShrineObject):
         self.running = True
         self.range = pd.date_range(start=self.start_date, end=self.end_date)
         self.day_of_year = self._current_date.dayofyear
-        
+
     @property
     def current_date(self):
         return self._current_date
-    
+
     @current_date.setter
     def current_date(self, new_date):
         """Set the current date of the clock.
-        
-            This is useful if you want to force the clock time to a known
-            point in time for debugging.
-            
-            Parameters : str
-                new_date
+
+        This is useful if you want to force the clock time to a known
+        point in time for debugging.
+
+        Parameters : str
+            new_date
         """
         self._current_date = pd.Timestamp(new_date)
         self.day_of_year = self._current_date.dayofyear
@@ -113,12 +116,12 @@ class Clock(ShrineObject):
 
     def set_duration(self, new_duration):
         """Change the duration and update the end_date.
-            It is assumed that if the duration changes, then the end
-            date will also have to change rather than the start date.
+        It is assumed that if the duration changes, then the end
+        date will also have to change rather than the start date.
 
-            Parameters
-            ----------
-                new_duration : str (i.e. '100 days')
+        Parameters
+        ----------
+            new_duration : str (i.e. '100 days')
         """
         self.duration = pd.Timedelta(new_duration)
         self.remaining_time = self.duration

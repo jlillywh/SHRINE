@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from water_manage.protocols import StorageElement
-
 from shrine.simulation.balance import MassBalanceTerm
 from shrine.simulation.context import RunContext, TimestepContext
 from shrine.simulation.errors import SimulationError, SimulationPhase
+from water_manage.protocols import StorageElement
 
 # Scenario ``overrides`` keys allowed for :class:`ReservoirElement` (SCN-01).
 RESERVOIR_ELEMENT_OVERRIDE_KEYS = frozenset({"default_release", "inflow_key", "release_key"})

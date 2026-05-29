@@ -19,6 +19,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.rename*
+.fix_*.py
 
 # Virtual environments
 venv/
@@ -38,6 +40,7 @@ coverage.xml
 # IDE & editors
 .idea/
 .vscode/
+.cursor/
 *.swp
 *.swo
 *conflicted copy*
@@ -52,6 +55,12 @@ Thumbs.db
 
 # Local / abandoned work
 abandoned_files/
+
+# One-off local migration scripts (do not publish)
+.rename*
+.fix_*.py
+commit-msg.txt
+_pr_body.md
 
 # External datasets (not the `data/` Python package)
 data_external/*

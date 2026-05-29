@@ -9,7 +9,7 @@ from shrine.simulation import (
     ScenarioConfig,
     scenario_content_hash,
 )
-from shrine.simulation.manifest import build_run_manifest, resolve_git_commit
+from shrine.simulation.manifest import resolve_git_commit
 
 
 class _StubElement:

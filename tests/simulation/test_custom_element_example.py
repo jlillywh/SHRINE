@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from shrine.simulation import Clock, ConstantInput, InputManager, Model, RunController
 from examples.custom_element import DemandElement
+
+from shrine.simulation import Clock, ConstantInput, InputManager, Model, RunController
 
 
 def test_demand_element_records_input() -> None:

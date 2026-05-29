@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 
+from hydrology.catchment import Catchment
 from shrine.simulation import (
     CatchmentElement,
     Clock,
@@ -17,8 +18,7 @@ from shrine.simulation import (
     SimulationPhase,
     WatershedElement,
 )
-from shrine.simulation.balance import MassBalanceCheck, MassBalanceTerm
-from hydrology.catchment import Catchment
+from shrine.simulation.balance import MassBalanceCheck
 
 
 class TestWatershedElement:
@@ -40,7 +40,12 @@ class TestWatershedElement:
         element._last_total_supply = 100.0
         element._last_outflow = 100.0
         terms = element.balance_terms(
-            TimestepContext(run=run, step_index=0, current_time=clock.current_date, dt=clock.time_step)
+            TimestepContext(
+                run=run,
+                step_index=0,
+                current_time=clock.current_date,
+                dt=clock.time_step,
+            )
         )
         report = MassBalanceCheck().verify(terms)
         assert report.passed
@@ -98,7 +103,12 @@ class TestCatchmentElement:
         clock = Clock()
         run = RunContext(model_id="t", clock=clock)
         terms = element.balance_terms(
-            TimestepContext(run=run, step_index=0, current_time=clock.current_date, dt=clock.time_step)
+            TimestepContext(
+                run=run,
+                step_index=0,
+                current_time=clock.current_date,
+                dt=clock.time_step,
+            )
         )
         assert MassBalanceCheck().verify(terms).passed
 
@@ -134,13 +144,18 @@ class TestReservoirElement:
         element._last_outflow = store.outflow
         element._last_overflow = store.overflow
 
-        from shrine.simulation.context import RunContext, TimestepContext
         from shrine.simulation import Clock
+        from shrine.simulation.context import RunContext, TimestepContext
 
         clock = Clock()
         run = RunContext(model_id="t", clock=clock)
         terms = element.balance_terms(
-            TimestepContext(run=run, step_index=0, current_time=clock.current_date, dt=clock.time_step)
+            TimestepContext(
+                run=run,
+                step_index=0,
+                current_time=clock.current_date,
+                dt=clock.time_step,
+            )
         )
         assert MassBalanceCheck().verify(terms).passed
 
@@ -157,13 +172,18 @@ class TestReservoirElement:
         element._last_outflow = store.outflow
         element._last_overflow = store.overflow
 
-        from shrine.simulation.context import RunContext, TimestepContext
         from shrine.simulation import Clock
+        from shrine.simulation.context import RunContext, TimestepContext
 
         clock = Clock()
         run = RunContext(model_id="t", clock=clock)
         terms = element.balance_terms(
-            TimestepContext(run=run, step_index=0, current_time=clock.current_date, dt=clock.time_step)
+            TimestepContext(
+                run=run,
+                step_index=0,
+                current_time=clock.current_date,
+                dt=clock.time_step,
+            )
         )
         assert store.overflow > 0
         assert MassBalanceCheck().verify(terms).passed

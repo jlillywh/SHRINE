@@ -1,39 +1,42 @@
+from __future__ import annotations
+
 from water_manage.request import Request
 
 
 class Allocator:
     """The Allocator is used to allocate multiple demands of a finite and limited source amount.
-        
-        This object does not carry state so the update function
-        can be called immediately each time any of the requests
-        or supply is updated.
-        
-        Attributes
-        ----------
-        supply: float
-            The supply that is being allocated
-        requests: list of Request objects
-            Individual requests being made on the source with each having a name associated with
-            the requested amount along with a priority number
-        _deliveries: dict
-            The dictionary is a list of named deliveries
-            Note that curtailment of request is shared among all demands proportional to it's demand.
-        total_delivery: float
-            Sum of all delivery amounts
 
-        Methods
-        -------
-        update() : calculates the delivery to each request
-        add_request() : add new request to the list
-        
+    This object does not carry state so the update function
+    can be called immediately each time any of the requests
+    or supply is updated.
+
+    Attributes
+    ----------
+    supply: float
+        The supply that is being allocated
+    requests: list of Request objects
+        Individual requests being made on the source with each having a name associated with
+        the requested amount along with a priority number
+    _deliveries: dict
+        The dictionary is a list of named deliveries
+        Note that curtailment of request is shared among all demands proportional to it's demand.
+    total_delivery: float
+        Sum of all delivery amounts
+
+    Methods
+    -------
+    update() : calculates the delivery to each request
+    add_request() : add new request to the list
+
     """
+
     def __init__(self, supply=0.0, requests=None):
         """Initialize the amount and a list of requests with associated priorities for allocation"""
         self._supply = supply
         if requests:
             self.requests = requests
         else:
-            self.requests = [Request('outflow1', 0.0, 1)]
+            self.requests = [Request("outflow1", 0.0, 1)]
         self.num_requests = len(self.requests)
         self.remain_amount = self._supply
         self._deliveries = {}
@@ -43,31 +46,31 @@ class Allocator:
     @property
     def supply(self):
         return self._supply
-    
+
     @supply.setter
     def supply(self, amount):
         self._supply = amount
         self.update()
-        
+
     @property
     def deliveries(self):
         self.update()
         return self._deliveries
-    
+
     def edit_priority(self, request_name, new_priority):
         self.get_request(request_name).priority = new_priority
         self.update()
-        
+
     # def add_request(self, name, amount, priority=1):
     #     new_request = Request(name, amount, priority)
     #     self.requests.append(new_request)
     #     self.update()
-        
+
     def add_request(self, new_request):
         """Add a request to the allocator and update the list."""
         self.requests.append(new_request)
         self.update()
-        
+
     def get_request(self, name):
         request = None
         for i in range(self.num_requests):
@@ -75,25 +78,25 @@ class Allocator:
                 request = self.requests[i]
                 break
         return request
-    
+
     def update(self):
         """Iterate over each demand and allocate supply.
-            
-            Starting with the highest priority request, remove the requested amount from
-            the supply and continue down the list by providing the remainder supply until
-            remainder is zero.
-            
-            TODO: skip over functions here if supply > sum(requests)
-            
-            If 1 or more requests have equal priority, then add all these up and allocate
-            as one entity then divide amount supplied in proportion to each request amount.
-            
-            Parameters
-            ----------
-            
-            Returns
-            -------
-            None
+
+        Starting with the highest priority request, remove the requested amount from
+        the supply and continue down the list by providing the remainder supply until
+        remainder is zero.
+
+        TODO: skip over functions here if supply > sum(requests)
+
+        If 1 or more requests have equal priority, then add all these up and allocate
+        as one entity then divide amount supplied in proportion to each request amount.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        None
         """
         self.remain_amount = self._supply
         self.num_requests = len(self.requests)
@@ -103,9 +106,9 @@ class Allocator:
             # Iterate over the requests until the end is hit.
             if i == self.num_requests:
                 # After we iterate over all requests, add just one more for remainder
-                self._deliveries['remainder'] = self.remain_amount
+                self._deliveries["remainder"] = self.remain_amount
                 break
-                
+
             first_index = i
             # Group all requests with equal priority
             request_group = [self.requests[i]]
@@ -130,18 +133,18 @@ class Allocator:
                     i += 1
                     break
             self.allocate(request_group, first_index)
-            
+
     def allocate(self, requests, index=0):
         """Perform allocation of the supply from all requests of the same priority.
-        
-            Parameters
-            ----------
-            requests : list of requests
-                Contains 1 or more requests of equal priority.
-            index : int
-                The index of the first request in the group.
+
+        Parameters
+        ----------
+        requests : list of requests
+            Contains 1 or more requests of equal priority.
+        index : int
+            The index of the first request in the group.
         """
-        
+
         request_amount = sum(request.amount for request in requests)
         request_count = len(requests)
         if self.remain_amount >= request_amount:
@@ -161,12 +164,12 @@ class Allocator:
 
     def total_deliveries(self):
         return sum(self._deliveries.values())
-    
+
     def total_requests(self):
         total = 0.0
         for req in self.requests:
             total += req.amount
         return total
-    
+
     def sort_requests(self):
         self.requests = sorted(self.requests, key=lambda x: x.priority)

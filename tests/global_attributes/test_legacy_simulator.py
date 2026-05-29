@@ -1,8 +1,6 @@
-"""Legacy Simulator removal (1.6)."""
+"""Legacy Simulator removal (1.6). Migrated from src/global_attributes/test_legacy_simulator.py."""
 
 from __future__ import annotations
-
-import warnings
 
 import pytest
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
+from hydrology.watershed import Watershed
 from shrine.simulation import (
     Clock,
     ConstantInput,
@@ -17,7 +18,6 @@ from shrine.simulation import (
     WatershedElement,
 )
 from shrine.simulation.balance import MassBalanceTerm
-from hydrology.watershed import Watershed
 
 
 class _CounterElement:

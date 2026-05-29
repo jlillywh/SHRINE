@@ -5,8 +5,8 @@ from __future__ import annotations
 import pytest
 
 from shrine.simulation import Model, SimulationError, SimulationPhase
-from tests.conftest import SimpleStore
 from shrine.simulation.adapters import ReservoirElement
+from tests.conftest import SimpleStore
 
 
 class _DummyElement:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from itertools import count
 from pprint import pprint
 from datetime import datetime
@@ -6,25 +8,25 @@ from datetime import datetime
 class ShrineObject:
     """Base class for all SHRINE objects
 
-        ...
+    ...
 
-        Attributes
-        ----------
-        name : str
-            the name of the object
-        description : str
-            what does this object represent?
+    Attributes
+    ----------
+    name : str
+        the name of the object
+    description : str
+        what does this object represent?
 
-        Methods
-        -------
-        about : str
-            a formatted string to print out the store properties
-        get_instance_count : int
-            return the number of objects of this class created
-        to_base_value()
-            converts the object's value to its SHRINE base_unit
+    Methods
+    -------
+    about : str
+        a formatted string to print out the store properties
+    get_instance_count : int
+        return the number of objects of this class created
+    to_base_value()
+        converts the object's value to its SHRINE base_unit
 
-        """
+    """
 
     _ids = count(1)
     _instance_count = 0
@@ -38,7 +40,7 @@ class ShrineObject:
         description : str
             what does this object represent?
         """
-    
+
         self.id = next(self._ids)
         if name:
             self.name = name

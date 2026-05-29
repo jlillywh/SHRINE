@@ -69,7 +69,9 @@ class WatershedElement:
             ) from exc
 
         total_supply = 0.0
-        for name, catchment in self.watershed.iter_catchment_items():
+        from hydrology.graph_nodes import iter_catchment_items
+
+        for name, catchment in iter_catchment_items(self.watershed.dg):
             supply = float(catchment.outflow(precip, et))
             self.watershed.update_capacity(name, supply)
             total_supply += supply

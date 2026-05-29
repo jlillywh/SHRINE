@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import pandas as pd
-
-from shrine.simulation import Clock, Recorder, RunController
 from examples.climate_loop import build_climate_model
+
 from results.time_history import TimeHistory
+from shrine.simulation import Clock, Recorder
 
 
 class TestTimeHistoryRecorder:
@@ -17,8 +17,16 @@ class TestTimeHistoryRecorder:
 
     def test_add_series_builds_dataframe(self) -> None:
         th = TimeHistory("Test", "in", Clock("1/1/2019", "1/4/2019"))
-        evap = pd.Series([0.1, 0.2, 0.3], index=pd.date_range("1/1/2019", periods=3), name="evaporation")
-        precip = pd.Series([0.5, 0.6, 0.7], index=pd.date_range("1/1/2019", periods=3), name="precipitation")
+        evap = pd.Series(
+            [0.1, 0.2, 0.3],
+            index=pd.date_range("1/1/2019", periods=3),
+            name="evaporation",
+        )
+        precip = pd.Series(
+            [0.5, 0.6, 0.7],
+            index=pd.date_range("1/1/2019", periods=3),
+            name="precipitation",
+        )
         th.add_series(evap)
         th.add_series(precip)
         assert list(th.series.columns) == ["evaporation", "precipitation"]

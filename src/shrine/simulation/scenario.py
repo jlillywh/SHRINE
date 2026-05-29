@@ -4,12 +4,17 @@ from __future__ import annotations
 
 import calendar
 import json
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
+from shrine.simulation.adapters.reservoir import (
+    ReservoirElement,
+    apply_reservoir_element_override,
+)
 from shrine.simulation.clock import Clock
 from shrine.simulation.errors import SimulationError, SimulationPhase
 from shrine.simulation.inputs import (
@@ -19,12 +24,8 @@ from shrine.simulation.inputs import (
     MonthlyLookupInput,
     StochasticInput,
 )
-from shrine.simulation.metadata import enrich_run_metadata
 from shrine.simulation.manifest import scenario_content_hash
-from shrine.simulation.adapters.reservoir import (
-    ReservoirElement,
-    apply_reservoir_element_override,
-)
+from shrine.simulation.metadata import enrich_run_metadata
 from shrine.simulation.model import Model
 from shrine.units import validate_unit_string
 
@@ -99,8 +100,7 @@ def _validate_input_spec(spec: dict[str, Any], *, input_name: str) -> None:
             if unknown_months:
                 raise SimulationError(
                     message=(
-                        f"Input {input_name!r}: unknown month names in 'values': "
-                        f"{unknown_months}"
+                        f"Input {input_name!r}: unknown month names in 'values': {unknown_months}"
                     ),
                     phase=SimulationPhase.VALIDATE,
                     details={"input": input_name, "unknown_months": unknown_months},
@@ -385,7 +385,7 @@ def run_scenarios(
     *,
     raise_on_error: bool = True,
     verify_mass_balance: bool = True,
-) -> list["RunResult"]:
+) -> list[RunResult]:
     """Run multiple scenarios with isolated model instances (SCN-02)."""
     results: list[RunResult] = []
     for scenario in scenarios:

@@ -1,3 +1,12 @@
+from __future__ import annotations
+
+from typing import TypedDict
+
+
+class _Request(TypedDict):
+    id: str
+    value: float
+
 
 class Source:
     """
@@ -8,18 +17,20 @@ class Source:
         requests (list): A list of dictionaries representing the requests. Each dictionary has 'id' and 'value' keys.
     """
 
-    def __init__(self, name, requests):
+    def __init__(self, name: str, requests: list[tuple[str, float]]) -> None:
         self.name = name
-        self.requests = [{'id': request_id, 'value': request_value} for request_id, request_value in requests]
+        self.requests: list[_Request] = [
+            {"id": request_id, "value": request_value} for request_id, request_value in requests
+        ]
 
-    def total_outflow(self):
-        total = 0
+    def total_outflow(self) -> float:
+        total = 0.0
         for request in self.requests:
-            total += request['value']
+            total += request["value"]
         return total
 
-    def outflow_by_name(self, request_name):
+    def outflow_by_name(self, request_name: str) -> float:
         for request in self.requests:
-            if request['id'] == request_name:
-                return request['value']
-        return 0
+            if request["id"] == request_name:
+                return request["value"]
+        return 0.0

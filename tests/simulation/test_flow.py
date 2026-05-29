@@ -5,10 +5,10 @@ from __future__ import annotations
 import networkx as nx
 import pytest
 
-from shrine.simulation.errors import SimulationError, SimulationPhase
-from shrine.simulation.flow import NetworkXFlowSolver
 from hydrology.catchment import Catchment
 from hydrology.watershed import Watershed
+from shrine.simulation.errors import SimulationError, SimulationPhase
+from shrine.simulation.flow import NetworkXFlowSolver
 
 
 def _built_watershed() -> Watershed:
@@ -27,18 +27,14 @@ class TestNetworkXFlowSolver:
         for name, catchment in ws.iter_catchment_items():
             ws.update_capacity(name, catchment.outflow(precip, et))
 
-        result = NetworkXFlowSolver("max").solve(
-            ws.dg, ws.source, ws.sink, element_id="test_ws"
-        )
+        result = NetworkXFlowSolver("max").solve(ws.dg, ws.source, ws.sink, element_id="test_ws")
         assert result.success
         assert result.method == "maximum_flow"
         assert result.total_flow == pytest.approx(expected, rel=1e-5)
         assert len(result.edge_flows) > 0
 
     def test_flatten_flow_dict(self) -> None:
-        flows = NetworkXFlowSolver._flatten_flow_dict(
-            {"source": {"C1": 5.0}, "C1": {"sink": 5.0}}
-        )
+        flows = NetworkXFlowSolver._flatten_flow_dict({"source": {"C1": 5.0}, "C1": {"sink": 5.0}})
         assert flows[("source", "C1")] == 5.0
         assert flows[("C1", "sink")] == 5.0
 

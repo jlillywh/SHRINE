@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from hydrology.catchment import Catchment
@@ -16,7 +18,6 @@ from hydrology.graph_nodes import (
     get_node_payload,
     get_node_payload_or_raise,
     get_node_type,
-    iter_catchment_items,
     iter_catchment_nodes,
 )
 from hydrology.watershed import Watershed
@@ -81,11 +82,8 @@ class TestGraphNodeType:
         assert GraphNodeType.from_any("junction") is GraphNodeType.JUNCTION
         assert GraphNodeType.from_any("sink") is GraphNodeType.SINK
 
-    def test_load_gml_sets_enum_node_types(self) -> None:
-        from pathlib import Path
-
-        gml = Path(__file__).resolve().parents[2] / "src/hydrology/test_data/watershed_GML_input.gml"
+    def test_load_gml_sets_enum_node_types(self, watershed_gml: Path) -> None:
         ws = Watershed()
-        ws.load_from_file(str(gml))
+        ws.load_from_file(str(watershed_gml))
         assert get_node_type(ws.dg, "C1") is GraphNodeType.CATCHMENT
         assert get_node_type(ws.dg, "J1") is GraphNodeType.JUNCTION

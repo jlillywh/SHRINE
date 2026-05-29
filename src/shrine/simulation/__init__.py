@@ -35,9 +35,6 @@ See ``README.md`` (Public API section), ``docs/architecture.md``, and ``docs/api
 from __future__ import annotations
 
 from shrine import __version__ as __framework_version__
-
-from shrine.simulation.version import API_VERSION as __api_version__
-
 from shrine.simulation.adapters import (
     CatchmentElement,
     ReservoirElement,
@@ -45,13 +42,18 @@ from shrine.simulation.adapters import (
     StorageLike,
     WatershedElement,
 )
-from shrine.simulation.balance import MassBalanceCheck, MassBalanceReport, MassBalanceTerm
+from shrine.simulation.balance import (
+    MassBalanceCheck,
+    MassBalanceReport,
+    MassBalanceTerm,
+)
 from shrine.simulation.clock import Clock
 from shrine.simulation.context import RunContext, TimestepContext
 from shrine.simulation.deprecation import warn_api_deprecated
 from shrine.simulation.elements import ClimateRecorderElement
 from shrine.simulation.errors import SimulationError, SimulationPhase
-from shrine.simulation.flow import FlowSolveResult, FlowSolver, NetworkXFlowSolver
+from shrine.simulation.flow import FlowSolver, FlowSolveResult, NetworkXFlowSolver
+from shrine.simulation.golden import outputs_content_hash
 from shrine.simulation.inputs import (
     ConstantInput,
     InputManager,
@@ -59,20 +61,18 @@ from shrine.simulation.inputs import (
     MonthlyLookupInput,
     StochasticInput,
 )
-from shrine.simulation.metadata import RunTimer, build_run_metadata, enrich_run_metadata
-from shrine.simulation.golden import outputs_content_hash
 from shrine.simulation.manifest import (
     build_run_manifest,
     element_list_from_model,
     resolve_git_commit,
     scenario_content_hash,
 )
+from shrine.simulation.metadata import RunTimer, build_run_metadata, enrich_run_metadata
 from shrine.simulation.model import Model, RegisteredElement
 from shrine.simulation.protocols import Simulatable
 from shrine.simulation.recorder import Recorder
 from shrine.simulation.rng import make_rng
 from shrine.simulation.run_controller import RunController, RunResult
-from shrine.simulation.session import RunSession
 from shrine.simulation.scenario import (
     ScenarioConfig,
     load_and_run,
@@ -81,7 +81,9 @@ from shrine.simulation.scenario import (
     run_scenarios,
 )
 from shrine.simulation.scheduler import ElementScheduler
+from shrine.simulation.session import RunSession
 from shrine.simulation.step import StepResult
+from shrine.simulation.version import API_VERSION as __api_version__
 from shrine.units import get_default_units, get_unit_registry, validate_unit_string
 
 __all__ = [

@@ -1,3 +1,13 @@
+"""DEPRECATED: Colocated unittest — migrate to tests/controllers/ (roadmap 2.11)."""
+
+from __future__ import annotations
+
+from testing.colocated import deprecate_colocated_module
+
+deprecate_colocated_module(
+    path="controllers.test_controller", migrated_to="tests/controllers/ (pending)"
+)
+
 import unittest
 from controllers.onoff import OnOff
 from global_attributes.constants import U
@@ -6,14 +16,14 @@ from global_attributes.constants import U
 class TestController(unittest.TestCase):
     def setUp(self):
         """Set up a new object to be tested"""
-        direction = 'UP'
+        direction = "UP"
         set_point = 7.6 * U.m
         self.c1 = OnOff(direction, set_point)
 
     def tearDown(self):
         """Destroy the object after running tests"""
         del self.c1
-        
+
     def testChangeSetPoint(self):
         new_set_point = 6 * U.m
         self.c1.set_point = new_set_point
@@ -23,7 +33,7 @@ class TestController(unittest.TestCase):
     def testOnOff(self):
         right_answers = 0
         measurement = 7.9 * U.m
-        self.c1.update(measurement)     # This makes status false
+        self.c1.update(measurement)  # This makes status false
         measurement = 7.3 * U.m
         if self.c1.update(measurement):
             right_answers += 1
@@ -48,5 +58,5 @@ class TestController(unittest.TestCase):
         measurement = 7.3 * U.m
         if self.c1.update(measurement):
             right_answers += 1
-        
+
         self.assertEqual(right_answers, 8)

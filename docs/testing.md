@@ -77,13 +77,69 @@ Installable code lives under **`src/`** (framework and legacy domain packages). 
 | [results-recording.md](results-recording.md) | `Recorder` / `TimeHistory` |
 | `tests/simulation/test_recorder.py` | Recorder API incl. `from_dataframe` |
 
-Legacy domain tests live beside their modules under `src/` (for example `src/hydrology/test_*.py`). Install project deps first (`pip install -e ".[dev]"`), then run:
+Hydrology and water_manage domain tests live under `tests/hydrology/` and `tests/water_manage/` (roadmap **2.8**–**2.9**). Remaining colocated modules under `src/*/test_*.py` emit a **DeprecationWarning** on import (roadmap **2.11**); run the canonical suite only:
 
 ```bash
-.venv/bin/python3 -m pytest src/hydrology/ src/water_manage/ src/data/ src/inputs/ -q
+.venv/bin/python3 -m pytest tests/ -q
 ```
 
+Do **not** add new tests under `src/`. Migrate to `tests/<package>/` and delete the colocated file when parity is reached.
+
+| Package | Colocated (deprecated) | Migrated to |
+|---------|------------------------|-------------|
+| `hydrology/` | *(removed)* | `tests/hydrology/` |
+| `water_manage/` | *(removed)* | `tests/water_manage/` |
+| `global_attributes/` | `test_clock.py`, `test_shrine_object.py`, `test_model.py`, `test_suite*.py` | `tests/global_attributes/` (legacy Model/Simulator only) |
+| `inputs/`, `geometry/`, `data/`, `hydraulics/`, `controllers/` | `test_*.py` | pending |
+
+Helper: `testing.colocated.deprecate_colocated_module()`.
+
 Pytest uses `--import-mode=importlib` in `addopts` (see `pyproject.toml`) so `inputs/data.py` does not shadow the top-level `data` package when collecting tests from multiple directories.
+
+### Shared fixtures (`tests/conftest.py`)
+
+| Fixture | Use |
+|---------|-----|
+| `short_clock`, `week_clock`, `month_clock` | `shrine.simulation.Clock` spans |
+| `legacy_clock` | `global_attributes.clock.Clock` (WGEN tests) |
+| `two_catchment_watershed`, `nested_junction_watershed` | Hydrology demand networks |
+| `watershed_gml`, `network_gml` | GML paths under `src/*/test_data/` |
+| `bounded_store`, `reservoir`, `standard_allocator`, `flow_network` | Legacy water_manage domain |
+| `simple_store`, `watershed_model`, `reservoir_model`, `climate_inputs` | Simulation framework |
+
+Path constants live in `tests/path_fixtures.py` (`WATERSHED_GML`, `NETWORK_GML`, …).
+
+### Type checking (mypy)
+
+Configured in `pyproject.toml` (roadmap **2.12**):
+
+```bash
+.venv/bin/mypy src/shrine          # strict (must pass in CI)
+.venv/bin/mypy src/hydrology src/water_manage src/geometry src/inputs src/data  # basic domain
+```
+
+- **`shrine.*`**: `strict = true`, `follow_imports = silent` (domain imports not checked here)
+- **Domain packages**: basic mode with documented `disable_error_code` baseline; all domain modules use `from __future__ import annotations` (**2.13**)
+
+CI: `.github/workflows/typecheck.yml` on every push/PR.
+
+Re-apply the future import after adding new domain modules: `.venv/bin/python3 scripts/add_future_annotations.py`
+
+### Lint and format (ruff)
+
+Configured in `pyproject.toml` (roadmap **2.14**):
+
+```bash
+.venv/bin/ruff check src/shrine tests examples scripts   # must pass in CI
+.venv/bin/ruff format --check src tests examples scripts
+.venv/bin/ruff format src tests examples scripts         # apply formatting locally
+.venv/bin/ruff check --fix src/shrine tests examples scripts
+```
+
+- **Lint scope**: `src/shrine`, `tests`, `examples`, `scripts` (legacy domain lint debt ~120 issues — run `ruff check src` locally when tightening)
+- **Format scope**: all of `src/` plus tests, examples, and scripts
+
+CI: `.github/workflows/lint.yml` on every push/PR.
 
 ## Coverage expectations
 
@@ -113,6 +169,7 @@ GitHub Actions (`.github/workflows/test.yml`) on every push/PR to `master`:
 2. Install the **[Codecov GitHub App](https://github.com/apps/codecov)** on `jlillywh/SHRINE` (needed for check runs and PR comments).
 3. Under **Settings → Branches → `master` → Branch protection**, require status checks:
    - `pytest` (GitHub Actions job name)
+   - `mypy`, `ruff` (typecheck and lint workflows)
    - `codecov/project`
    - `codecov/patch`
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from shrine.simulation.step import StepResult
 
@@ -31,7 +31,12 @@ class RunSession:
         self.controller.begin()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: object | None,
+    ) -> Literal[False]:
         if self.controller.is_initialized:
             if exc_type is None:
                 self.result = self.controller.complete()
