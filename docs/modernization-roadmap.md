@@ -39,7 +39,7 @@
 | `src/shrine/simulation/` | **Strong** | Public API, scenarios, manifest, `RunSession`, 100+ framework tests |
 | Legacy domain (`src/hydrology/`, `src/water_manage/`, …) | **Mixed** | Installable under `src/`; colocated `unittest` tests often stale (matplotlib, API drift) |
 | Packaging | **Good** | `src/` layout; extras `dev`, `viz`, `hydrology` documented in README |
-| Open-source polish | **Early** | GPL, docs site, CI; PyPI packaging workflow (**3.6**); first PyPI release pending maintainer setup |
+| Open-source polish | **Early** | GPL, docs site, CI; PyPI **packaging CI** done (**3.6** infra); **first PyPI upload deferred** until **3.8** + P1 quality gates |
 
 ### 2.1 Progress snapshot (2026-05-28)
 
@@ -48,7 +48,7 @@
 | **0** | 0.1–0.13, 0.14–0.16 (**complete**) | — |
 | **1** | 1.1–1.17 (**complete**) | Phase 1 exit criteria (examples, no LegacyModel path, CI) |
 | **2** | 2.1–2.14 (**complete**) | Phase 2 exit criteria |
-| **3** | **3.1**–**3.5** doc site through comparison | **3.6** PyPI publish (CI ready) |
+| **3** | **3.1**–**3.5**, **3.7**, **3.6** (packaging CI), **3.8** | **3.9**–**3.12** P1 → **3.6** first PyPI upload |
 | **4** | — | Deferred |
 
 **Phase 0 exit criteria (status):**
@@ -233,14 +233,14 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 - [x] **3.4** Architecture page on doc site (framework / domain / adapters) — [architecture.md](architecture.md) under **Get started** in `mkdocs.yml`; Mermaid diagrams; linked from home, README, concepts, tutorial
 - [x] **3.5** Comparison note: how SHRINE differs from PySWMM, HEC-ResSim, Riverware, WEAP, modular hydrology frameworks (GHMF), Spotpy, etc. ([comparison.md](comparison.md))
 
-#### P0 — Packaging & releases
+#### P0 — Packaging foundation
 
-- [ ] **3.6** Task is skipped for now. Publish to PyPI (`shrine` on PyPI; fallbacks `shrine-wrm` / `shrine-water` documented in [pypi.md](pypi.md)) — package metadata, `package.yml` cross-platform smoke install, `publish.yml` on GitHub Release; **first upload** requires PyPI trusted publisher (see [pypi.md](pypi.md))
 - [x] **3.7** Versioning policy (SemVer); changelog (`CHANGELOG.md`, Keep a Changelog) — [releases.md](releases.md)
-- [ ] **3.8** `pip install shrine[hydrology,viz,dev]` documented *(depends on **0.13** / PyPI **3.6**)*
+- [x] **3.6** *(part 1 — infrastructure)* PyPI-ready packaging: `pyproject.toml` metadata, `package.yml` cross-platform smoke install, `publish.yml`, `docs/pypi.md`, `scripts/build_package.sh` — **no first upload yet** ([pypi.md](pypi.md))
 
 #### P1 — Engineering quality
 
+- [x] **3.8** Install & extras documentation: source path (`pip install -e ".[dev,viz,hydrology]"`, venv / PEP 668), wheel vs clone-for-`scenarios/`; README + [install.md](install.md) aligned for future `pip install shrine[…]` — **do before first PyPI upload**
 - [ ] **3.9** Benchmark scenario (performance regression in CI, optional threshold)
 - [ ] **3.10** Reference model library: `scenarios/reference/` (synthetic basin, published benchmark if available)
 - [ ] **3.11** Contributor guide: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, issue templates
@@ -258,10 +258,18 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 - [ ] **3.17** `GOVERNANCE.md` (maintainer, release manager, lazy consensus)
 - [ ] **3.18** Security policy: `SECURITY.md` (reporting, supported versions)
 
+#### P2 — Public PyPI release *(deferred until stable)*
+
+**Gate before part 2:** **3.8** (install docs), **3.10** (reference scenarios), **3.11** (contributor guide); optional TestPyPI dry run.
+
+- [ ] **3.6** *(part 2 — first upload)* Publish **`shrine`** to PyPI (`shrine-wrm` / `shrine-water` fallbacks in [pypi.md](pypi.md)); trusted publisher; tag + GitHub Release triggers `publish.yml` — **not before beta readiness**
+
 **Phase 3 exit criteria**
 
-- PyPI install works on Windows, macOS, Linux (smoke test in CI)
-- ReadTheDocs (or GitHub Pages) live; Google finds “SHRINE water resources Python”
+- GitHub Pages docs live; tutorial + API reference discoverable
+- Packaging CI: wheel/sdist build + cross-platform smoke install (**3.6** part 1) — **met**
+- **3.6** part 2 (public `pip install shrine` on PyPI): deferred until **3.8** + P1 quality gates
+- When **3.6** part 2 ships: PyPI install works on Windows, macOS, Linux (smoke test in CI)
 
 ---
 
@@ -292,7 +300,9 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 | 2.1–2.3 | RunoffModel protocol | High | Medium | 2 |
 | 2.5–2.7 | Graph payload model | High | High | 2 |
 | 3.1–3.4 | Doc site | High | Medium | 3 |
-| 3.6 | PyPI | High | Medium | 3 |
+| 3.6 (infra) | Packaging CI | High | Medium | 3 — **done** |
+| 3.8 | Install docs | High | Low | 3 — **done** |
+| 3.6 (publish) | First PyPI upload | High | Low | 3 — **deferred** |
 | 4.1 | Plugin entry points | Medium | High | 4 |
 
 **Do first (May 2026):** **1.17** (pytest CI) → **1.15** (golden-run) → **2.8** (domain test migration).

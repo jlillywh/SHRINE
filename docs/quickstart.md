@@ -4,11 +4,14 @@ This guide runs a two-catchment watershed model from a bundled scenario file. It
 
 ## Prerequisites
 
-Complete [Install](install.md):
+Complete [Install](install.md) (use a venv on WSL — see [PEP 668](install.md#virtual-environment-pep-668)):
 
 ```bash
-pip install -e ".[dev]"
+bash scripts/bootstrap_venv.sh
+# or: .venv/bin/python3 -m pip install -e ".[dev]"
 ```
+
+Bundled scenarios live in `scenarios/` at the **repo root** — you need a Git clone (not PyPI wheel alone). See [wheel vs clone](install.md#wheel-vs-git-clone--what-you-get).
 
 ## 1. Build a model in Python
 

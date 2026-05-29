@@ -3,10 +3,11 @@
 This tutorial walks through a complete **twin-catchment watershed**: define topology in Python, drive the run with a **scenario file**, inspect tabular outputs, and **plot** outflow vs time.
 
 **Time:** ~30 minutes  
-**Prerequisites:** [Install](../install.md) with the `viz` extra for plotting:
+**Prerequisites:** [Install](../install.md) from a Git clone with the `viz` extra for plotting:
 
 ```bash
-pip install -e ".[dev,viz]"
+bash scripts/bootstrap_venv.sh
+.venv/bin/python3 -m pip install -e ".[dev,viz]"
 ```
 
 **Runnable script:** [`examples/tutorial_watershed.py`](https://github.com/jlillywh/SHRINE/blob/master/examples/tutorial_watershed.py)  
@@ -186,8 +187,9 @@ Re-run after each change; scenario hash in `result.manifest` updates when inputs
 
 ```bash
 cd SHRINE
-pip install -e ".[dev,viz]"
-python examples/tutorial_watershed.py scenarios/tutorial_watershed.yaml \
+bash scripts/bootstrap_venv.sh
+.venv/bin/python3 -m pip install -e ".[dev,viz]"
+.venv/bin/python3 examples/tutorial_watershed.py scenarios/tutorial_watershed.yaml \
   --no-show --output tutorial_plot.png
 ```
 

@@ -1,6 +1,6 @@
 # PyPI publishing
 
-SHRINE is published to [PyPI](https://pypi.org/project/shrine/) as the **`shrine`** distribution (import name `shrine`). Alternate names (`shrine-wrm`, `shrine-water`) are reserved in the roadmap if the primary name is ever unavailable.
+SHRINE will be published to [PyPI](https://pypi.org/project/shrine/) as the **`shrine`** distribution (import name `shrine`) when roadmap **3.6** *(part 2 — first upload)* ships. **Packaging infrastructure** *(part 1)* is already in CI. Alternate names (`shrine-wrm`, `shrine-water`) are reserved if the primary name is ever unavailable.
 
 ## Install from PyPI
 
@@ -20,7 +20,7 @@ import shrine.simulation as sim
 print(shrine.__version__, sim.__api_version__)
 ```
 
-Bundled **scenario YAML/JSON** and the full **tutorial** paths live in the [GitHub repository](https://github.com/jlillywh/SHRINE); clone the repo for `scenarios/` and `./scripts/run_tests.sh`. The PyPI wheel ships the Python packages under `src/` and `examples/`.
+Bundled **scenario YAML/JSON** live in the [GitHub repository](https://github.com/jlillywh/SHRINE) under `scenarios/` — **not** in the PyPI wheel. See [Install — wheel vs clone](install.md#wheel-vs-git-clone--what-you-get). Clone the repo for tutorials and `./scripts/run_tests.sh`. The wheel ships Python packages under `src/` and `examples/`.
 
 ## CI
 
@@ -68,4 +68,5 @@ Use the roadmap fallback distribution name (`shrine-wrm` or `shrine-water`) in `
 
 - [Install](install.md) — venv and editable installs from source
 - [Versioning & releases](releases.md) — SemVer, `CHANGELOG.md`, release checklist (roadmap **3.7**)
-- Roadmap **3.8** — document extras after PyPI is live
+- Roadmap **3.8** — install & extras docs ([install.md](install.md))
+- Roadmap **3.6** *(part 2)* — first public PyPI release (deferred)

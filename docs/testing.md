@@ -156,7 +156,7 @@ API reference pages under `docs/api/autogen/` are generated from `shrine.simulat
 
 CI: `.github/workflows/docs.yml` builds on every PR; deploys to GitHub Pages on push to `master`.
 
-### PyPI package (roadmap **3.6**)
+### PyPI package (roadmap **3.6** part 1 — CI; part 2 — upload deferred)
 
 | Workflow | Purpose |
 |----------|---------|

@@ -65,49 +65,55 @@ Library code is under `src/`; run `pip install -e ".[dev]"` before tests or scri
 
 ## Install
 
-```bash
-pip install shrine
-pip install "shrine[dev,viz,hydrology]"   # contributors + plotting + NWIS demo
-```
+**PyPI:** not published yet — use **source** below. Full guide: [docs/install.md](docs/install.md) (extras, PEP 668, wheel vs clone).
 
-From source (development):
+### From source *(recommended today)*
 
 ```bash
 git clone https://github.com/jlillywh/SHRINE.git
 cd SHRINE
-python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
+bash scripts/bootstrap_venv.sh    # .venv + pip install -e ".[dev]"
 ```
+
+Contributors (tests + plotting + NWIS demo):
+
+```bash
+.venv/bin/python3 -m pip install -e ".[dev,viz,hydrology]"
+```
+
+On Ubuntu/WSL, use `.venv/bin/python3` and `.venv/bin/pip` — system `pip install` is blocked (PEP 668). See [docs/install.md](docs/install.md).
+
+### From PyPI *(when published)*
+
+```bash
+pip install shrine
+pip install "shrine[dev,viz,hydrology]"
+```
+
+The PyPI wheel includes Python packages and `examples/`; **clone the repo** for bundled `scenarios/` and `./scripts/run_tests.sh`.
 
 ### Optional dependency extras
 
-Defined in `pyproject.toml` under `[project.optional-dependencies]`. Combine extras in one install (comma-separated inside the brackets).
+Defined in `pyproject.toml` under `[project.optional-dependencies]`. Same extra names for source and PyPI.
 
-| Extra | Purpose | Typical command |
-|-------|---------|-----------------|
-| *(none)* | Core runtime: `shrine`, domain packages (`numpy`, `pandas`, `pint`, …) | `pip install shrine` or `pip install -e .` |
-| `dev` | `pytest`, coverage, `pre-commit` | `pip install -e ".[dev]"` |
-| `docs` | MkDocs Material documentation site | `pip install -e ".[docs]"` |
-| `viz` | `matplotlib` — legacy charts, `flow_network.draw`, `inputs.table` plots | `pip install -e ".[viz]"` |
-| `hydrology` | `hydrofunctions` — USGS NWIS demo (`examples/nwis_streamflow.py`) | `pip install -e ".[hydrology]"` |
+| Extra | Purpose | Source | PyPI *(future)* |
+|-------|---------|--------|-----------------|
+| *(none)* | Core runtime | `pip install -e .` | `pip install shrine` |
+| `dev` | pytest, mypy, ruff, pre-commit | `pip install -e ".[dev]"` | `pip install "shrine[dev]"` |
+| `docs` | MkDocs site | `pip install -e ".[docs]"` | `pip install "shrine[docs]"` |
+| `viz` | matplotlib | `pip install -e ".[viz]"` | `pip install "shrine[viz]"` |
+| `hydrology` | NWIS demo (`examples/nwis_streamflow.py`) | `pip install -e ".[hydrology]"` | `pip install "shrine[hydrology]"` |
 
-**Recommended for contributors** (framework tests + common legacy tooling):
+**Recommended for contributors:**
 
 ```bash
 pip install -e ".[dev,viz,hydrology]"
 ```
 
-**Framework-only CI / quickstart** (matches `./scripts/run_tests.sh`):
+**Framework-only CI** (matches `./scripts/run_tests.sh`):
 
 ```bash
 pip install -e ".[dev]"
-```
-
-Plotting without NWIS:
-
-```bash
-pip install -e ".[dev,viz]"
 ```
 
 ## Run tests
@@ -187,6 +193,7 @@ mkdocs serve          # http://127.0.0.1:8000
 | [docs/scenarios.md](docs/scenarios.md) | Scenario YAML/JSON |
 | [docs/step-debugging.md](docs/step-debugging.md) | `RunController.step()` API |
 | [docs/results-recording.md](docs/results-recording.md) | `Recorder` and `TimeHistory` |
+| [docs/install.md](docs/install.md) | **Install** — source vs PyPI, extras, PEP 668, wheel vs clone |
 | [docs/testing.md](docs/testing.md) | Test suite and CI-style local runs |
 | [docs/secrets-and-repo-hygiene.md](docs/secrets-and-repo-hygiene.md) | API keys, `.env`, history purge if a secret was committed |
 
