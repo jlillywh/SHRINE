@@ -58,11 +58,11 @@ Restrict keys in [Google Cloud Console](https://console.cloud.google.com/apis/cr
 
 | Layer | What runs |
 |-------|-----------|
-| **GitHub Actions** | [`.github/workflows/secrets.yml`](../.github/workflows/secrets.yml) runs **gitleaks** on every push/PR to `master` |
-| **Pre-commit (optional)** | [`.pre-commit-config.yaml`](../.pre-commit-config.yaml) scans **staged** files before each commit |
+| **GitHub Actions** | [`.github/workflows/secrets.yml`](https://github.com/jlillywh/SHRINE/blob/master/.github/workflows/secrets.yml) runs **gitleaks** on every push/PR to `master` |
+| **Pre-commit (optional)** | [`.pre-commit-config.yaml`](https://github.com/jlillywh/SHRINE/blob/master/.pre-commit-config.yaml) scans **staged** files before each commit |
 | **Manual** | `./scripts/scan_secrets.sh` (requires [gitleaks](https://github.com/gitleaks/gitleaks) installed) |
 
-Config and allowlists (docs, `apikey.txt.example`): [`.gitleaks.toml`](../.gitleaks.toml).
+Config and allowlists (docs, `apikey.txt.example`): [`.gitleaks.toml`](https://github.com/jlillywh/SHRINE/blob/master/.gitleaks.toml).
 
 ### Enable pre-commit locally
 

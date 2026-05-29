@@ -80,6 +80,7 @@ Defined in `pyproject.toml` under `[project.optional-dependencies]`. Combine ext
 |-------|---------|-----------------|
 | *(none)* | Core runtime: `shrine`, domain packages, scenarios (`numpy`, `pandas`, `pint`, …) | `pip install -e .` |
 | `dev` | `pytest`, coverage, `pre-commit` | `pip install -e ".[dev]"` |
+| `docs` | MkDocs Material documentation site | `pip install -e ".[docs]"` |
 | `viz` | `matplotlib` — legacy charts, `flow_network.draw`, `inputs.table` plots | `pip install -e ".[viz]"` |
 | `hydrology` | `hydrofunctions` — USGS NWIS demo (`examples/nwis_streamflow.py`) | `pip install -e ".[hydrology]"` |
 
@@ -150,6 +151,16 @@ python examples/nwis_streamflow.py
 Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
 
 ## Documentation
+
+**Online docs:** [https://jlillywh.github.io/SHRINE/](https://jlillywh.github.io/SHRINE/) (GitHub Pages — enable *Settings → Pages → GitHub Actions* after the first `Docs` workflow run on `master`).
+
+Build locally:
+
+```bash
+pip install -e ".[docs]"
+mkdocs serve          # http://127.0.0.1:8000
+# or: ./scripts/build_docs.sh
+```
 
 | Guide | Topic |
 |-------|--------|

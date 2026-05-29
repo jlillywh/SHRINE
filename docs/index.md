@@ -1,0 +1,43 @@
+# SHRINE
+
+**S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**nvironments.
+
+SHRINE is an open-source Python library for integrated water-resources modeling. It combines legacy domain modules (hydrology, storage, flow networks) with **`shrine.simulation`** — a calendar-driven run engine with mass balance, scenario files, and structured outputs.
+
+## New to SHRINE?
+
+1. [Install](install.md) the package in a virtual environment.
+2. Follow the [Quickstart](quickstart.md) to run a watershed model from a scenario file.
+3. Read [Concepts](concepts.md) for the mental model: `Model`, elements, inputs, and the run loop.
+
+## Supported path for new work
+
+Import the simulation framework from the package root:
+
+```python
+from shrine.simulation import Model, RunController, Clock, WatershedElement
+```
+
+Legacy domain packages (`hydrology`, `water_manage`, …) remain available and are wrapped by **adapters** — see [Architecture](architecture.md).
+
+## Documentation map
+
+| Section | Contents |
+|---------|----------|
+| **Get started** | Install, quickstart, core concepts |
+| **Guides** | Architecture, scenarios, extending elements, testing |
+| **API reference** | Public `shrine.simulation` surface |
+| **Project** | Roadmap, naming, contributor hygiene |
+
+## Versions
+
+| Symbol | Meaning |
+|--------|---------|
+| `shrine.__version__` | Distribution version (PyPI package) |
+| `shrine.simulation.__api_version__` | Stable simulation API (`1.0`) |
+
+See [API stability](api-stability.md) for deprecation policy.
+
+## License
+
+GNU General Public License v3.0 — see [LICENSE](https://github.com/jlillywh/SHRINE/blob/master/LICENSE).

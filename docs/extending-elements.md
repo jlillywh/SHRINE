@@ -355,7 +355,7 @@ Use this **before and while** you add an adapter. It complements [§16 Testing c
 | Question | Guidance |
 |----------|----------|
 | Does legacy code already do the physics? | **Yes** → adapter. **No** → new `Simulatable` ([§12](#12-minimal-custom-element-copy-paste-starter)). |
-| Does the domain object **own a NetworkX graph**? | **Yes** → follow `WatershedElement` ([§8](#8-network--flow-elements-elm-07-flw-01)); call `FlowSolver` in `update`. |
+| Does the domain object **own a NetworkX graph**? | **Yes** → follow `WatershedElement` ([§8](#8-network-flow-elements-elm-07-flw-01)); call `FlowSolver` in `update`. |
 | Is it **local** runoff/storage with no routing? | **Yes** → follow `CatchmentElement` or `ReservoirElement`; no flow solver in the adapter. |
 | What are the **input keys**? | Match scenario YAML and `InputManager.bind` (e.g. `precipitation`, `evaporation`, `inflow`, `release`). Document defaults in the constructor. |
 | What **outputs** must be recorded? | List `{element_id}.variable` names; register in `initialize`, record in `update`. |

@@ -4,7 +4,7 @@ This document defines versioning and deprecation rules for **`shrine.simulation`
 
 Related:
 
-- [README.md](../README.md) — public API table
+- [README](https://github.com/jlillywh/SHRINE/blob/master/README.md) — public API table
 - [modernization-roadmap.md](modernization-roadmap.md) — Phase 1 hardening
 - [architecture.md](architecture.md) — framework vs domain layers
 
@@ -61,7 +61,7 @@ When removing or renaming a symbol in `shrine.simulation.__all__`:
 
 1. **Introduce** the replacement (if any) in the same or earlier release.
 2. **Deprecate** the old symbol: keep it working, emit `DeprecationWarning` on use (instantiation, call, or import side effect as appropriate).
-3. **Document** in [CHANGELOG.md](../CHANGELOG.md) under `Deprecated` and in the symbol’s docstring.
+3. **Document** in [CHANGELOG](https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md) under `Deprecated` and in the symbol’s docstring.
 4. **Wait** at least **one minor** distribution release (`0.N` → `0.N+1`) with warnings enabled.
 5. **Remove** in the next **minor** release after that warning period (or bump `__api_version__` major and `shrine` MAJOR when reaching 1.0).
 
@@ -89,7 +89,7 @@ warn_api_deprecated(
 )
 ```
 
-Legacy `global_attributes` aliases (`Model`, `Clock`) follow the same **user-visible** rule: `DeprecationWarning` on use, documented in CHANGELOG.
+Legacy `global_attributes` aliases (`Model`, `Clock`) follow the same **user-visible** rule: `DeprecationWarning` on use, documented in CHANGELOG (see repo root).
 
 ---
 
@@ -99,7 +99,7 @@ Legacy `global_attributes` aliases (`Model`, `Clock`) follow the same **user-vis
 |-------------|--------|
 | New symbol in `__all__` | MINOR `__version__`; optional MINOR `__api_version__` |
 | New optional argument with default | MINOR, no deprecation |
-| Stricter validation (reject previously accepted bad input) | MINOR or MAJOR; note in CHANGELOG |
+| Stricter validation (reject previously accepted bad input) | MINOR or MAJOR; note in CHANGELOG (repo root) |
 | Bug fix that changes numerics | PATCH; mention in CHANGELOG if material |
 | Scenario file schema | Document in [scenarios.md](scenarios.md); treat unknown keys per validation policy (1.3) |
 
@@ -121,7 +121,7 @@ Legacy `global_attributes` aliases (`Model`, `Clock`) follow the same **user-vis
 
 ## Changelog and releases
 
-Every release that deprecates or removes API surface must update **[CHANGELOG.md](../CHANGELOG.md)** with:
+Every release that deprecates or removes API surface must update **[CHANGELOG](https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md)** with:
 
 - `Added` / `Changed` / `Deprecated` / `Removed` / `Fixed`
 - Affected `__api_version__` when simulation public API changes

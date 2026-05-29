@@ -37,6 +37,11 @@ viz = [
 hydrology = [
     "hydrofunctions>=0.2.4",
 ]
+# MkDocs Material site (roadmap 3.1)
+docs = [
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.27",
+]
 
 [tool.setuptools.packages.find]
 where = ["src", "."]

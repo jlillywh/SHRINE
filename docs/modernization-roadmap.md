@@ -39,7 +39,7 @@
 | `src/shrine/simulation/` | **Strong** | Public API, scenarios, manifest, `RunSession`, 100+ framework tests |
 | Legacy domain (`src/hydrology/`, `src/water_manage/`, …) | **Mixed** | Installable under `src/`; colocated `unittest` tests often stale (matplotlib, API drift) |
 | Packaging | **Good** | `src/` layout; extras `dev`, `viz`, `hydrology` documented in README |
-| Open-source polish | **Early** | GPL, README, 5 examples; CI = secret scan only; no PyPI / doc site yet |
+| Open-source polish | **Early** | GPL, README, examples; CI (pytest, mypy, ruff, docs build); doc site scaffold (**3.1**); no PyPI yet |
 
 ### 2.1 Progress snapshot (2026-05-28)
 
@@ -48,7 +48,7 @@
 | **0** | 0.1–0.13, 0.14–0.16 (**complete**) | — |
 | **1** | 1.1–1.17 (**complete**) | Phase 1 exit criteria (examples, no LegacyModel path, CI) |
 | **2** | 2.1–2.14 (**complete**) | Phase 2 exit criteria |
-| **3** | — | **3.1** doc site; **3.4** *partial* — [architecture.md](architecture.md) exists in-repo |
+| **3** | **3.1** doc site | **3.2** auto API docs; **3.4** publish architecture page |
 | **4** | — | Deferred |
 
 **Phase 0 exit criteria (status):**
@@ -227,7 +227,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P0 — Documentation site
 
-- [ ] **3.1** MkDocs Material (or Sphinx) site: Install, Quickstart, Concepts, API reference
+- [x] **3.1** MkDocs Material (or Sphinx) site: Install, Quickstart, Concepts, API reference (`mkdocs.yml`, `docs/` nav, `.github/workflows/docs.yml`, `pip install -e ".[docs]"`)
 - [ ] **3.2** Auto-generate API docs from `shrine.simulation` docstrings
 - [ ] **3.3** Tutorial: “Build your first watershed model” (scenario + plot)
 - [ ] **3.4** Architecture page on doc site (framework / domain / adapters) *(partial: [architecture.md](architecture.md) in-repo with mermaid — publish + link from site)*
