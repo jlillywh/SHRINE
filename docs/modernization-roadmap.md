@@ -1,6 +1,6 @@
 # SHRINE Modernization Roadmap
 
-**SHRINE** — **S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**ngine (singular *Engine*, not “Engines”).
+**SHRINE** — **S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**ngine (singular *Engine*).
 
 **Status:** Living document — strategic checklist  
 **Audience:** Maintainers, contributors, water-resources engineers evaluating SHRINE  
