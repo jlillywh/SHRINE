@@ -17,18 +17,25 @@ Do **not** depend on undocumented submodule paths (`shrine.simulation.run_contro
 
 Deprecation rules and SemVer policy: [API stability](../api-stability.md).
 
-## Documented modules
+## Auto-generated reference
 
-| Page | Scope |
-|------|-------|
-| [shrine.simulation](simulation.md) | Run orchestration, elements, inputs, flow, scenarios, errors |
+API pages are built with [mkdocstrings](https://mkdocstrings.github.io/) from **`shrine.simulation` docstrings** (roadmap **3.2**):
 
-Domain packages (`hydrology`, `water_manage`, …) are legacy modules with evolving contracts. Prefer adapters and framework types for new code. Domain protocols are described in [Hydrology contracts](../hydrology-contracts.md).
+1. `scripts/gen_api_reference.py` reads `shrine.simulation.__all__` and writes `docs/api/autogen/*.md`.
+2. `mkdocs build` renders Google-style docstrings into HTML.
 
-## Auto-generated docs
+Regenerate after changing the public API or docstrings:
 
-API pages use [mkdocstrings](https://mkdocstrings.github.io/) to render docstrings from source. Roadmap item **3.2** will expand coverage and cross-linking; this site already documents the primary `shrine.simulation` entry point.
+```bash
+pip install -e ".[docs]"
+python scripts/gen_api_reference.py
+mkdocs build --strict
+```
+
+Start at [shrine.simulation](simulation.md) for the package index and links to each section.
 
 ## Internal symbols
 
 Names prefixed with `_`, modules outside `shrine.simulation.__all__`, and legacy domain packages may change without a deprecation cycle.
+
+Domain protocols: [Hydrology contracts](../hydrology-contracts.md).

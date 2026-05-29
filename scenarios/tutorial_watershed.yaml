@@ -1,0 +1,33 @@
+# Tutorial scenario: twin catchments with monthly precipitation (Jan–Mar 2019).
+# Used by docs/tutorial/first-watershed-model.md and examples/tutorial_watershed.py
+
+name: tutorial_watershed
+seed: 42
+
+clock:
+  start_date: "1/1/2019"
+  end_date: "3/31/2019"
+  time_step: "1 days"
+
+inputs:
+  precipitation:
+    type: monthly
+    values:
+      January: 8.0
+      February: 6.0
+      March: 10.0
+      April: 7.0
+      May: 5.0
+      June: 4.0
+      July: 3.0
+      August: 4.0
+      September: 5.0
+      October: 6.0
+      November: 7.0
+      December: 8.0
+  evaporation:
+    type: constant
+    value: 1.0
+
+metadata:
+  description: "First watershed tutorial — monthly precip, constant ET"

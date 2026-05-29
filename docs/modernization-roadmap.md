@@ -48,7 +48,7 @@
 | **0** | 0.1–0.13, 0.14–0.16 (**complete**) | — |
 | **1** | 1.1–1.17 (**complete**) | Phase 1 exit criteria (examples, no LegacyModel path, CI) |
 | **2** | 2.1–2.14 (**complete**) | Phase 2 exit criteria |
-| **3** | **3.1** doc site | **3.2** auto API docs; **3.4** publish architecture page |
+| **3** | **3.1**–**3.3** doc site, API, tutorial | **3.4** architecture on site; **3.5** comparison note |
 | **4** | — | Deferred |
 
 **Phase 0 exit criteria (status):**
@@ -228,8 +228,8 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 #### P0 — Documentation site
 
 - [x] **3.1** MkDocs Material (or Sphinx) site: Install, Quickstart, Concepts, API reference (`mkdocs.yml`, `docs/` nav, `.github/workflows/docs.yml`, `pip install -e ".[docs]"`)
-- [ ] **3.2** Auto-generate API docs from `shrine.simulation` docstrings
-- [ ] **3.3** Tutorial: “Build your first watershed model” (scenario + plot)
+- [x] **3.2** Auto-generate API docs from `shrine.simulation` docstrings (`scripts/gen_api_reference.py`, `docs/api/autogen/`, mkdocstrings in CI)
+- [x] **3.3** Tutorial: “Build your first watershed model” (scenario + plot) (`docs/tutorial/first-watershed-model.md`, `examples/tutorial_watershed.py`, `scenarios/tutorial_watershed.yaml`)
 - [ ] **3.4** Architecture page on doc site (framework / domain / adapters) *(partial: [architecture.md](architecture.md) in-repo with mermaid — publish + link from site)*
 - [ ] **3.5** Comparison note: how SHRINE differs from PySWMM, GHMF, Spotpy, etc. (honest scope)
 

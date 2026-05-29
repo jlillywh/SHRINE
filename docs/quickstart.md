@@ -95,6 +95,7 @@ From the repo root with your venv activated:
 
 | Script | What it demonstrates |
 |--------|----------------------|
+| `examples/tutorial_watershed.py` | **Tutorial:** scenario + plot (see [First watershed model](tutorial/first-watershed-model.md)) |
 | `examples/watershed_run.py` | Two catchments → junction → flow solve |
 | `examples/catchment_run.py` | Single catchment, rational runoff |
 | `examples/climate_loop.py` | Framework inputs without Excel |
@@ -103,6 +104,7 @@ From the repo root with your venv activated:
 
 ## Next steps
 
+- [Tutorial: first watershed model](tutorial/first-watershed-model.md) — scenario + plot (**recommended**)
 - [Concepts](concepts.md) — run loop, elements, inputs, recording
 - [Scenarios](scenarios.md) — YAML/JSON format and overrides
 - [Architecture](architecture.md) — framework vs domain vs adapters

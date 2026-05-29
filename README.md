@@ -138,6 +138,9 @@ python examples/catchment_run.py
 # Scenario file (JSON/YAML)
 python examples/run_from_scenario.py scenarios/baseline_watershed.json
 
+# Tutorial: watershed + monthly scenario + plot (roadmap 3.3)
+python examples/tutorial_watershed.py --no-show --output tutorial_plot.png
+
 # Single-timestep debugging
 python examples/step_debug.py
 

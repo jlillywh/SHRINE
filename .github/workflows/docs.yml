@@ -33,6 +33,9 @@ jobs:
           python -m pip install -U pip
           pip install -e ".[docs]"
 
+      - name: Generate API reference pages
+        run: python scripts/gen_api_reference.py
+
       - name: Build site (strict)
         run: mkdocs build --strict
 
