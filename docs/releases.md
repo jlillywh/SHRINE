@@ -143,6 +143,6 @@ Security reporting will be formalized in roadmap **3.18** (`SECURITY.md`). Until
 ## Related
 
 - [API stability](api-stability.md) — `__api_version__`, deprecation warnings, public surface
-- [PyPI publishing](pypi.md) — first upload deferred; packaging CI and trusted publisher setup
+- [PyPI publishing](pypi.md) — packaging CI live; first upload deferred until **3.8** + P1 gates (**3.6** part 2)
 - [Testing & CI](testing.md) — workflows that must pass before a release
 - [CHANGELOG.md](https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md) — full history

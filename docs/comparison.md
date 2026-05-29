@@ -139,7 +139,7 @@ Related: [Architecture](architecture.md) · [API stability](api-stability.md) ·
 
 | Limitation (today) | Detail |
 |--------------------|--------|
-| **Maturity** | Alpha; on PyPI as **`shrine`** after first release (**3.6**); legacy domain debt |
+| **Maturity** | Alpha; packaging CI ready (**3.6** part 1); first PyPI release deferred (**3.6** part 2); legacy domain debt |
 | **GUI** | None; examples and MkDocs only |
 | **Hydraulics** | No SWMM-class 1D/2D engine |
 | **Planning** | No WEAP-class demand planning or GIS workspace |
