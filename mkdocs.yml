@@ -97,6 +97,7 @@ nav:
       - Hydrology contracts: hydrology-contracts.md
       - Extending elements: extending-elements.md
       - Scenarios: scenarios.md
+      - Reference models: reference-models.md
       - Step debugging: step-debugging.md
       - Results & recording: results-recording.md
       - Testing & CI: testing.md

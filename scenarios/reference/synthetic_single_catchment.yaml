@@ -1,0 +1,21 @@
+# REF-1C: single catchment → sink (synthetic minimal basin)
+
+name: synthetic_single_catchment
+seed: 42
+
+clock:
+  start_date: "1/1/2019"
+  end_date: "1/10/2019"
+  time_step: "1 days"
+
+inputs:
+  precipitation:
+    type: constant
+    value: 10.0
+  evaporation:
+    type: constant
+    value: 1.0
+
+metadata:
+  description: "Synthetic single-catchment reference — constant climate, 10 daily steps"
+  reference_id: REF-1C

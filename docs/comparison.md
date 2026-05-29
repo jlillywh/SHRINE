@@ -120,7 +120,7 @@ Related: [Architecture](architecture.md) · [API stability](api-stability.md) ·
 
 **Honest gaps:**
 
-- Spotpy **does not simulate** water; SHRINE **does not ship** a calibration suite (reference models in **3.10**; perf benchmark in **3.9**).
+- Spotpy **does not simulate** water; SHRINE **does not ship** a calibration suite (reference scenarios in **3.10**; perf benchmark in **3.9**).
 - You can wrap `RunController.run()` in a Spotpy `setup` class today, but that integration is **bring-your-own**.
 
 **When to use together:** SHRINE simulates; Spotpy searches parameters. Same division as HYMOD + Spotpy in the Spotpy documentation.

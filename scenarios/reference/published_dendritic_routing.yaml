@@ -1,0 +1,25 @@
+# REF-4C2J: four catchments, two junctions — dendritic routing reference
+# Synthetic multi-gauge layout analogous to intercomparison basin structure
+# (cf. Reed et al. 2004 MOPEX; Newman et al. 2017 benchmarking practice).
+# Runoff: default Catchment (Rational, area=1000 m²). Not MOPEX forcing or parameters.
+
+name: published_dendritic_routing
+seed: 42
+
+clock:
+  start_date: "1/1/2019"
+  end_date: "1/21/2019"
+  time_step: "1 days"
+
+inputs:
+  precipitation:
+    type: constant
+    value: 10.0
+  evaporation:
+    type: constant
+    value: 1.0
+
+metadata:
+  description: "Published-style dendritic 4C2J routing reference (intercomparison layout)"
+  reference_id: REF-4C2J
+  citation: "Reed, S.K., Koren, V., Smith, M., et al. (2004). Overall distributed model intercomparison project (DMIP) results. J. Hydrol. 298, 27–60; Newman, A.J., et al. (2017). Benchmarking hydrologic models. Eos 98."

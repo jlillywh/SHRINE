@@ -47,6 +47,7 @@ Installable code lives under **`src/`** (framework and legacy domain packages). 
 |------|---------|
 | `tests/conftest.py` | Shared fixtures (`short_clock`, `two_catchment_watershed`, `SimpleStore`, …) |
 | `tests/benchmark/` | Performance baseline for `scenarios/benchmark/` (see `test_benchmark_run.py`) |
+| `tests/reference/` | Model builders + manifest for `scenarios/reference/` (see `test_reference_run.py`) |
 | `tests/golden/` | Expected SHA-256 of `result.outputs` for bundled scenarios (see `test_golden_run.py`) |
 | `tests/simulation/test_mass_balance_property.py` | Fuzz-light mass balance for `SimpleStore` + `ReservoirElement` (seed `20240528`) |
 | `tests/hydrology/` | Phase 2 hydrology contract tests (`RunoffModel`, `RunoffMethod`, graph payloads) |
@@ -182,6 +183,22 @@ Refresh baseline after intentional performance changes (local vs CI runners diff
 ```
 
 CI runs the benchmark via the main **Tests** workflow (`pytest tests/`).
+
+### Reference models (roadmap **3.10**)
+
+| Path | Purpose |
+|------|---------|
+| `scenarios/reference/` | Synthetic + published-style routing reference scenarios |
+| `tests/reference/manifest.py` | Scenario → model builder → golden hash registry |
+| `tests/golden/reference/` | SHA-256 digests of `result.outputs` |
+| `tests/simulation/test_reference_run.py` | Golden hash + analytical outflow spot checks |
+| `docs/reference-models.md` | Catalog and usage |
+
+Refresh golden hashes after intentional output changes:
+
+```bash
+.venv/bin/python3 scripts/update_reference_golden.py
+```
 
 ## Coverage expectations
 

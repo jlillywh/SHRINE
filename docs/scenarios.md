@@ -52,7 +52,7 @@ metadata:
   description: Optional notes stored in run metadata
 ```
 
-Bundled examples: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
+Bundled examples: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`. Reference library: `scenarios/reference/` ([Reference models](reference-models.md)).
 
 ### Reservoir overrides
 
