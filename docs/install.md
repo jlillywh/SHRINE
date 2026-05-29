@@ -105,13 +105,13 @@ Upgrade extras after pulling new commits:
 
 ---
 
-## Wheel vs Git clone — what you get
+## Wheel vs Git clone — what you get {#wheel-vs-git-clone--what-you-get}
 
 | Included | Editable clone | PyPI wheel *(future)* |
 |----------|----------------|------------------------|
 | `shrine`, `hydrology`, `water_manage`, … under `src/` | Yes | Yes |
 | `examples/` scripts | Yes (repo root) | Yes (packaged) |
-| `scenarios/` (tutorial + baseline YAML/JSON) | Yes (repo root) | **No** — clone repo or copy scenario files |
+| `scenarios/` (tutorial, baseline, benchmark, reference YAML/JSON) | Yes (repo root) | **No** — clone repo or copy scenario files |
 | `tests/`, `scripts/run_tests.sh` | Yes | **No** — clone for development |
 | `docs/` source, MkDocs site build | Yes | **No** — use [GitHub Pages](https://jlillywh.github.io/SHRINE/) |
 

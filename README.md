@@ -227,6 +227,10 @@ print(result.outputs.head())
 
 Legacy scripts (e.g. `global_attributes/test_model.py`) remain for reference; prefer `examples/climate_loop.py` and the framework APIs for new work.
 
+## Contributing
+
+We welcome issues and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, and PR workflow. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## License
 
 GNU General Public License v3.0 — see [LICENSE](LICENSE).
