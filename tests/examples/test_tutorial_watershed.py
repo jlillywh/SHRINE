@@ -6,8 +6,8 @@ import importlib.util
 from pathlib import Path
 
 import pytest
-
 from examples.tutorial_watershed import build_tutorial_model, plot_watershed_results
+
 from shrine.simulation import load_and_run
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
