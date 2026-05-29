@@ -10,6 +10,7 @@ SHRINE is an open-source Python library for integrated water-resources modeling.
 2. Follow the [Quickstart](quickstart.md) to run a watershed model from a scenario file.
 3. Work through [Build your first watershed model](tutorial/first-watershed-model.md) (scenario + plot).
 4. Read [Concepts](concepts.md) for the mental model: `Model`, elements, inputs, and the run loop.
+5. See [Architecture](architecture.md) for framework / domain / adapter diagrams (Mermaid).
 
 ## Supported path for new work
 
@@ -25,11 +26,11 @@ Legacy domain packages (`hydrology`, `water_manage`, …) remain available and a
 
 | Section | Contents |
 |---------|----------|
-| **Get started** | Install, quickstart, core concepts |
+| **Get started** | Install, quickstart, concepts, **architecture** (framework / domain / adapters) |
 | **Tutorials** | End-to-end watershed model with scenario and plot |
-| **Guides** | Architecture, scenarios, extending elements, testing |
+| **Guides** | Scenarios, extending elements, testing, requirements |
 | **API reference** | Public `shrine.simulation` surface |
-| **Project** | Roadmap, naming, contributor hygiene |
+| **Project** | Roadmap, **tool comparison**, naming, contributor hygiene |
 
 ## Versions
 

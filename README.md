@@ -167,10 +167,11 @@ mkdocs serve          # http://127.0.0.1:8000
 
 | Guide | Topic |
 |-------|--------|
+| [Architecture](https://jlillywh.github.io/SHRINE/architecture/) | **Framework vs domain vs adapters** (diagrams) |
+| [Comparison with other tools](https://jlillywh.github.io/SHRINE/comparison/) | SHRINE vs PySWMM, WEAP, ResSim, Spotpy, … (honest scope) |
 | [docs/project-name.md](docs/project-name.md) | **SHRINE** naming and acronym |
 | [docs/modernization-roadmap.md](docs/modernization-roadmap.md) | Strategic checklist: pythonic OOP, OSS excellence |
 | [docs/api-stability.md](docs/api-stability.md) | SemVer, deprecation cycle, public API policy |
-| [docs/architecture.md](docs/architecture.md) | Framework vs domain vs adapters (diagrams) |
 | [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
 | [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |
 | [docs/scenarios.md](docs/scenarios.md) | Scenario YAML/JSON |

@@ -2,7 +2,7 @@
 
 SHRINE separates **orchestration** (when things run, what inputs apply, how outputs are recorded) from **physics** (how catchments, reservoirs, and networks behave). New application code should use **`shrine.simulation`** for orchestration and call domain objects through **adapters**.
 
-See [Architecture](architecture.md) for diagrams; this page is the concise mental model.
+See [Architecture](architecture.md) for layered diagrams (framework, adapters, domain); this page is the concise mental model.
 
 ## Three layers
 
