@@ -89,10 +89,10 @@ nav:
       - Install: install.md
       - Quickstart: quickstart.md
       - Concepts: concepts.md
+      - Architecture: architecture.md
   - Tutorials:
       - First watershed model: tutorial/first-watershed-model.md
   - Guides:
-      - Architecture: architecture.md
       - Simulation requirements: simulation-framework-requirements.md
       - Hydrology contracts: hydrology-contracts.md
       - Extending elements: extending-elements.md
@@ -114,6 +114,7 @@ nav:
       - Metadata, manifest, and RNG: api/autogen/metadata.md
       - Errors and deprecation: api/autogen/errors.md
   - Project:
+      - Comparison with other tools: comparison.md
       - Modernization roadmap: modernization-roadmap.md
       - Project name: project-name.md
       - Secrets & hygiene: secrets-and-repo-hygiene.md

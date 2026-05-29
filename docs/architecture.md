@@ -1,12 +1,16 @@
 # SHRINE architecture
 
-This document describes how the **simulation framework**, **domain physics**, and **adapters** fit together. New application code should target **`shrine.simulation`** only; legacy modules remain callable through adapters or scripts until fully wrapped.
+This page is published on the [documentation site](https://jlillywh.github.io/SHRINE/architecture/) (GitHub Pages). It describes how the **simulation framework**, **domain physics**, and **adapters** fit together.
+
+New application code should target **`shrine.simulation`** only; legacy modules remain callable through adapters or scripts until fully wrapped.
 
 Related:
 
-- [simulation-framework-requirements.md](simulation-framework-requirements.md) — requirements and phased delivery
-- [extending-elements.md](extending-elements.md) — adding `Simulatable` elements and adapters
-- [modernization-roadmap.md](modernization-roadmap.md) — migration checklist
+- [Concepts](concepts.md) — short mental model before the diagrams below
+- [First watershed tutorial](tutorial/first-watershed-model.md) — end-to-end supported path
+- [Simulation framework requirements](simulation-framework-requirements.md) — requirements and phased delivery
+- [Extending elements](extending-elements.md) — adding `Simulatable` elements and adapters
+- [Modernization roadmap](modernization-roadmap.md) — migration checklist
 
 ---
 
@@ -165,10 +169,10 @@ See [extending-elements.md](extending-elements.md) for step-by-step patterns.
 | Kind | Location |
 |------|----------|
 | Framework unit / acceptance tests | `tests/simulation/` |
-| Domain tests (legacy layout) | `src/hydrology/`, `src/water_manage/`, … beside modules |
+| Domain contract tests | `tests/hydrology/`, `tests/water_manage/`, … |
 | Runnable demos | `examples/` |
 
-Run framework tests: `./scripts/run_tests.sh` or `pytest tests/simulation` — see [testing.md](testing.md).
+Run the canonical suite: `./scripts/run_tests.sh` or `pytest tests/` — see [Testing & CI](testing.md).
 
 To surface deprecations during test runs:
 
