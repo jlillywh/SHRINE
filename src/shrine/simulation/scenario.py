@@ -38,6 +38,7 @@ _INPUT_KEYS_BY_TYPE: dict[str, frozenset[str]] = {
     "constant": frozenset({"type", "value", "unit"}),
     "monthly": frozenset({"type", "values", "unit"}),
     "stochastic": frozenset({"type", "distribution", "loc", "scale", "low", "high", "unit"}),
+    "csv": frozenset({"type", "file", "column", "value_column", "time_column", "unit"}),
 }
 _STOCHASTIC_DISTRIBUTIONS = frozenset({"normal", "uniform"})
 _VALID_MONTHS = frozenset(calendar.month_name[1:])
@@ -115,6 +116,17 @@ def _validate_input_spec(spec: dict[str, Any], *, input_name: str) -> None:
                 ),
                 phase=SimulationPhase.VALIDATE,
                 details={"input": input_name, "distribution": distribution},
+            )
+    if kind == "csv":
+        if not spec.get("file"):
+            raise SimulationError(
+                message=f"Input {input_name!r}: csv type requires 'file'",
+                phase=SimulationPhase.VALIDATE,
+            )
+        if not spec.get("column") and not spec.get("value_column"):
+            raise SimulationError(
+                message=f"Input {input_name!r}: csv type requires 'column' or 'value_column'",
+                phase=SimulationPhase.VALIDATE,
             )
 
 
@@ -260,13 +272,22 @@ class ScenarioConfig:
 
     def build_input_manager(self) -> InputManager:
         """Build input bindings from scenario input definitions."""
+        base_dir: Path | None = None
+        source = self.metadata.get("source_file")
+        if source:
+            base_dir = Path(str(source)).resolve().parent
         manager = InputManager()
         for name, spec in self.inputs.items():
-            manager.bind(name, parse_input_spec(spec, input_name=name))
+            manager.bind(name, parse_input_spec(spec, input_name=name, base_dir=base_dir))
         return manager
 
 
-def parse_input_spec(spec: Any, *, input_name: str = "input") -> InputProvider:
+def parse_input_spec(
+    spec: Any,
+    *,
+    input_name: str = "input",
+    base_dir: Path | None = None,
+) -> InputProvider:
     """Parse a scalar or typed input spec into an InputProvider."""
     if isinstance(spec, (int, float)):
         return ConstantInput(float(spec))
@@ -308,6 +329,22 @@ def parse_input_spec(spec: Any, *, input_name: str = "input") -> InputProvider:
             scale=float(spec.get("scale", 1.0)),
             low=float(spec.get("low", 0.0)),
             high=float(spec.get("high", 1.0)),
+        )
+    if kind == "csv":
+        from shrine.simulation.import_csv import load_csv_timeseries, resolve_csv_path
+
+        value_column = spec.get("column") or spec.get("value_column")
+        if not value_column:
+            raise SimulationError(
+                message=f"Input {input_name!r}: csv type requires 'column' or 'value_column'",
+                phase=SimulationPhase.VALIDATE,
+            )
+        csv_path = resolve_csv_path(str(spec["file"]), base_dir=base_dir)
+        time_column = str(spec.get("time_column", "time"))
+        return load_csv_timeseries(
+            csv_path,
+            time_column=time_column,
+            value_column=str(value_column),
         )
     raise SimulationError(
         message=f"Input {input_name!r}: unknown type {kind!r}",

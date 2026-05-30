@@ -66,3 +66,42 @@ options:
       separate_signature: true
       show_signature_annotations: true
       summary: true
+
+## `TimeSeriesCsvInput`
+
+::: shrine.simulation.inputs.TimeSeriesCsvInput
+options:
+      heading_level: 4
+      show_root_heading: false
+      show_if_no_docstring: true
+      inherited_members: true
+      merge_init_into_class: true
+      separate_signature: true
+      show_signature_annotations: true
+      summary: true
+
+## `load_csv_timeseries`
+
+::: shrine.simulation.import_csv.load_csv_timeseries
+options:
+      heading_level: 4
+      show_root_heading: false
+      show_if_no_docstring: true
+      inherited_members: true
+      merge_init_into_class: true
+      separate_signature: true
+      show_signature_annotations: true
+      summary: true
+
+## `bind_csv_columns`
+
+::: shrine.simulation.import_csv.bind_csv_columns
+options:
+      heading_level: 4
+      show_root_heading: false
+      show_if_no_docstring: true
+      inherited_members: true
+      merge_init_into_class: true
+      separate_signature: true
+      show_signature_annotations: true
+      summary: true

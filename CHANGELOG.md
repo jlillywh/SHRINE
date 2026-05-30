@@ -15,6 +15,7 @@ and [docs/releases.md](docs/releases.md).
 - Contributor guide ([CONTRIBUTING.md](CONTRIBUTING.md)), [Code of Conduct](CODE_OF_CONDUCT.md), and GitHub issue templates (roadmap 3.11)
 - Architecture Decision Records under [docs/adr/](docs/adr/) — units (pint), NetworkX flow solver, protocol-based domain contracts (roadmap 3.12)
 - CSV + JSON export for run results via `export_run_result()` (roadmap 3.13)
+- CSV time-series import: `TimeSeriesCsvInput`, `load_csv_timeseries()`, `bind_csv_columns()`, scenario `type: csv` (roadmap 3.14)
 
 ## [0.2.0] - 2026-05-28
 

@@ -99,6 +99,7 @@ nav:
       - Scenarios: scenarios.md
       - Step debugging: step-debugging.md
       - Results & recording: results-recording.md
+      - Import CSV time series: import-csv-timeseries.md
       - Testing & CI: testing.md
       - API stability: api-stability.md
   - API reference:

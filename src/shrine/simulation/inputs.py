@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from typing import Any, Protocol
 
+import pandas as pd
+
 from shrine.simulation.context import TimestepContext
+from shrine.simulation.errors import SimulationError, SimulationPhase
 
 
 class InputProvider(Protocol):
@@ -67,6 +70,38 @@ class MonthlyLookupInput:
             return float(self.values_by_month[month])
         except KeyError as exc:
             raise KeyError(f"No value for month {month!r}") from exc
+
+
+class TimeSeriesCsvInput:
+    """Time-varying scalar input loaded from a CSV column (roadmap 3.14)."""
+
+    def __init__(self, series: pd.Series) -> None:
+        if series.empty:
+            raise SimulationError(
+                message="CSV time series must not be empty",
+                phase=SimulationPhase.VALIDATE,
+            )
+        normalized = series.copy()
+        normalized.index = pd.to_datetime(normalized.index)
+        self._series = normalized.sort_index()
+
+    def value_at(self, context: TimestepContext) -> float:
+        ts = pd.Timestamp(context.current_time)
+        try:
+            return float(self._series.loc[ts])
+        except KeyError:
+            pass
+        day = ts.normalize()
+        dt_index = pd.DatetimeIndex(self._series.index)
+        matches = self._series.loc[dt_index.normalize() == day]
+        if not matches.empty:
+            return float(matches.iloc[0])
+        raise SimulationError(
+            message=f"No CSV time-series value for {ts.isoformat()}",
+            phase=SimulationPhase.INPUT,
+            step_index=context.step_index,
+            timestamp=ts,
+        )
 
 
 class InputManager:

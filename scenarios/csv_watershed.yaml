@@ -1,0 +1,25 @@
+# Twin-catchment scenario driven by CSV climate (roadmap 3.14).
+# Paths in csv inputs are relative to this scenario file.
+
+name: csv_watershed
+seed: 42
+
+clock:
+  start_date: "1/1/2019"
+  end_date: "1/14/2019"
+  time_step: "1 days"
+
+inputs:
+  precipitation:
+    type: csv
+    file: data/jan2019_climate.csv
+    time_column: time
+    column: precipitation
+  evaporation:
+    type: csv
+    file: data/jan2019_climate.csv
+    time_column: time
+    column: evaporation
+
+metadata:
+  description: "CSV-driven climate — column mapping example for 3.14"
