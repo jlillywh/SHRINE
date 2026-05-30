@@ -38,6 +38,34 @@ class TestExportRunResult:
         assert list(frame.columns) == ["time", "basin.outflow"]
         assert frame["time"].tolist() == ["2019-01-01", "2019-01-02", "2019-01-03"]
 
+    def test_outputs_to_csv_frame_renames_unnamed_index(self) -> None:
+        index = pd.date_range("2019-01-01", periods=2, freq="D")
+        outputs = pd.DataFrame({"flow": [1.0, 2.0]}, index=index)
+        frame = outputs_to_csv_frame(outputs)
+        assert list(frame.columns) == ["time", "flow"]
+        assert frame["time"].tolist() == ["2019-01-01", "2019-01-02"]
+
+    def test_outputs_to_csv_frame_includes_time_of_day(self) -> None:
+        index = pd.date_range("2019-01-01 08:30", periods=2, freq="h")
+        outputs = pd.DataFrame({"flow": [1.0, 2.0]}, index=index)
+        outputs.index.name = "time"
+        frame = outputs_to_csv_frame(outputs)
+        assert frame["time"].tolist() == ["2019-01-01 08:30:00", "2019-01-01 09:30:00"]
+
+    def test_outputs_to_csv_frame_empty(self) -> None:
+        frame = outputs_to_csv_frame(pd.DataFrame())
+        assert list(frame.columns) == ["time"]
+        assert frame.empty
+
+    def test_build_export_manifest_default_output_units(self) -> None:
+        result = RunResult(
+            success=True,
+            outputs=pd.DataFrame({"flow": [1.0]}),
+            manifest={"scenario_name": "x"},
+        )
+        manifest = build_export_manifest(result)
+        assert manifest["output_units"] == {}
+
     def test_export_writes_csv_and_manifest(self, tmp_path: Path) -> None:
         scenario = ScenarioConfig(
             name="export_test",
