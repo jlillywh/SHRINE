@@ -188,6 +188,7 @@ mkdocs serve          # http://127.0.0.1:8000
 | [docs/api-stability.md](docs/api-stability.md) | SemVer, deprecation cycle, public API policy |
 | [CHANGELOG.md](CHANGELOG.md) | Release history ([Keep a Changelog](https://keepachangelog.com/)) |
 | [GOVERNANCE.md](GOVERNANCE.md) | Maintainer, release manager, lazy consensus |
+| [SECURITY.md](SECURITY.md) | Vulnerability reporting and supported versions |
 | [docs/releases.md](docs/releases.md) | Versioning policy and maintainer release checklist |
 | [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
 | [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |

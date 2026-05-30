@@ -119,6 +119,7 @@ nav:
       - Contributing: https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md
       - Code of Conduct: https://github.com/jlillywh/SHRINE/blob/master/CODE_OF_CONDUCT.md
       - Governance: https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md
+      - Security policy: https://github.com/jlillywh/SHRINE/blob/master/SECURITY.md
       - Versioning & releases: releases.md
       - PyPI publishing: pypi.md
       - Comparison with other tools: comparison.md

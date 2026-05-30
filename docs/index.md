@@ -30,7 +30,7 @@ Legacy domain packages (`hydrology`, `water_manage`, …) remain available and a
 | **Tutorials** | End-to-end watershed model with scenario and plot |
 | **Guides** | Scenarios, extending elements, testing, requirements |
 | **API reference** | Public `shrine.simulation` surface |
-| **Project** | Roadmap, **tool comparison**, naming, [contributing](https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md), [governance](https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md), contributor hygiene |
+| **Project** | Roadmap, **tool comparison**, naming, [contributing](https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md), [governance](https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md), [security](https://github.com/jlillywh/SHRINE/blob/master/SECURITY.md), contributor hygiene |
 
 ## Versions
 

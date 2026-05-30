@@ -136,7 +136,7 @@ See [GOVERNANCE.md](https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md
 | `0.1.x` | Superseded by `0.2.0` |
 | Pre-`0.1.0` | Not supported |
 
-Security reporting will be formalized in roadmap **3.18** (`SECURITY.md`). Until then, open a [GitHub issue](https://github.com/jlillywh/SHRINE/issues) or contact maintainers privately for sensitive reports.
+Security reports: **[SECURITY.md](https://github.com/jlillywh/SHRINE/blob/master/SECURITY.md)** — private advisory preferred; do not use public issues for undisclosed vulnerabilities.
 
 ---
 

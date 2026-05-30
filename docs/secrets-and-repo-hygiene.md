@@ -131,7 +131,7 @@ Forks and old clones may retain old objects until they fetch rewritten history o
 
 ## Reporting a leaked secret
 
-If you discover a secret in this repository (current tree or history), contact the maintainers privately. Do not open a public issue with the key value.
+If you discover a secret in this repository (current tree or history), report privately via **[SECURITY.md](https://github.com/jlillywh/SHRINE/blob/master/SECURITY.md)**. Do not open a public issue with the key value.
 
 ---
 

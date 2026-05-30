@@ -17,6 +17,7 @@ and [docs/releases.md](docs/releases.md).
 - CSV + JSON export for run results via `export_run_result()` (roadmap 3.13)
 - CSV time-series import: `TimeSeriesCsvInput`, `load_csv_timeseries()`, `bind_csv_columns()`, scenario `type: csv` (roadmap 3.14)
 - [GOVERNANCE.md](GOVERNANCE.md) — maintainer, release manager, lazy consensus (roadmap 3.17)
+- [SECURITY.md](SECURITY.md) — vulnerability reporting and supported versions (roadmap 3.18)
 
 ### Changed
 
