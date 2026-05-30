@@ -58,6 +58,9 @@ API_GROUPS: list[tuple[str, str, list[str]]] = [
             "ConstantInput",
             "MonthlyLookupInput",
             "StochasticInput",
+            "TimeSeriesCsvInput",
+            "load_csv_timeseries",
+            "bind_csv_columns",
         ],
     ),
     (

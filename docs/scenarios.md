@@ -17,6 +17,7 @@ Unknown keys at the top level, under `clock`, or inside typed `inputs` entries a
 | `inputs` (constant) | `type`, `value`, `unit` |
 | `inputs` (monthly) | `type`, `values`, `unit` — month names must be English full names (`January`, …) |
 | `inputs` (stochastic) | `type`, `distribution`, `loc`, `scale`, `low`, `high`, `unit` |
+| `inputs` (csv) | `type`, `file`, `column` (or `value_column`), `time_column`, `unit` — see [Import CSV time series](import-csv-timeseries.md) |
 | `overrides` | Per-element mappings (validated when applied to the model; see [reservoir keys](#reservoir-overrides) below) |
 | `metadata` | Free-form user metadata |
 

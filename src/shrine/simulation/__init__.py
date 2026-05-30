@@ -16,7 +16,8 @@ Import framework types from this package only — do not rely on submodules
 :class:`ClimateRecorderElement`, :class:`CatchmentElement`, :class:`StorageLike`, :class:`RegisteredElement`
 
 **Inputs:** :class:`InputManager`, :class:`InputProvider`, :class:`ConstantInput`,
-:class:`MonthlyLookupInput`, :class:`StochasticInput`
+:class:`MonthlyLookupInput`, :class:`StochasticInput`, :class:`TimeSeriesCsvInput`,
+:func:`load_csv_timeseries`, :func:`bind_csv_columns`
 
 **Flow and balance:** :class:`FlowSolver`, :class:`NetworkXFlowSolver`, :class:`FlowSolveResult`,
 :class:`MassBalanceCheck`, :class:`MassBalanceReport`, :class:`MassBalanceTerm`
@@ -55,12 +56,14 @@ from shrine.simulation.errors import SimulationError, SimulationPhase
 from shrine.simulation.export import export_run_result
 from shrine.simulation.flow import FlowSolver, FlowSolveResult, NetworkXFlowSolver
 from shrine.simulation.golden import outputs_content_hash
+from shrine.simulation.import_csv import bind_csv_columns, load_csv_timeseries
 from shrine.simulation.inputs import (
     ConstantInput,
     InputManager,
     InputProvider,
     MonthlyLookupInput,
     StochasticInput,
+    TimeSeriesCsvInput,
 )
 from shrine.simulation.manifest import (
     attach_output_units,
@@ -121,6 +124,9 @@ __all__ = [
     "ConstantInput",
     "MonthlyLookupInput",
     "StochasticInput",
+    "TimeSeriesCsvInput",
+    "load_csv_timeseries",
+    "bind_csv_columns",
     # Flow and mass balance
     "FlowSolver",
     "NetworkXFlowSolver",

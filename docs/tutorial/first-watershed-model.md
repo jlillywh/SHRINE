@@ -176,7 +176,7 @@ Re-run after each change; scenario hash in `result.manifest` updates when inputs
 
 | Topic | Where to go next |
 |-------|------------------|
-| CSV climate files | Roadmap **3.14**; today use scenario inputs or `MonthlyLookupInput` in code |
+| CSV climate files | [Import CSV time series](../import-csv-timeseries.md) — `type: csv` scenarios or `load_csv_timeseries()` in code |
 | Reservoir operating rules | [ReservoirElement](../api/autogen/elements.md) + scenario `overrides` |
 | Custom elements | [Extending elements](../extending-elements.md) |
 | Single-timestep debugging | [Step debugging](../step-debugging.md) |
