@@ -1,11 +1,15 @@
-# Publish to PyPI on GitHub Release (roadmap 3.6).
-# One-time setup: docs/pypi.md — configure PyPI trusted publisher for this repo.
+# Publish to PyPI on GitHub Release (roadmap 3.6 part 2).
+# One-time setup: docs/pypi.md — PyPI trusted publisher + GitHub environment `pypi`.
 name: Publish
 
 on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "publish" to upload the current checkout to PyPI'
+        required: true
 
 permissions:
   contents: read
@@ -14,6 +18,7 @@ jobs:
   pypi:
     name: publish to PyPI
     runs-on: ubuntu-latest
+    if: github.event_name == 'release' || inputs.confirm == 'publish'
     permissions:
       id-token: write
     environment:
@@ -22,16 +27,49 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      - name: Verify release tag matches package version
+        if: github.event_name == 'release'
+        run: python scripts/check_release_version.py --tag "${{ github.event.release.tag_name }}"
+
       - name: Build package
         run: |
-          python -m pip install -U pip build
+          python -m pip install -U pip build twine
           python -m build
+          twine check dist/*
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+
+  verify-pypi-install:
+    name: verify PyPI install
+    needs: pypi
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install from PyPI and smoke import
+        shell: bash
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          VERSION="${TAG#v}"
+          python -m pip install -U pip
+          python -m pip install "shrine==${VERSION}"
+          python -c "import shrine; import shrine.simulation as sim; print(shrine.__version__, sim.__api_version__)"

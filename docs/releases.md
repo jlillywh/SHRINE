@@ -115,7 +115,7 @@ See [GOVERNANCE.md](https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md
 6. **GitHub Release**
    - **Releases** → **Draft a new release** → choose tag `v0.2.0`.
    - Paste the `[X.Y.Z]` section from `CHANGELOG.md` as the release notes.
-   - Publish (triggers [PyPI upload](pypi.md) when trusted publishing is configured).
+   - Publish (triggers [PyPI upload](pypi.md) via trusted publisher — complete [one-time setup](pypi.md#one-time-maintainer-setup-pypi-trusted-publishing) first).
 
 7. **Post-release**
    - Open `[Unreleased]` on `master` for the next cycle.
@@ -132,7 +132,7 @@ See [GOVERNANCE.md](https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md
 
 | Version | Status |
 |---------|--------|
-| `0.2.x` | **Alpha** — active development on `master` |
+| `0.2.x` | **Beta** — on PyPI; active development on `master` |
 | `0.1.x` | Superseded by `0.2.0` |
 | Pre-`0.1.0` | Not supported |
 
@@ -143,6 +143,6 @@ Security reports: **[SECURITY.md](https://github.com/jlillywh/SHRINE/blob/master
 ## Related
 
 - [API stability](api-stability.md) — `__api_version__`, deprecation warnings, public surface
-- [PyPI publishing](pypi.md) — packaging CI live; first upload deferred until **3.8** + P1 gates (**3.6** part 2)
+- [PyPI publishing](pypi.md) — trusted publisher, first release checklist, TestPyPI
 - [Testing & CI](testing.md) — workflows that must pass before a release
 - [CHANGELOG.md](https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md) — full history

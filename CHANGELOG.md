@@ -18,6 +18,7 @@ and [docs/releases.md](docs/releases.md).
 - CSV time-series import: `TimeSeriesCsvInput`, `load_csv_timeseries()`, `bind_csv_columns()`, scenario `type: csv` (roadmap 3.14)
 - [GOVERNANCE.md](GOVERNANCE.md) — maintainer, release manager, lazy consensus (roadmap 3.17)
 - [SECURITY.md](SECURITY.md) — vulnerability reporting and supported versions (roadmap 3.18)
+- PyPI publish workflow (`publish.yml`), TestPyPI dry run, release version check, post-upload install matrix (roadmap 3.6 part 2)
 
 ### Changed
 

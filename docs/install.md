@@ -2,7 +2,7 @@
 
 SHRINE requires **Python 3.10+**. Use a **virtual environment** on Ubuntu/WSL (PEP 668 blocks system-wide `pip install`).
 
-**Today:** install from a **Git clone** (editable). **After roadmap 3.6 part 2:** `pip install shrine` from PyPI — same extras names, same import path (`import shrine`).
+**Today:** install from **PyPI** (`pip install shrine`) or a **Git clone** (editable, full `scenarios/`). Same extras names and import path (`import shrine`).
 
 ---
 
@@ -12,7 +12,7 @@ SHRINE requires **Python 3.10+**. Use a **virtual environment** on Ubuntu/WSL (P
 |------|---------|--------|
 | **Develop or run tutorials** (recommended) | `git clone` + `pip install -e ".[dev,viz,hydrology]"` | Full repo: `scenarios/`, `tests/`, `./scripts/run_tests.sh` |
 | **Framework tests only** | `pip install -e ".[dev]"` | Matches GitHub Actions |
-| **Library use from PyPI** *(future)* | `pip install shrine` or `pip install "shrine[viz]"` | Wheel ships Python packages + `examples/`; **no** bundled `scenarios/` — clone repo or ship your own YAML/JSON |
+| **Library use from PyPI** | `pip install shrine` or `pip install "shrine[viz]"` | Wheel ships Python packages + `examples/`; **no** bundled `scenarios/` — clone repo or ship your own YAML/JSON |
 
 Online docs: [https://jlillywh.github.io/SHRINE/install/](https://jlillywh.github.io/SHRINE/install/)
 
@@ -42,7 +42,27 @@ If `source .venv/bin/activate` shows `(.venv)` but `python3 -c "import hydrology
 
 ---
 
-## Install from source *(current)*
+## Install from PyPI
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install shrine
+pip install "shrine[dev,viz,hydrology]"   # contributors + plotting + NWIS demo
+```
+
+Verify:
+
+```bash
+python -c "import shrine; import shrine.simulation as sim; print(shrine.__version__, sim.__api_version__)"
+```
+
+For bundled tutorial scenarios, clone the [GitHub repository](https://github.com/jlillywh/SHRINE) — see [wheel vs clone](#wheel-vs-git-clone--what-you-get). Maintainer release steps: [PyPI publishing](pypi.md).
+
+---
+
+## Install from source *(development)*
 
 ```bash
 git clone https://github.com/jlillywh/SHRINE.git
@@ -60,28 +80,12 @@ Verify:
 
 ---
 
-## Install from PyPI *(when 3.6 part 2 ships)*
-
-SHRINE is **not on PyPI yet**. When the first release is published, installs will look like:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -U pip
-pip install shrine
-pip install "shrine[dev,viz,hydrology]"   # contributors + plotting + NWIS demo
-```
-
-Maintainer steps: [PyPI publishing](pypi.md).
-
----
-
 ## Optional extras
 
 Defined in `pyproject.toml` → `[project.optional-dependencies]`. Combine extras with commas inside the brackets.
 
-| Extra | Purpose | From source (today) | From PyPI *(future)* |
-|-------|---------|---------------------|----------------------|
+| Extra | Purpose | From source | From PyPI |
+|-------|---------|-------------|-----------|
 | *(none)* | Core runtime (`numpy`, `pandas`, `pint`, domain packages) | `pip install -e .` | `pip install shrine` |
 | `dev` | pytest, coverage, mypy, ruff, pre-commit | `pip install -e ".[dev]"` | `pip install "shrine[dev]"` |
 | `docs` | MkDocs Material site | `pip install -e ".[docs]"` | `pip install "shrine[docs]"` |
@@ -90,8 +94,8 @@ Defined in `pyproject.toml` → `[project.optional-dependencies]`. Combine extra
 
 ### Recommended profiles
 
-| Profile | Source command | PyPI command *(future)* |
-|---------|----------------|-------------------------|
+| Profile | Source command | PyPI command |
+|---------|----------------|--------------|
 | **Contributors** (tests + legacy tooling) | `pip install -e ".[dev,viz,hydrology]"` | `pip install "shrine[dev,viz,hydrology]"` |
 | **Framework CI** (matches GitHub Actions) | `pip install -e ".[dev]"` | `pip install "shrine[dev]"` |
 | **Docs authors** | `pip install -e ".[docs,dev]"` | `pip install "shrine[docs,dev]"` |
@@ -107,8 +111,8 @@ Upgrade extras after pulling new commits:
 
 ## Wheel vs Git clone — what you get {#wheel-vs-git-clone--what-you-get}
 
-| Included | Editable clone | PyPI wheel *(future)* |
-|----------|----------------|------------------------|
+| Included | Editable clone | PyPI wheel |
+|----------|----------------|------------|
 | `shrine`, `hydrology`, `water_manage`, … under `src/` | Yes | Yes |
 | `examples/` scripts | Yes (repo root) | Yes (packaged) |
 | `scenarios/` (tutorial, baseline, benchmark, reference YAML/JSON) | Yes (repo root) | **No** — clone repo or copy scenario files |
