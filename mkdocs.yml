@@ -96,6 +96,7 @@ nav:
       - Simulation requirements: simulation-framework-requirements.md
       - Hydrology contracts: hydrology-contracts.md
       - Extending elements: extending-elements.md
+      - Element plugin cookiecutter: cookiecutter-element.md
       - Scenarios: scenarios.md
       - Step debugging: step-debugging.md
       - Results & recording: results-recording.md
