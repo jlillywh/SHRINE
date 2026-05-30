@@ -57,6 +57,7 @@ Requirements and phased delivery: [docs/simulation-framework-requirements.md](do
 | `src/water_manage/` | Storage, flow networks, operating rules |
 | `src/inputs/`, `src/results/` | Tables, time series, `TimeHistory`, charts |
 | `examples/` | Runnable demos (climate, watershed, scenarios, stepping) |
+| `shrine-element-cookiecutter/` | Cookiecutter template for third-party `shrine.elements` plugins ([guide](docs/cookiecutter-element.md)) |
 | `tests/simulation/` | Framework unit and acceptance tests |
 | `docs/` | Guides (see below) |
 
@@ -196,6 +197,7 @@ mkdocs serve          # http://127.0.0.1:8000
 | [docs/releases.md](docs/releases.md) | Versioning policy and maintainer release checklist |
 | [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
 | [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |
+| [docs/cookiecutter-element.md](docs/cookiecutter-element.md) | Cookiecutter template for plugin packages |
 | [docs/scenarios.md](docs/scenarios.md) | Scenario YAML/JSON |
 | [docs/step-debugging.md](docs/step-debugging.md) | `RunController.step()` API |
 | [docs/results-recording.md](docs/results-recording.md) | `Recorder` and `TimeHistory` |

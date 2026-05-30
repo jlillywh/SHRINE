@@ -279,7 +279,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 **Goal:** Third parties extend SHRINE without forking core.
 
 - [x] **4.1** Plugin entry point: `shrine.elements` for third-party `Simulatable` implementations
-- [ ] **4.2** Template repo: `shrine-element-cookiecutter`
+- [x] **4.2** Template repo: `shrine-element-cookiecutter`
 - [ ] **4.3** Discussions / Discord / matrix channel linked from README
 - [ ] **4.4** “Good first issue” and `help wanted` labels; quarterly release train
 - [ ] **4.5** Translation of docs (Spanish, Portuguese, French — common in water sector)

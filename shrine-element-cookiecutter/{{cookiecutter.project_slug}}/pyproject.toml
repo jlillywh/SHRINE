@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{ cookiecutter.distribution_name }}"
+version = "0.1.0"
+description = "{{ cookiecutter.project_name }} — SHRINE Simulatable element plugin"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "{{ cookiecutter.license }}" }
+authors = [{ name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" }]
+dependencies = [
+    "shrine>={{ cookiecutter.shrine_version }}",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.entry-points."shrine.elements"]
+{{ cookiecutter.entry_point_name }} = "{{ cookiecutter.package_name }}.element:{{ cookiecutter.element_class_name }}"
+
+[project.urls]
+Homepage = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+Repository = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+Issues = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
