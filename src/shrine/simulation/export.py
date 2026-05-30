@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pandas as pd
 
@@ -33,7 +33,7 @@ def outputs_to_csv_frame(outputs: pd.DataFrame) -> pd.DataFrame:
         frame["time"] = time_col.dt.strftime("%Y-%m-%d")
     else:
         frame["time"] = time_col.dt.strftime("%Y-%m-%d %H:%M:%S")
-    return frame
+    return cast(pd.DataFrame, frame)
 
 
 def build_export_manifest(
