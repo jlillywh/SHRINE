@@ -84,7 +84,7 @@ Update `[Unreleased]` when cutting a new tag (point the left side at the previou
 
 ## Release checklist (maintainers)
 
-Use this when publishing **`vX.Y.Z`** on GitHub (and optionally PyPI — see [PyPI publishing](pypi.md)).
+See [GOVERNANCE.md](https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md) for the **release manager** role. Use this checklist when publishing **`vX.Y.Z`** on GitHub (and optionally PyPI — see [PyPI publishing](pypi.md)).
 
 1. **Changelog**
    - Move `[Unreleased]` entries into `[X.Y.Z] - YYYY-MM-DD`.

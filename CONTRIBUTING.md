@@ -2,7 +2,7 @@
 
 Thank you for helping improve **SHRINE** (Simulation of Hydrology, Reservoirs, and Integrated Network Environments). This guide covers setup, workflow, and review expectations.
 
-Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
+Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it. Project roles and decision-making: [GOVERNANCE.md](GOVERNANCE.md).
 
 ---
 
@@ -124,7 +124,7 @@ Explain non-obvious behavior in the body when needed.
 
 For user-visible changes, add an entry under **`[Unreleased]`** in [CHANGELOG.md](CHANGELOG.md) ([Keep a Changelog](https://keepachangelog.com/) format).
 
-Release/version bumps are maintainer-driven — see [docs/releases.md](docs/releases.md).
+Release/version bumps are release-manager-driven — see [docs/releases.md](docs/releases.md) and [GOVERNANCE.md](GOVERNANCE.md).
 
 ---
 
@@ -136,7 +136,7 @@ Do **not** open public issues for undisclosed security vulnerabilities. A formal
 
 ## License
 
-Contributions are licensed under the same terms as the project: **GNU General Public License v3.0 or later**. See [LICENSE](LICENSE). You must have the right to submit your work under this license.
+Contributions are licensed under the same terms as the project: the **MIT License**. See [LICENSE](LICENSE). You must have the right to submit your work under this license.
 
 ---
 

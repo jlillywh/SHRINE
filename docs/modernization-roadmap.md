@@ -39,7 +39,7 @@
 | `src/shrine/simulation/` | **Strong** | Public API, scenarios, manifest, `RunSession`, 100+ framework tests |
 | Legacy domain (`src/hydrology/`, `src/water_manage/`, …) | **Mixed** | Installable under `src/`; colocated `unittest` tests often stale (matplotlib, API drift) |
 | Packaging | **Good** | `src/` layout; extras `dev`, `viz`, `hydrology` documented in README |
-| Open-source polish | **Early** | GPL, docs site, CI; PyPI **packaging CI** done (**3.6** infra); **first PyPI upload deferred** until **3.8** + P1 quality gates |
+| Open-source polish | **Early** | MIT License, docs site, CI; PyPI **packaging CI** done (**3.6** infra); **first PyPI upload deferred** until **3.8** + P1 quality gates |
 
 ### 2.1 Progress snapshot (2026-05-28)
 
@@ -255,8 +255,8 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P2 — License & governance
 
-- [ ] **3.16** Confirm GPL v3 fits contributor expectations; or document why not LGPL/MIT for libs
-- [ ] **3.17** `GOVERNANCE.md` (maintainer, release manager, lazy consensus)
+- [x] **3.16** Confirm GPL v3 fits contributor expectations; or document why not LGPL/MIT for libs — **MIT** chosen; [ADR-0004](adr/0004-mit-license.md)
+- [x] **3.17** `GOVERNANCE.md` (maintainer, release manager, lazy consensus)
 - [ ] **3.18** Security policy: `SECURITY.md` (reporting, supported versions)
 
 #### P2 — Public PyPI release *(deferred until stable)*

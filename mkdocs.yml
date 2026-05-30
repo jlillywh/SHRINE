@@ -9,7 +9,7 @@ repo_url: https://github.com/jlillywh/SHRINE
 repo_name: jlillywh/SHRINE
 edit_uri: edit/master/docs/
 
-copyright: Copyright &copy; SHRINE contributors — GNU GPL v3.0
+copyright: Copyright &copy; Jason Lillywhite — MIT License
 
 theme:
   name: material
@@ -118,6 +118,7 @@ nav:
       - Architecture Decision Records: adr/README.md
       - Contributing: https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md
       - Code of Conduct: https://github.com/jlillywh/SHRINE/blob/master/CODE_OF_CONDUCT.md
+      - Governance: https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md
       - Versioning & releases: releases.md
       - PyPI publishing: pypi.md
       - Comparison with other tools: comparison.md
