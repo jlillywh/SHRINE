@@ -165,7 +165,7 @@ python examples/custom_element.py
 python examples/nwis_streamflow.py
 ```
 
-Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`, `scenarios/reference/` (see [docs/reference-models.md](docs/reference-models.md)).
+Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
 
 ## Documentation
 
@@ -187,6 +187,7 @@ mkdocs serve          # http://127.0.0.1:8000
 | [docs/modernization-roadmap.md](docs/modernization-roadmap.md) | Strategic checklist: pythonic OOP, OSS excellence |
 | [docs/api-stability.md](docs/api-stability.md) | SemVer, deprecation cycle, public API policy |
 | [CHANGELOG.md](CHANGELOG.md) | Release history ([Keep a Changelog](https://keepachangelog.com/)) |
+| [GOVERNANCE.md](GOVERNANCE.md) | Maintainer, release manager, lazy consensus |
 | [docs/releases.md](docs/releases.md) | Versioning policy and maintainer release checklist |
 | [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
 | [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |
@@ -233,4 +234,4 @@ We welcome issues and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for 
 
 ## License
 
-GNU General Public License v3.0 — see [LICENSE](LICENSE).
+MIT License — see [LICENSE](LICENSE).

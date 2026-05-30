@@ -16,6 +16,11 @@ and [docs/releases.md](docs/releases.md).
 - Architecture Decision Records under [docs/adr/](docs/adr/) — units (pint), NetworkX flow solver, protocol-based domain contracts (roadmap 3.12)
 - CSV + JSON export for run results via `export_run_result()` (roadmap 3.13)
 - CSV time-series import: `TimeSeriesCsvInput`, `load_csv_timeseries()`, `bind_csv_columns()`, scenario `type: csv` (roadmap 3.14)
+- [GOVERNANCE.md](GOVERNANCE.md) — maintainer, release manager, lazy consensus (roadmap 3.17)
+
+### Changed
+
+- Project license changed from GPL v3 to **MIT** (roadmap 3.16, [ADR-0004](docs/adr/0004-mit-license.md))
 
 ## [0.2.0] - 2026-05-28
 

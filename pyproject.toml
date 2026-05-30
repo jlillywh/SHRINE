@@ -8,9 +8,9 @@ version = "0.2.0"
 description = "SHRINE — Simulation of Hydrology, Reservoirs, and Integrated Network Engine"
 readme = "README.md"
 requires-python = ">=3.10"
-license = "GPL-3.0-or-later"
+license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "SHRINE contributors" }]
+authors = [{ name = "Jason Lillywhite" }]
 keywords = ["hydrology", "water-resources", "simulation", "reservoir", "watershed"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -65,6 +65,7 @@ Issues = "https://github.com/jlillywh/SHRINE/issues"
 Changelog = "https://github.com/jlillywh/SHRINE/blob/master/CHANGELOG.md"
 Contributing = "https://github.com/jlillywh/SHRINE/blob/master/CONTRIBUTING.md"
 CodeOfConduct = "https://github.com/jlillywh/SHRINE/blob/master/CODE_OF_CONDUCT.md"
+Governance = "https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md"
 
 [tool.setuptools.packages.find]
 where = ["src", "."]
