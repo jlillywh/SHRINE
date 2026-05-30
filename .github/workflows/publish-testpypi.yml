@@ -1,0 +1,43 @@
+# Optional TestPyPI dry run (roadmap 3.6). Requires trusted publisher on test.pypi.org.
+name: Publish (TestPyPI)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "testpypi" to upload the current checkout to TestPyPI'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  testpypi:
+    name: publish to TestPyPI
+    runs-on: ubuntu-latest
+    if: inputs.confirm == 'testpypi'
+    permissions:
+      id-token: write
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/shrine/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build package
+        run: |
+          python -m pip install -U pip build twine
+          python -m build
+          twine check dist/*
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          repository-url: https://test.pypi.org/legacy/

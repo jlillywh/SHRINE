@@ -158,14 +158,15 @@ API reference pages under `docs/api/autogen/` are generated from `shrine.simulat
 
 CI: `.github/workflows/docs.yml` builds on every PR; deploys to GitHub Pages on push to `master`.
 
-### PyPI package (roadmap **3.6** part 1 — CI; part 2 — upload deferred)
+### PyPI package (roadmap **3.6**)
 
 | Workflow | Purpose |
 |----------|---------|
-| `.github/workflows/package.yml` | Build wheel/sdist; smoke install on Ubuntu, Windows, macOS |
-| `.github/workflows/publish.yml` | Upload to PyPI when a GitHub Release is published |
+| `.github/workflows/package.yml` | Build wheel/sdist; `twine check`; smoke install on Ubuntu, Windows, macOS |
+| `.github/workflows/publish.yml` | Upload to PyPI on GitHub Release; verify `pip install shrine==X` |
+| `.github/workflows/publish-testpypi.yml` | Optional TestPyPI dry run (`workflow_dispatch`) |
 
-See [PyPI & releases](pypi.md) for `pip install shrine` and maintainer trusted-publisher setup.
+See [PyPI publishing](pypi.md) for `pip install shrine` and trusted-publisher setup.
 
 ### Performance benchmark (roadmap **3.9**)
 

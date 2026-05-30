@@ -1,3 +1,6 @@
+[![PyPI version](https://img.shields.io/pypi/v/shrine.svg)](https://pypi.org/project/shrine/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
 # SHRINE
 
 **S**imulation of **H**ydrology, **R**eservoirs, and **I**ntegrated **N**etwork **E**nvironments..
@@ -65,9 +68,18 @@ Library code is under `src/`; run `pip install -e ".[dev]"` before tests or scri
 
 ## Install
 
-**PyPI:** not published yet — use **source** below. Full guide: [docs/install.md](docs/install.md) (extras, PEP 668, wheel vs clone).
+**PyPI:** `pip install shrine` — see [docs/install.md](docs/install.md) (extras, PEP 668, wheel vs clone). **Development:** clone + editable install below.
 
-### From source *(recommended today)*
+### From PyPI
+
+```bash
+pip install shrine
+pip install "shrine[dev,viz,hydrology]"
+```
+
+The PyPI wheel includes Python packages and `examples/`; **clone the repo** for bundled `scenarios/` and `./scripts/run_tests.sh`.
+
+### From source *(development)*
 
 ```bash
 git clone https://github.com/jlillywh/SHRINE.git
@@ -83,21 +95,12 @@ Contributors (tests + plotting + NWIS demo):
 
 On Ubuntu/WSL, use `.venv/bin/python3` and `.venv/bin/pip` — system `pip install` is blocked (PEP 668). See [docs/install.md](docs/install.md).
 
-### From PyPI *(when published)*
-
-```bash
-pip install shrine
-pip install "shrine[dev,viz,hydrology]"
-```
-
-The PyPI wheel includes Python packages and `examples/`; **clone the repo** for bundled `scenarios/` and `./scripts/run_tests.sh`.
-
 ### Optional dependency extras
 
 Defined in `pyproject.toml` under `[project.optional-dependencies]`. Same extra names for source and PyPI.
 
-| Extra | Purpose | Source | PyPI *(future)* |
-|-------|---------|--------|-----------------|
+| Extra | Purpose | Source | PyPI |
+|-------|---------|--------|------|
 | *(none)* | Core runtime | `pip install -e .` | `pip install shrine` |
 | `dev` | pytest, mypy, ruff, pre-commit | `pip install -e ".[dev]"` | `pip install "shrine[dev]"` |
 | `docs` | MkDocs site | `pip install -e ".[docs]"` | `pip install "shrine[docs]"` |
