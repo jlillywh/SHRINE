@@ -52,6 +52,34 @@ def bad_factory() -> object:
     return object()
 
 
+not_a_callable = 42
+
+
+def broken_factory() -> EchoElement:
+    raise ValueError("boom")
+
+
+def _patch_entry_points(
+    monkeypatch: pytest.MonkeyPatch,
+    specs: list[tuple[str, str]],
+) -> None:
+    entry_points = importlib.metadata.EntryPoints(
+        [
+            importlib.metadata.EntryPoint(
+                name=name,
+                value=value,
+                group=ELEMENTS_ENTRY_POINT_GROUP,
+            )
+            for name, value in specs
+        ]
+    )
+    monkeypatch.setattr(
+        "shrine.simulation.plugins._entry_points_for_group",
+        lambda _group: entry_points,
+    )
+    clear_plugin_cache()
+
+
 @pytest.fixture(autouse=True)
 def _reset_plugin_cache() -> None:
     clear_plugin_cache()
@@ -93,21 +121,45 @@ def test_unknown_plugin_raises() -> None:
         load_element_plugin("not_registered")
 
 
+def test_unknown_plugin_with_no_plugins_lists_none(monkeypatch: pytest.MonkeyPatch) -> None:
+    _patch_entry_points(monkeypatch, [])
+
+    with pytest.raises(SimulationError, match="known plugins: \\(none\\)"):
+        load_element_plugin("missing")
+
+
+def test_broken_entry_point_load_raises(monkeypatch: pytest.MonkeyPatch) -> None:
+    _patch_entry_points(monkeypatch, [("broken", "no.such.module:MissingClass")])
+
+    with pytest.raises(SimulationError, match="Failed to load element plugin"):
+        load_element_plugin("broken")
+
+
+def test_non_callable_plugin_target_raises(monkeypatch: pytest.MonkeyPatch) -> None:
+    _patch_entry_points(
+        monkeypatch,
+        [("static", "tests.simulation.test_plugins:not_a_callable")],
+    )
+
+    with pytest.raises(SimulationError, match="must resolve to a class or callable"):
+        load_element_plugin("static")
+
+
+def test_construction_failure_raises(monkeypatch: pytest.MonkeyPatch) -> None:
+    _patch_entry_points(
+        monkeypatch,
+        [("broken", "tests.simulation.test_plugins:broken_factory")],
+    )
+
+    with pytest.raises(SimulationError, match="Failed to construct element from plugin"):
+        create_element_from_plugin("broken")
+
+
 def test_monkeypatched_class_plugin(monkeypatch: pytest.MonkeyPatch) -> None:
-    entry_points = importlib.metadata.EntryPoints(
-        [
-            importlib.metadata.EntryPoint(
-                name="echo",
-                value="tests.simulation.test_plugins:EchoElement",
-                group=ELEMENTS_ENTRY_POINT_GROUP,
-            ),
-        ]
+    _patch_entry_points(
+        monkeypatch,
+        [("echo", "tests.simulation.test_plugins:EchoElement")],
     )
-    monkeypatch.setattr(
-        "shrine.simulation.plugins._entry_points_for_group",
-        lambda _group: entry_points,
-    )
-    clear_plugin_cache()
 
     element = create_element_from_plugin("echo", element_id="e1", scale=2.0)
     assert element.element_id == "e1"
@@ -115,20 +167,10 @@ def test_monkeypatched_class_plugin(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_monkeypatched_factory_plugin(monkeypatch: pytest.MonkeyPatch) -> None:
-    entry_points = importlib.metadata.EntryPoints(
-        [
-            importlib.metadata.EntryPoint(
-                name="echo",
-                value="tests.simulation.test_plugins:echo_factory",
-                group=ELEMENTS_ENTRY_POINT_GROUP,
-            ),
-        ]
+    _patch_entry_points(
+        monkeypatch,
+        [("echo", "tests.simulation.test_plugins:echo_factory")],
     )
-    monkeypatch.setattr(
-        "shrine.simulation.plugins._entry_points_for_group",
-        lambda _group: entry_points,
-    )
-    clear_plugin_cache()
 
     model = Model(clock=Clock("1/1/2019", "1/3/2019"))
     model.register_plugin("e1", "echo", element_id="e1", scale=3.0)
@@ -141,45 +183,20 @@ def test_monkeypatched_factory_plugin(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_non_simulatable_plugin_raises(monkeypatch: pytest.MonkeyPatch) -> None:
-    entry_points = importlib.metadata.EntryPoints(
-        [
-            importlib.metadata.EntryPoint(
-                name="bad",
-                value="tests.simulation.test_plugins:bad_factory",
-                group=ELEMENTS_ENTRY_POINT_GROUP,
-            ),
-        ]
+    _patch_entry_points(
+        monkeypatch,
+        [("bad", "tests.simulation.test_plugins:bad_factory")],
     )
-    monkeypatch.setattr(
-        "shrine.simulation.plugins._entry_points_for_group",
-        lambda _group: entry_points,
-    )
-    clear_plugin_cache()
 
     with pytest.raises(SimulationError, match="did not return a Simulatable"):
         create_element_from_plugin("bad")
 
 
 def test_duplicate_plugin_names_raise(monkeypatch: pytest.MonkeyPatch) -> None:
-    entry_points = importlib.metadata.EntryPoints(
-        [
-            importlib.metadata.EntryPoint(
-                name="dup",
-                value="a:b",
-                group=ELEMENTS_ENTRY_POINT_GROUP,
-            ),
-            importlib.metadata.EntryPoint(
-                name="dup",
-                value="c:d",
-                group=ELEMENTS_ENTRY_POINT_GROUP,
-            ),
-        ]
+    _patch_entry_points(
+        monkeypatch,
+        [("dup", "a:b"), ("dup", "c:d")],
     )
-    monkeypatch.setattr(
-        "shrine.simulation.plugins._entry_points_for_group",
-        lambda _group: entry_points,
-    )
-    clear_plugin_cache()
 
     with pytest.raises(SimulationError, match="Duplicate shrine.elements"):
         list_element_plugins()
