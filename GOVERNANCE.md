@@ -20,7 +20,7 @@ The **maintainer** stewards the codebase and community:
 
 **Current maintainer:** [Jason Lillywhite](https://github.com/jlillywh) (`@jlillywh`)
 
-Contact: open a [GitHub issue](https://github.com/jlillywh/SHRINE/issues) for public matters; use GitHub private contact for sensitive topics (security, CoC).
+Contact: open a [GitHub issue](https://github.com/jlillywh/SHRINE/issues) for public matters; use [private vulnerability reporting](SECURITY.md#reporting-a-vulnerability) for security issues.
 
 ### Release manager
 
@@ -85,6 +85,7 @@ Removing a maintainer for inactivity is at the discretion of remaining maintaine
 | [docs/releases.md](docs/releases.md) | SemVer, changelog, release checklist |
 | [docs/api-stability.md](docs/api-stability.md) | Public API and deprecation |
 | [docs/adr/README.md](docs/adr/README.md) | Architecture decisions |
+| [SECURITY.md](SECURITY.md) | Vulnerability reporting |
 | [docs/modernization-roadmap.md](docs/modernization-roadmap.md) | Strategic checklist |
 
 ---

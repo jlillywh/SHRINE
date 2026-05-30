@@ -257,7 +257,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 - [x] **3.16** Confirm GPL v3 fits contributor expectations; or document why not LGPL/MIT for libs — **MIT** chosen; [ADR-0004](adr/0004-mit-license.md)
 - [x] **3.17** `GOVERNANCE.md` (maintainer, release manager, lazy consensus)
-- [ ] **3.18** Security policy: `SECURITY.md` (reporting, supported versions)
+- [x] **3.18** Security policy: `SECURITY.md` (reporting, supported versions)
 
 #### P2 — Public PyPI release *(deferred until stable)*
 

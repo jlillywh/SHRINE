@@ -130,7 +130,7 @@ Release/version bumps are release-manager-driven — see [docs/releases.md](docs
 
 ## Reporting security issues
 
-Do **not** open public issues for undisclosed security vulnerabilities. A formal [SECURITY.md](SECURITY.md) policy is planned (roadmap **3.18**). Until then, contact maintainers privately via GitHub (repository owner) with details and reproduction steps.
+Do **not** open public issues for undisclosed security vulnerabilities. See **[SECURITY.md](SECURITY.md)** for supported versions, private reporting, and disclosure expectations.
 
 ---
 
