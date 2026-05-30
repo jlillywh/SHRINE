@@ -28,6 +28,19 @@ options:
       show_signature_annotations: true
       summary: true
 
+## `attach_output_units`
+
+::: shrine.simulation.manifest.attach_output_units
+options:
+      heading_level: 4
+      show_root_heading: false
+      show_if_no_docstring: true
+      inherited_members: true
+      merge_init_into_class: true
+      separate_signature: true
+      show_signature_annotations: true
+      summary: true
+
 ## `enrich_run_metadata`
 
 ::: shrine.simulation.metadata.enrich_run_metadata

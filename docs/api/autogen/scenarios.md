@@ -15,6 +15,19 @@ options:
       show_signature_annotations: true
       summary: true
 
+## `export_run_result`
+
+::: shrine.simulation.export.export_run_result
+options:
+      heading_level: 4
+      show_root_heading: false
+      show_if_no_docstring: true
+      inherited_members: true
+      merge_init_into_class: true
+      separate_signature: true
+      show_signature_annotations: true
+      summary: true
+
 ## `ScenarioConfig`
 
 ::: shrine.simulation.scenario.ScenarioConfig

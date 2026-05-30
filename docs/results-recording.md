@@ -16,7 +16,7 @@ def update(self, timestep_context):
 
 Unit strings on `register(..., unit=...)` and `record(..., unit=...)` are validated with the shared pint registry (`shrine.units.validate_unit_string`). Invalid units raise `SimulationError` with `phase=record`. The same variable cannot be assigned two different units in one run.
 
-After the run, `recorder.units` maps each output column name to its unit string (OUT-02).
+After the run, `recorder.units` maps each output column name to its unit string (OUT-02). The same map is stored on `RunResult.manifest["output_units"]` when units were registered.
 
 ### Strict unit mode
 
@@ -29,6 +29,33 @@ Set `strict_units=True` on `RunController` or `Recorder` to fail fast when an ou
 Default is `strict_units=False` so legacy adapters without unit metadata keep working.
 
 `RunController` calls `recorder.begin_timestep()` before element updates.
+
+## Export to CSV + JSON (roadmap **3.13**)
+
+For Excel and report workflows, write tabular outputs and provenance to a folder:
+
+```python
+from pathlib import Path
+from shrine.simulation import export_run_result, load_and_run
+
+result = load_and_run(build_model, "scenarios/baseline_watershed.json")
+csv_path, manifest_path = export_run_result(result, Path("my_run"))
+```
+
+Creates:
+
+| File | Contents |
+|------|----------|
+| `results.csv` | Wide table with a `time` column (date strings) and one column per recorded variable |
+| `run_manifest.json` | Run provenance (`scenario_name`, `scenario_hash`, `seed`, timestamps, `framework_version`, …) plus `output_units`, `outputs_columns`, `export_format_version` |
+
+CLI example:
+
+```bash
+.venv/bin/python3 examples/export_run_results.py scenarios/baseline_watershed.json ./my_run
+```
+
+NetCDF and Parquet export are deferred (see [modernization roadmap](modernization-roadmap.md) **3.13+**).
 
 ## `TimeHistory` (legacy / plotting)
 

@@ -21,7 +21,7 @@ Import framework types from this package only — do not rely on submodules
 **Flow and balance:** :class:`FlowSolver`, :class:`NetworkXFlowSolver`, :class:`FlowSolveResult`,
 :class:`MassBalanceCheck`, :class:`MassBalanceReport`, :class:`MassBalanceTerm`
 
-**Outputs and scenarios:** :class:`Recorder`, :func:`load_scenario_file`, :func:`run_scenario`,
+**Outputs and scenarios:** :class:`Recorder`, :func:`export_run_result`, :func:`load_scenario_file`, :func:`run_scenario`,
 :func:`run_scenarios`, :func:`load_and_run`, :class:`ScenarioConfig`
 
 **Metadata and RNG:** :func:`build_run_metadata`, :func:`enrich_run_metadata`, :class:`RunTimer`,
@@ -52,6 +52,7 @@ from shrine.simulation.context import RunContext, TimestepContext
 from shrine.simulation.deprecation import warn_api_deprecated
 from shrine.simulation.elements import ClimateRecorderElement
 from shrine.simulation.errors import SimulationError, SimulationPhase
+from shrine.simulation.export import export_run_result
 from shrine.simulation.flow import FlowSolver, FlowSolveResult, NetworkXFlowSolver
 from shrine.simulation.golden import outputs_content_hash
 from shrine.simulation.inputs import (
@@ -62,6 +63,7 @@ from shrine.simulation.inputs import (
     StochasticInput,
 )
 from shrine.simulation.manifest import (
+    attach_output_units,
     build_run_manifest,
     element_list_from_model,
     resolve_git_commit,
@@ -128,6 +130,7 @@ __all__ = [
     "MassBalanceTerm",
     # Outputs and scenarios
     "Recorder",
+    "export_run_result",
     "ScenarioConfig",
     "load_scenario_file",
     "run_scenario",
@@ -136,6 +139,7 @@ __all__ = [
     # Metadata, manifest, and RNG
     "build_run_metadata",
     "build_run_manifest",
+    "attach_output_units",
     "enrich_run_metadata",
     "element_list_from_model",
     "resolve_git_commit",

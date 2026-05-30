@@ -128,3 +128,13 @@ def build_run_manifest(
     if scenario is not None and scenario.metadata:
         manifest["scenario_metadata"] = dict(scenario.metadata)
     return manifest
+
+
+def attach_output_units(
+    manifest: dict[str, Any],
+    output_units: dict[str, str],
+) -> dict[str, Any]:
+    """Add recorded column units to *manifest* (mutates and returns *manifest*)."""
+    if output_units:
+        manifest["output_units"] = dict(output_units)
+    return manifest

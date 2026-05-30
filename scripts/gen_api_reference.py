@@ -77,6 +77,7 @@ API_GROUPS: list[tuple[str, str, list[str]]] = [
         "Scenarios and recording",
         [
             "Recorder",
+            "export_run_result",
             "ScenarioConfig",
             "load_scenario_file",
             "run_scenario",
@@ -90,6 +91,7 @@ API_GROUPS: list[tuple[str, str, list[str]]] = [
         [
             "build_run_metadata",
             "build_run_manifest",
+            "attach_output_units",
             "enrich_run_metadata",
             "element_list_from_model",
             "resolve_git_commit",

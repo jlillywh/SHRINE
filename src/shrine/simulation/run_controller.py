@@ -16,7 +16,7 @@ from shrine.simulation.balance import (
 from shrine.simulation.context import RunContext, TimestepContext
 from shrine.simulation.errors import SimulationError, SimulationPhase
 from shrine.simulation.inputs import InputManager
-from shrine.simulation.manifest import build_run_manifest
+from shrine.simulation.manifest import attach_output_units, build_run_manifest
 from shrine.simulation.metadata import RunTimer, build_run_metadata, enrich_run_metadata
 from shrine.simulation.model import Model
 from shrine.simulation.recorder import Recorder
@@ -113,6 +113,7 @@ class RunController:
             )
             metadata["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
             manifest = build_run_manifest(self.model, metadata, scenario=self.scenario)
+            attach_output_units(manifest, self.recorder.units)
             metadata["manifest"] = manifest
             return RunResult(
                 success=True,
@@ -129,6 +130,7 @@ class RunController:
             )
             metadata["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
             manifest = build_run_manifest(self.model, metadata, scenario=self.scenario)
+            attach_output_units(manifest, self.recorder.units)
             metadata["manifest"] = manifest
             result = RunResult(
                 success=False,
@@ -230,6 +232,7 @@ class RunController:
         metadata["debug_mode"] = True
         metadata["steps_completed"] = self._step_count
         manifest = build_run_manifest(self.model, metadata, scenario=self.scenario)
+        attach_output_units(manifest, self.recorder.units)
         metadata["manifest"] = manifest
         outputs = self.recorder.to_dataframe()
         self._tear_down_run()

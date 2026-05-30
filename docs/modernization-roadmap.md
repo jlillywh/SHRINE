@@ -248,9 +248,16 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 #### P1 — Interoperability
 
-- [ ] **3.13** Export run results: CSV, NetCDF, or Parquet with metadata
+**Export/import audience:** civil and water-resources engineers (Excel, reports, agency submittals). Prefer **CSV** and human-readable metadata over binary scientific formats unless a concrete user need appears.
+
+- [x] **3.13** Export run results: **CSV** (`result.outputs`) + sidecar **JSON manifest** — `export_run_result()`, `examples/export_run_results.py`; Excel-friendly; pairs with **3.14**
 - [ ] **3.14** Import time series: CSV with column mapping documented
 - [ ] **3.15** Optional GIS export (GeoPackage) for network topology — `viz` extra
+
+*(Deferred — optional extras, not part of 3.13 exit criteria)*
+
+- **3.13+ NetCDF** — climate/research interoperability (xarray, federal conventions); add `shrine[netcdf]` extra if requested
+- **3.13+ Parquet** — large multi-run analytics / cloud pipelines; low priority for typical watershed runs
 
 #### P2 — License & governance
 
