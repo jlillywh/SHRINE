@@ -10,21 +10,7 @@ and [docs/releases.md](docs/releases.md).
 
 ## [Unreleased]
 
-### Added
-
-- Contributor guide ([CONTRIBUTING.md](CONTRIBUTING.md)), [Code of Conduct](CODE_OF_CONDUCT.md), and GitHub issue templates (roadmap 3.11)
-- Architecture Decision Records under [docs/adr/](docs/adr/) — units (pint), NetworkX flow solver, protocol-based domain contracts (roadmap 3.12)
-- CSV + JSON export for run results via `export_run_result()` (roadmap 3.13)
-- CSV time-series import: `TimeSeriesCsvInput`, `load_csv_timeseries()`, `bind_csv_columns()`, scenario `type: csv` (roadmap 3.14)
-- [GOVERNANCE.md](GOVERNANCE.md) — maintainer, release manager, lazy consensus (roadmap 3.17)
-- [SECURITY.md](SECURITY.md) — vulnerability reporting and supported versions (roadmap 3.18)
-- PyPI publish workflow (`publish.yml`), TestPyPI dry run, release version check, post-upload install matrix (roadmap 3.6 part 2)
-
-### Changed
-
-- Project license changed from GPL v3 to **MIT** (roadmap 3.16, [ADR-0004](docs/adr/0004-mit-license.md))
-
-## [0.2.0] - 2026-05-28
+## [0.2.0] - 2026-05-30
 
 ### Added
 
@@ -42,12 +28,20 @@ and [docs/releases.md](docs/releases.md).
 - Domain tests under `tests/hydrology/` and `tests/water_manage/` (pytest; colocated `src/*/test_*.py` deprecated)
 - CI: mypy strict on `src/shrine/`, Ruff lint/format, Codecov coverage, cross-platform package smoke install (`package.yml`)
 - Versioning and release policy ([docs/releases.md](docs/releases.md))
-- PyPI packaging metadata and build workflows ([docs/pypi.md](docs/pypi.md)); first PyPI upload deferred
+- PyPI packaging and publish on GitHub Release ([docs/pypi.md](docs/pypi.md), `publish.yml`; first public upload **0.2.0**)
+- Contributor guide ([CONTRIBUTING.md](CONTRIBUTING.md)), [Code of Conduct](CODE_OF_CONDUCT.md), and GitHub issue templates (roadmap 3.11)
+- Architecture Decision Records under [docs/adr/](docs/adr/) — units (pint), NetworkX flow solver, protocol-based domain contracts (roadmap 3.12)
+- CSV + JSON export for run results via `export_run_result()` (roadmap 3.13)
+- CSV time-series import: `TimeSeriesCsvInput`, `load_csv_timeseries()`, `bind_csv_columns()`, scenario `type: csv` (roadmap 3.14)
+- [GOVERNANCE.md](GOVERNANCE.md) — maintainer, release manager, lazy consensus (roadmap 3.17)
+- [SECURITY.md](SECURITY.md) — vulnerability reporting and supported versions (roadmap 3.18)
+- PyPI publish workflow (`publish.yml`), TestPyPI dry run, release version check, post-upload install matrix (roadmap 3.6 part 2)
 
 ### Changed
 
 - `Watershed` catchments live on NetworkX graph nodes (single source of truth; migrates parallel dict)
 - `flow_network` node types use `GraphNodeType` instead of raw strings
+- Project license changed from GPL v3 to **MIT** (roadmap 3.16, [ADR-0004](docs/adr/0004-mit-license.md))
 
 ### Removed
 
