@@ -1,6 +1,6 @@
 # How SHRINE compares to other tools
 
-This note is **scope guidance**, not a competitive scorecard. SHRINE is an early-stage, **GPL v3** Python library focused on a **programmable simulation framework** (`shrine.simulation`) with legacy domain modules (hydrology, storage, networks) wrapped by adapters. Many tools below are mature products, desktop suites, or specialized engines with decades of use in operations and regulation.
+This note is **scope guidance**, not a competitive scorecard. SHRINE is an early-stage, **MIT-licensed** Python library focused on a **programmable simulation framework** (`shrine.simulation`) with legacy domain modules (hydrology, storage, networks) wrapped by adapters. Many tools below are mature products, desktop suites, or specialized engines with decades of use in operations and regulation.
 
 **Use SHRINE when** you want Python-native composition, scenario-driven runs, explicit mass balance, and an open codebase you can extend.  
 **Use something else when** you need certified 1D/2D hydraulics, a planning GUI, agency-standard reservoir system software, or turnkey calibration at production scale.
@@ -134,7 +134,7 @@ Related: [Architecture](architecture.md) · [API stability](api-stability.md) ·
 | **Framework-first API** | `Model`, `RunController`, `Simulatable`, scenarios, structured errors |
 | **Mass balance** | Per-timestep checks with `SimulationError` diagnostics |
 | **Reproducibility** | Seeds, run manifest, scenario hash, golden tests |
-| **Open source** | GPL v3; editable install; CI (pytest, mypy, ruff, docs) |
+| **Open source** | MIT License; editable install; CI (pytest, mypy, ruff, docs) |
 | **Integration story** | Adapters bridge legacy `hydrology` / `water_manage` into one clock |
 
 | Limitation (today) | Detail |

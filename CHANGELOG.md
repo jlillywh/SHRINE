@@ -17,6 +17,10 @@ and [docs/releases.md](docs/releases.md).
 - CSV + JSON export for run results via `export_run_result()` (roadmap 3.13)
 - CSV time-series import: `TimeSeriesCsvInput`, `load_csv_timeseries()`, `bind_csv_columns()`, scenario `type: csv` (roadmap 3.14)
 
+### Changed
+
+- Project license changed from GPL v3 to **MIT** (roadmap 3.16, [ADR-0004](docs/adr/0004-mit-license.md))
+
 ## [0.2.0] - 2026-05-28
 
 ### Added

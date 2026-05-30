@@ -9,6 +9,7 @@ Major technical decisions for SHRINE are recorded here using a lightweight [ADR]
 | [0001](0001-units-with-pint-at-boundaries.md) | Units with pint at framework boundaries | Accepted |
 | [0002](0002-networkx-flow-solver.md) | NetworkX max-flow for network routing | Accepted |
 | [0003](0003-protocol-based-domain-contracts.md) | Protocol-based domain contracts | Accepted |
+| [0004](0004-mit-license.md) | MIT license for library distribution | Accepted |
 
 ## When to write an ADR
 

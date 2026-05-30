@@ -165,7 +165,7 @@ python examples/custom_element.py
 python examples/nwis_streamflow.py
 ```
 
-Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`, `scenarios/reference/` (see [docs/reference-models.md](docs/reference-models.md)).
+Bundled scenarios: `scenarios/baseline_watershed.json`, `scenarios/wet_year.yaml`.
 
 ## Documentation
 
@@ -233,4 +233,4 @@ We welcome issues and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for 
 
 ## License
 
-GNU General Public License v3.0 — see [LICENSE](LICENSE).
+MIT License — see [LICENSE](LICENSE).

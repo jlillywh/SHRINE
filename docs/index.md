@@ -43,4 +43,4 @@ See [API stability](api-stability.md) for deprecation policy and [Versioning & r
 
 ## License
 
-GNU General Public License v3.0 — see [LICENSE](https://github.com/jlillywh/SHRINE/blob/master/LICENSE).
+MIT License — see [LICENSE](https://github.com/jlillywh/SHRINE/blob/master/LICENSE).

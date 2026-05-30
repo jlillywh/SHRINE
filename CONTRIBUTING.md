@@ -136,7 +136,7 @@ Do **not** open public issues for undisclosed security vulnerabilities. A formal
 
 ## License
 
-Contributions are licensed under the same terms as the project: **GNU General Public License v3.0 or later**. See [LICENSE](LICENSE). You must have the right to submit your work under this license.
+Contributions are licensed under the same terms as the project: the **MIT License**. See [LICENSE](LICENSE). You must have the right to submit your work under this license.
 
 ---
 

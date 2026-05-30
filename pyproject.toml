@@ -8,13 +8,14 @@ version = "0.2.0"
 description = "SHRINE — Simulation of Hydrology, Reservoirs, and Integrated Network Engine"
 readme = "README.md"
 requires-python = ">=3.10"
-license = "GPL-3.0-or-later"
+license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "SHRINE contributors" }]
 keywords = ["hydrology", "water-resources", "simulation", "reservoir", "watershed"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
