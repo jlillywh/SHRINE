@@ -42,6 +42,7 @@ dev = [
     "pandas-stubs",
     "types-networkx",
     "ruff>=0.8",
+    "cookiecutter>=2.5",
 ]
 # Plotting (flow_network.draw, results charts, legacy inputs.table) — not required for framework tests
 viz = [

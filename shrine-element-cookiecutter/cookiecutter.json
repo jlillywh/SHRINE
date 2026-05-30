@@ -1,0 +1,17 @@
+{
+  "project_name": "SHRINE Demand Element",
+  "project_slug": "shrine_demand_element",
+  "package_name": "shrine_demand_element",
+  "distribution_name": "shrine-demand-element",
+  "element_class_name": "DemandElement",
+  "entry_point_name": "demand",
+  "element_type": "demand",
+  "input_key": "demand",
+  "output_variable": "applied",
+  "author_name": "Jason Lillywhite",
+  "author_email": "you@example.com",
+  "github_username": "jlillywh",
+  "license": "MIT",
+  "shrine_version": "0.2.0",
+  "copyright_year": "{% now 'utc', '%Y' %}"
+}

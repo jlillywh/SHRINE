@@ -534,7 +534,7 @@ Errors during discovery or construction raise **`SimulationError`** with `phase=
 - [ ] Entry point name is stable and documented (lowercase, underscores)
 - [ ] Constructor kwargs are documented (`element_id`, input key overrides, etc.)
 - [ ] License compatible with MIT ecosystem (see [ADR-0004](adr/0004-mit-license.md))
-- [ ] Optional: link a cookiecutter template when [roadmap 4.2](modernization-roadmap.md) lands
+- [ ] Optional: scaffold from [shrine-element-cookiecutter](../shrine-element-cookiecutter/) ([cookiecutter guide](cookiecutter-element.md))
 
 ---
 
