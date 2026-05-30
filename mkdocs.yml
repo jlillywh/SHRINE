@@ -9,7 +9,7 @@ repo_url: https://github.com/jlillywh/SHRINE
 repo_name: jlillywh/SHRINE
 edit_uri: edit/master/docs/
 
-copyright: Copyright &copy; SHRINE contributors — MIT License
+copyright: Copyright &copy; Jason Lillywhite — MIT License
 
 theme:
   name: material

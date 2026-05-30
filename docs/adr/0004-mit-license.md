@@ -23,7 +23,7 @@ Alternatives considered:
 | **Apache-2.0** | Patent grant; common in infra | Longer text; patent clause unnecessary for current scope |
 | **MIT** | Simple; matches NumPy/Pandas/NetworkX norms; easy legal review | No requirement that improvements be open-sourced |
 
-All core dependencies (NumPy, Pandas, NetworkX, Pint, etc.) use permissive licenses. No upstream license blocked relicensing; all commits to date are from the maintainer team.
+All core dependencies (NumPy, Pandas, NetworkX, Pint, etc.) use permissive licenses. No upstream license blocked relicensing; all commits to date are from the maintainer (Jason Lillywhite).
 
 ## Decision
 
