@@ -19,7 +19,7 @@ import shrine.simulation as sim
 from shrine.simulation import Model, RunController, Clock, WatershedElement
 ```
 
-**Package versions:** `shrine.__version__` (distribution) and `shrine.simulation.__api_version__` (stable simulation API surface, currently **1.0**). Stability and deprecation rules: [docs/api-stability.md](docs/api-stability.md). Release history: [CHANGELOG.md](CHANGELOG.md); SemVer and maintainer checklist: [docs/releases.md](docs/releases.md). Submodules outside `__all__` are internal unless noted in [extending-elements.md](docs/extending-elements.md).
+**Package versions:** `shrine.__version__` (distribution) and `shrine.simulation.__api_version__` (stable simulation API surface, currently **1.1**). Stability and deprecation rules: [docs/api-stability.md](docs/api-stability.md). Release history: [CHANGELOG.md](CHANGELOG.md); SemVer and maintainer checklist: [docs/releases.md](docs/releases.md). Submodules outside `__all__` are internal unless noted in [extending-elements.md](docs/extending-elements.md).
 
 ### Public API
 
@@ -28,6 +28,7 @@ from shrine.simulation import Model, RunController, Clock, WatershedElement
 | **Run** | `Model`, `RegisteredElement`, `RunController`, `RunResult`, `RunSession`, `StepResult`, `ElementScheduler` |
 | **Time** | `Clock`, `RunContext`, `TimestepContext` |
 | **Elements** | `Simulatable`, `WatershedElement`, `CatchmentElement`, `ReservoirElement`, `ClimateRecorderElement`, `StorageLike` |
+| **Plugins** | `list_element_plugins`, `load_element_plugin`, `create_element_from_plugin` (`shrine.elements` entry points) |
 | **Inputs** | `InputManager`, `InputProvider`, `ConstantInput`, `MonthlyLookupInput`, `StochasticInput` |
 | **Flow / balance** | `FlowSolver`, `NetworkXFlowSolver`, `FlowSolveResult`, `MassBalanceCheck`, `MassBalanceReport`, `MassBalanceTerm` |
 | **Outputs / scenarios** | `Recorder`, `ScenarioConfig`, `load_scenario_file`, `run_scenario`, `run_scenarios`, `load_and_run` |

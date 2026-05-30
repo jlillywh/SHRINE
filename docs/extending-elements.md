@@ -479,7 +479,66 @@ def test_demand_element_records_input():
 
 ---
 
-## 17. Debugging
+## 17. Publishing a third-party element (`shrine.elements`)
+
+SHRINE discovers optional **`Simulatable`** implementations via the setuptools entry-point group **`shrine.elements`** (roadmap **4.1**). This lets other packages register elements without forking core or editing `Model` internals.
+
+### 17.1 Register in your package
+
+In your `pyproject.toml`:
+
+```toml
+[project.entry-points."shrine.elements"]
+my_demand = "my_package.elements:DemandElement"
+```
+
+The target may be:
+
+| Target | Use when |
+|--------|----------|
+| **Class** | Callers pass constructor args (`create_element_from_plugin("my_demand", element_id="d1")`) |
+| **Factory callable** | You need custom wiring before returning a `Simulatable` instance |
+
+Your class or factory **must** return an object that satisfies the [`Simulatable` contract (§2)](#2-the-simulatable-contract-elm-01) (`element_type`, `initialize`, `update`, `finalize`). Structural typing is enough — you do not need to inherit from `Simulatable`.
+
+### 17.2 Load and register at runtime
+
+```python
+from shrine.simulation import Model, create_element_from_plugin, list_element_plugins
+
+print(list_element_plugins())  # {'watershed': '...', 'my_demand': '...', ...}
+
+model = Model()
+model.register_plugin("d1", "my_demand", element_id="d1")
+# equivalent:
+model.register("d1", create_element_from_plugin("my_demand", element_id="d1"))
+```
+
+Framework helpers (stable API, `shrine.simulation.__api_version__` **1.1+**):
+
+| Symbol | Purpose |
+|--------|---------|
+| `ELEMENTS_ENTRY_POINT_GROUP` | Group name (`"shrine.elements"`) |
+| `list_element_plugins()` | `{name: entry_point_value}` for discovery / docs |
+| `load_element_plugin(name)` | Load class or factory without constructing |
+| `create_element_from_plugin(name, …)` | Construct and validate a `Simulatable` |
+| `Model.register_plugin(id, name, …)` | Convenience wrapper around `register` |
+
+Built-in SHRINE adapters are registered under the same group (`watershed`, `catchment`, `reservoir`, `climate_recorder`) so third-party tools can enumerate all available element types consistently.
+
+Errors during discovery or construction raise **`SimulationError`** with `phase=validate` and `details` including the plugin name.
+
+### 17.3 Distribution checklist
+
+- [ ] Element implements `Simulatable` and is covered by tests in **your** package
+- [ ] Entry point name is stable and documented (lowercase, underscores)
+- [ ] Constructor kwargs are documented (`element_id`, input key overrides, etc.)
+- [ ] License compatible with MIT ecosystem (see [ADR-0004](adr/0004-mit-license.md))
+- [ ] Optional: link a cookiecutter template when [roadmap 4.2](modernization-roadmap.md) lands
+
+---
+
+## 18. Debugging
 
 - **Step mode:** `controller.reset()` then `controller.step()` in a loop — see [step-debugging.md](step-debugging.md).
 - **Scenarios:** run from JSON/YAML — [scenarios.md](scenarios.md).
@@ -487,7 +546,7 @@ def test_demand_element_records_input():
 
 ---
 
-## 18. Checklist before opening a PR
+## 19. Checklist before opening a PR
 
 - [ ] Adapter followed [§15](#15-adapter-authoring-checklist) (if wrapping legacy code)
 - [ ] Reservoir/storage: `StorageLike` contract and override keys documented if applicable ([§14](#14-storagelike-and-reservoir-overrides))
