@@ -29,7 +29,11 @@ def outputs_to_csv_frame(outputs: pd.DataFrame) -> pd.DataFrame:
         frame = frame.reset_index()
 
     time_col = pd.to_datetime(frame["time"])
-    if (time_col.dt.hour == 0).all() and (time_col.dt.minute == 0).all() and (time_col.dt.second == 0).all():
+    if (
+        (time_col.dt.hour == 0).all()
+        and (time_col.dt.minute == 0).all()
+        and (time_col.dt.second == 0).all()
+    ):
         frame["time"] = time_col.dt.strftime("%Y-%m-%d")
     else:
         frame["time"] = time_col.dt.strftime("%Y-%m-%d %H:%M:%S")

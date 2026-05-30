@@ -83,7 +83,9 @@ class TestExportRunResult:
         assert manifest["output_units"] == {"flow": "m3/s"}
 
     def test_export_custom_filenames(self, tmp_path: Path) -> None:
-        result = RunResult(success=True, outputs=pd.DataFrame(), manifest={"scenario_name": "empty"})
+        result = RunResult(
+            success=True, outputs=pd.DataFrame(), manifest={"scenario_name": "empty"}
+        )
         csv_path, manifest_path = export_run_result(
             result,
             tmp_path,
