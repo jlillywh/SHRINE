@@ -81,6 +81,20 @@ class Model:
         meta = {"kind": "reservoir", **metadata}
         self.register(element_id, element, metadata=meta)
 
+    def register_plugin(
+        self,
+        element_id: str,
+        plugin_name: str,
+        /,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
+        """Register an element loaded from a ``shrine.elements`` entry point."""
+        from shrine.simulation.plugins import create_element_from_plugin
+
+        element = create_element_from_plugin(plugin_name, *args, **kwargs)
+        self.register(element_id, element)
+
     def get(self, element_id: str) -> Simulatable:
         if element_id not in self._elements:
             raise SimulationError(

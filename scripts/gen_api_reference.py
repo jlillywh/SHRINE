@@ -47,6 +47,11 @@ API_GROUPS: list[tuple[str, str, list[str]]] = [
             "ClimateRecorderElement",
             "StorageElement",
             "StorageLike",
+            "ELEMENTS_ENTRY_POINT_GROUP",
+            "ElementPlugin",
+            "list_element_plugins",
+            "load_element_plugin",
+            "create_element_from_plugin",
         ],
     ),
     (

@@ -68,6 +68,12 @@ CodeOfConduct = "https://github.com/jlillywh/SHRINE/blob/master/CODE_OF_CONDUCT.
 Governance = "https://github.com/jlillywh/SHRINE/blob/master/GOVERNANCE.md"
 Security = "https://github.com/jlillywh/SHRINE/blob/master/SECURITY.md"
 
+[project.entry-points."shrine.elements"]
+watershed = "shrine.simulation.adapters.watershed:WatershedElement"
+catchment = "shrine.simulation.adapters.catchment:CatchmentElement"
+reservoir = "shrine.simulation.adapters.reservoir:ReservoirElement"
+climate_recorder = "shrine.simulation.elements:ClimateRecorderElement"
+
 [tool.setuptools.packages.find]
 where = ["src", "."]
 include = [

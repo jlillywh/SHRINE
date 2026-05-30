@@ -278,7 +278,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 **Goal:** Third parties extend SHRINE without forking core.
 
-- [ ] **4.1** Plugin entry point: `shrine.elements` for third-party `Simulatable` implementations
+- [x] **4.1** Plugin entry point: `shrine.elements` for third-party `Simulatable` implementations
 - [ ] **4.2** Template repo: `shrine-element-cookiecutter`
 - [ ] **4.3** Discussions / Discord / matrix channel linked from README
 - [ ] **4.4** “Good first issue” and `help wanted` labels; quarterly release train
@@ -311,7 +311,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 **Completed since last matrix edit:** Phase 0 (0.1–0.13, 0.14–0.16), 1.1–1.6.
 
-**Defer until Phase 2+:** deep Sacramento refactor, full graph migration (**2.5**–**2.7**), plugin system (**4.1**).
+**Defer until Phase 2+:** deep Sacramento refactor, full graph migration (**2.5**–**2.7**).
 
 ---
 

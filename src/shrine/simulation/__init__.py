@@ -15,6 +15,9 @@ Import framework types from this package only — do not rely on submodules
 **Elements:** :class:`Simulatable`, :class:`WatershedElement`, :class:`ReservoirElement`,
 :class:`ClimateRecorderElement`, :class:`CatchmentElement`, :class:`StorageLike`, :class:`RegisteredElement`
 
+**Plugins:** :data:`ELEMENTS_ENTRY_POINT_GROUP`, :class:`ElementPlugin`, :func:`list_element_plugins`,
+:func:`load_element_plugin`, :func:`create_element_from_plugin`
+
 **Inputs:** :class:`InputManager`, :class:`InputProvider`, :class:`ConstantInput`,
 :class:`MonthlyLookupInput`, :class:`StochasticInput`, :class:`TimeSeriesCsvInput`,
 :func:`load_csv_timeseries`, :func:`bind_csv_columns`
@@ -74,6 +77,13 @@ from shrine.simulation.manifest import (
 )
 from shrine.simulation.metadata import RunTimer, build_run_metadata, enrich_run_metadata
 from shrine.simulation.model import Model, RegisteredElement
+from shrine.simulation.plugins import (
+    ELEMENTS_ENTRY_POINT_GROUP,
+    ElementPlugin,
+    create_element_from_plugin,
+    list_element_plugins,
+    load_element_plugin,
+)
 from shrine.simulation.protocols import Simulatable
 from shrine.simulation.recorder import Recorder
 from shrine.simulation.rng import make_rng
@@ -118,6 +128,12 @@ __all__ = [
     "ClimateRecorderElement",
     "StorageElement",
     "StorageLike",
+    # Element plugins (shrine.elements entry points)
+    "ELEMENTS_ENTRY_POINT_GROUP",
+    "ElementPlugin",
+    "list_element_plugins",
+    "load_element_plugin",
+    "create_element_from_plugin",
     # Inputs
     "InputManager",
     "InputProvider",

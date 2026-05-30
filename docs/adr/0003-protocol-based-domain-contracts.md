@@ -44,7 +44,6 @@ Adapters (`WatershedElement`, `ReservoirElement`, …) are thin **`Simulatable`*
 
 ### Follow-ups
 
-- Plugin entry points for third-party elements (roadmap **4.1**)
 - ADRs for specific adapter patterns as new element types land
 
 ## References

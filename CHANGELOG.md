@@ -10,6 +10,14 @@ and [docs/releases.md](docs/releases.md).
 
 ## [Unreleased]
 
+### Added
+
+- `shrine.elements` plugin entry points for third-party `Simulatable` implementations (`list_element_plugins`, `load_element_plugin`, `create_element_from_plugin`, `Model.register_plugin`); built-in adapters registered in `pyproject.toml` (roadmap **4.1**)
+
+### Changed
+
+- `shrine.simulation.__api_version__` bumped to **1.1** (new plugin discovery API)
+
 ## [0.2.0] - 2026-05-30
 
 ### Added
