@@ -17,10 +17,9 @@ from shrine.simulation import (
     list_element_plugins,
     load_element_plugin,
 )
-from shrine.simulation.plugins import clear_plugin_cache
 from shrine.simulation.context import RunContext, TimestepContext
 from shrine.simulation.errors import SimulationError
-from shrine.simulation.plugins import ELEMENTS_ENTRY_POINT_GROUP
+from shrine.simulation.plugins import ELEMENTS_ENTRY_POINT_GROUP, clear_plugin_cache
 
 
 class EchoElement:
