@@ -8,6 +8,7 @@ Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md). By participati
 
 ## Ways to contribute
 
+- **Questions and usage help** — [GitHub Discussions](https://github.com/jlillywh/SHRINE/discussions) (Q&A, Ideas, Show and tell)
 - **Bug reports** and **feature requests** — [open an issue](https://github.com/jlillywh/SHRINE/issues/new/choose)
 - **Documentation** — fixes and guides under `docs/` (MkDocs site)
 - **Framework code** — `src/shrine/simulation/` (preferred path for new work)
@@ -15,7 +16,7 @@ Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md). By participati
 - **Tests & scenarios** — `tests/`, `scenarios/`, golden/benchmark/reference fixtures
 - **Examples** — `examples/`
 
-Unsure where to start? Check [good first issues](https://github.com/jlillywh/SHRINE/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) or ask in a new issue.
+Unsure where to start? Check [good first issues](https://github.com/jlillywh/SHRINE/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) or ask in [Discussions](https://github.com/jlillywh/SHRINE/discussions).
 
 ---
 

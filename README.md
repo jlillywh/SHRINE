@@ -235,9 +235,25 @@ print(result.outputs.head())
 
 Legacy scripts (e.g. `global_attributes/test_model.py`) remain for reference; prefer `examples/climate_loop.py` and the framework APIs for new work.
 
+## Community
+
+| Need | Where |
+|------|-------|
+| **Questions**, ideas, show-and-tell | [GitHub Discussions](https://github.com/jlillywh/SHRINE/discussions) |
+| **Bugs** and **feature requests** | [Issues](https://github.com/jlillywh/SHRINE/issues/new/choose) |
+| **Security** vulnerabilities | [SECURITY.md](SECURITY.md) (private reporting — do not open a public issue) |
+
+When you [start a discussion](https://github.com/jlillywh/SHRINE/discussions/new/choose), choose a category:
+
+- **Q&A** — how-to questions, troubleshooting, API usage
+- **Ideas** — feature proposals before they become issues
+- **Show and tell** — scenarios, plugins, teaching examples, integrations
+
+**Announcements** are for maintainer updates (for example the welcome thread). Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Contributing
 
-We welcome issues and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, and PR workflow. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+We welcome pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, and PR workflow. For questions, use [Discussions](https://github.com/jlillywh/SHRINE/discussions) (table above).
 
 ## License
 

@@ -280,7 +280,7 @@ Use checkboxes in PRs / issues. **P0** = do first; **P1** = next quarter; **P2**
 
 - [x] **4.1** Plugin entry point: `shrine.elements` for third-party `Simulatable` implementations
 - [x] **4.2** Template repo: `shrine-element-cookiecutter`
-- [ ] **4.3** Discussions / Discord / matrix channel linked from README
+- [x] **4.3** GitHub Discussions linked from README (`Q&A`, `Ideas`, `Show and tell`)
 - [ ] **4.4** “Good first issue” and `help wanted` labels; quarterly release train
 - [ ] **4.5** Translation of docs (Spanish, Portuguese, French — common in water sector)
 - [ ] **4.6** Workshop notebook (Binder link) for universities

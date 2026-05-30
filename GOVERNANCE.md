@@ -20,7 +20,7 @@ The **maintainer** stewards the codebase and community:
 
 **Current maintainer:** [Jason Lillywhite](https://github.com/jlillywh) (`@jlillywh`)
 
-Contact: open a [GitHub issue](https://github.com/jlillywh/SHRINE/issues) for public matters; use [private vulnerability reporting](SECURITY.md#reporting-a-vulnerability) for security issues.
+Contact: [GitHub Discussions](https://github.com/jlillywh/SHRINE/discussions) for public questions; [open an issue](https://github.com/jlillywh/SHRINE/issues) for bugs and features; use [private vulnerability reporting](SECURITY.md#reporting-a-vulnerability) for security issues.
 
 ### Release manager
 
