@@ -27,6 +27,7 @@ from shrine.simulation.import_csv import (
     read_csv_timeseries,
     resolve_csv_path,
 )
+from shrine.simulation.scenario import parse_input_spec
 
 
 @pytest.fixture
@@ -141,6 +142,29 @@ class TestImportCsv:
         )
         assert provider.value_at(ctx) == pytest.approx(8.0)
 
+    def test_date_normalized_lookup_when_time_of_day_differs(self, climate_csv: Path) -> None:
+        """CSV rows are date-only; simulation clock may carry a time component."""
+        provider = load_csv_timeseries(climate_csv, value_column="precipitation")
+        ctx = TimestepContext(
+            run=RunContext(model_id="t", clock=Clock("1/1/2019", "1/3/2019")),
+            step_index=1,
+            current_time=pd.Timestamp("2019-01-02 15:30:00"),
+            dt=pd.Timedelta("1 days"),
+        )
+        assert provider.value_at(ctx) == pytest.approx(6.0)
+
+    def test_resolve_csv_path_absolute(self, climate_csv: Path) -> None:
+        absolute = climate_csv.resolve()
+        assert resolve_csv_path(absolute) == absolute
+
+    def test_providers_missing_time_column(self, climate_csv: Path) -> None:
+        with pytest.raises(SimulationError, match="missing time column"):
+            providers_from_csv_mapping(
+                climate_csv,
+                {"precipitation": "precipitation"},
+                time_column="not_time",
+            )
+
 
 class TestCsvScenario:
     def test_bundled_csv_watershed_scenario(self) -> None:
@@ -184,6 +208,25 @@ inputs:
                     "inputs": {"precipitation": {"type": "csv", "file": "x.csv"}},
                 }
             )
+
+    def test_scenario_csv_requires_file(self) -> None:
+        with pytest.raises(SimulationError, match="requires 'file'"):
+            ScenarioConfig.from_dict(
+                {
+                    "name": "bad",
+                    "inputs": {
+                        "precipitation": {"type": "csv", "column": "precipitation"},
+                    },
+                }
+            )
+
+    def test_parse_input_spec_csv_missing_column(self) -> None:
+        with pytest.raises(SimulationError, match="requires 'column'"):
+            parse_input_spec({"type": "csv", "file": "data.csv"}, input_name="precipitation")
+
+    def test_parse_input_spec_unknown_type(self) -> None:
+        with pytest.raises(SimulationError, match="unknown type"):
+            parse_input_spec({"type": "not_a_type", "value": 1.0}, input_name="x")
 
     def test_scenario_value_column_alias(self, tmp_path: Path, climate_csv: Path) -> None:
         scenario_path = tmp_path / "s.yaml"
