@@ -1,4 +1,4 @@
-[![PyPI version](https://img.shields.io/pypi/v/shrine.svg)](https://pypi.org/project/shrine/)
+[![PyPI version](https://img.shields.io/pypi/v/shrine?logo=pypi&logoColor=white&label=version&v=0.2.0)](https://pypi.org/project/shrine/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 # SHRINE
