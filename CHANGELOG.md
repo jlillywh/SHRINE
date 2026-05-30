@@ -13,6 +13,8 @@ and [docs/releases.md](docs/releases.md).
 ### Added
 
 - `shrine.elements` plugin entry points for third-party `Simulatable` implementations (`list_element_plugins`, `load_element_plugin`, `create_element_from_plugin`, `Model.register_plugin`); built-in adapters registered in `pyproject.toml` (roadmap **4.1**)
+- **`shrine-element-cookiecutter`** — Cookiecutter template for standalone element plugin packages; [docs/cookiecutter-element.md](docs/cookiecutter-element.md) (roadmap **4.2**)
+- README **Community** section linking [GitHub Discussions](https://github.com/jlillywh/SHRINE/discussions) (roadmap **4.3**)
 
 ### Changed
 

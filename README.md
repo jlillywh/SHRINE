@@ -57,6 +57,7 @@ Requirements and phased delivery: [docs/simulation-framework-requirements.md](do
 | `src/water_manage/` | Storage, flow networks, operating rules |
 | `src/inputs/`, `src/results/` | Tables, time series, `TimeHistory`, charts |
 | `examples/` | Runnable demos (climate, watershed, scenarios, stepping) |
+| `shrine-element-cookiecutter/` | Cookiecutter template for third-party `shrine.elements` plugins ([guide](docs/cookiecutter-element.md)) |
 | `tests/simulation/` | Framework unit and acceptance tests |
 | `docs/` | Guides (see below) |
 
@@ -196,6 +197,7 @@ mkdocs serve          # http://127.0.0.1:8000
 | [docs/releases.md](docs/releases.md) | Versioning policy and maintainer release checklist |
 | [docs/simulation-framework-requirements.md](docs/simulation-framework-requirements.md) | Architecture decisions and requirements |
 | [docs/extending-elements.md](docs/extending-elements.md) | Adding new `Simulatable` elements |
+| [docs/cookiecutter-element.md](docs/cookiecutter-element.md) | Cookiecutter template for plugin packages |
 | [docs/scenarios.md](docs/scenarios.md) | Scenario YAML/JSON |
 | [docs/step-debugging.md](docs/step-debugging.md) | `RunController.step()` API |
 | [docs/results-recording.md](docs/results-recording.md) | `Recorder` and `TimeHistory` |
@@ -233,9 +235,25 @@ print(result.outputs.head())
 
 Legacy scripts (e.g. `global_attributes/test_model.py`) remain for reference; prefer `examples/climate_loop.py` and the framework APIs for new work.
 
+## Community
+
+| Need | Where |
+|------|-------|
+| **Questions**, ideas, show-and-tell | [GitHub Discussions](https://github.com/jlillywh/SHRINE/discussions) |
+| **Bugs** and **feature requests** | [Issues](https://github.com/jlillywh/SHRINE/issues/new/choose) |
+| **Security** vulnerabilities | [SECURITY.md](SECURITY.md) (private reporting — do not open a public issue) |
+
+When you [start a discussion](https://github.com/jlillywh/SHRINE/discussions/new/choose), choose a category:
+
+- **Q&A** — how-to questions, troubleshooting, API usage
+- **Ideas** — feature proposals before they become issues
+- **Show and tell** — scenarios, plugins, teaching examples, integrations
+
+**Announcements** are for maintainer updates (for example the welcome thread). Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Contributing
 
-We welcome issues and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, and PR workflow. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+We welcome pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, and PR workflow. For questions, use [Discussions](https://github.com/jlillywh/SHRINE/discussions) (table above).
 
 ## License
 
